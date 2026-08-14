@@ -128,13 +128,13 @@ Não misturar implementações antigas com o novo núcleo sem uma decisão expl�
 
 ## Sprint 5 — Pipeline
 
-- [ ] TASK-060 Pipelines
-- [ ] TASK-061 Stages
-- [ ] TASK-062 Opportunities
-- [ ] TASK-063 Stage history
-- [ ] TASK-064 Kanban
-- [ ] TASK-065 Loss reasons
-- [ ] TASK-066 Pipeline tests
+- [x] TASK-060 Pipelines
+- [x] TASK-061 Stages
+- [x] TASK-062 Opportunities
+- [x] TASK-063 Stage history
+- [x] TASK-064 Kanban
+- [x] TASK-065 Loss reasons
+- [x] TASK-066 Pipeline tests
 
 ## Sprint 6 — Atividades
 

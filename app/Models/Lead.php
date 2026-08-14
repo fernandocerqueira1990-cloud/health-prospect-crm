@@ -95,6 +95,12 @@ class Lead extends Model
         return $this->belongsTo(Channel::class, 'channel_id');
     }
 
+    /** @return HasMany<Opportunity, $this> */
+    public function opportunities(): HasMany
+    {
+        return $this->hasMany(Opportunity::class);
+    }
+
     /** @return HasMany<LeadSourceEvent, $this> */
     public function sourceEvents(): HasMany
     {

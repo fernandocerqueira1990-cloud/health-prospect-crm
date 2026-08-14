@@ -102,3 +102,31 @@
 - Laravel Pint aprovado em 142 arquivos.
 - PHPStan/Larastan aprovado sem erros.
 - Build Vite de produção aprovado.
+
+### Sprint 5 — Pipeline
+- Implementados `Pipeline`, `Stage`, `Opportunity`, `OpportunityStageHistory` e `LossReason`.
+- Adicionadas migrations, factories e seeders idempotentes para Pipeline, Stages e motivos de perda.
+- Pipeline Comercial padrão criado com 8 etapas: Novo, Qualificação, Diagnóstico, Demonstração, Proposta, Negociação, Ganho e Perdido.
+- CRUD completo de Opportunities implementado com listagem, filtros, criação, edição, visualização e soft delete.
+- RBAC implementado com `opportunities.view`, `opportunities.create`, `opportunities.update` e `opportunities.delete`.
+- Opportunities integradas com Leads, Companies, Contacts e responsável comercial.
+- Histórico de movimentação entre etapas implementado com registro de origem, destino, usuário, data e observações.
+- Criação de Opportunity gera automaticamente o histórico inicial da etapa.
+- Movimentação entre etapas atualiza automaticamente a probabilidade comercial.
+- Estados terminais Ganho e Perdido implementados com controle de `won_at` e `lost_at`.
+- Loss Reasons implementados com 8 motivos comerciais e obrigatoriedade de motivo ao mover para Perdido.
+- Reabertura de oportunidade perdida limpa automaticamente `lost_at` e `loss_reason_id`.
+- Visão 360 da Opportunity implementada com dados comerciais, vínculos, etapa atual e histórico completo.
+- Tela de Pipeline substituiu o placeholder da Sprint 5 por Kanban comercial funcional.
+- Kanban implementado com contadores, valores por etapa, filtros e cards de oportunidades.
+- Drag-and-drop implementado entre etapas utilizando a mesma regra transacional do backend.
+- Movimentação para Perdido exibe modal obrigatório para seleção do motivo da perda.
+- Endpoint de movimentação passou a suportar resposta JSON para atualização via Kanban.
+- Stage History, auditoria, regras de integridade e constraints PostgreSQL preservados durante movimentações.
+- Banco PostgreSQL real atualizado preservando Users, Companies, Contacts e Leads existentes.
+- Fluxo visual validado no navegador com criação de Opportunity, movimentação Novo → Qualificação e movimentação para Perdido com Loss Reason.
+- Testes de estrutura, CRUD, RBAC, histórico, Loss Reasons, Actions e Kanban aprovados.
+- Laravel Pint aprovado sem inconsistências.
+- PHPStan/Larastan aprovado sem erros.
+- Build Vite de produção aprovado.
+- `git diff --check` aprovado sem inconsistências.

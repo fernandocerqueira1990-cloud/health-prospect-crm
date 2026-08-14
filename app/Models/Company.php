@@ -38,6 +38,12 @@ class Company extends Model
         return $this->hasMany(Contact::class);
     }
 
+    /** @return HasMany<Opportunity, $this> */
+    public function opportunities(): HasMany
+    {
+        return $this->hasMany(Opportunity::class);
+    }
+
     /** @return BelongsTo<LeadSource, $this> */
     public function source(): BelongsTo
     {

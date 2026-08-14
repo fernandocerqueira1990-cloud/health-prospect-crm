@@ -51,11 +51,13 @@
                     <span class="nav-badge">Sprint 4</span>
                 </a>
             @endcan
-            <a href="{{ route('roadmap.pipeline') }}" class="nav-link {{ request()->routeIs('roadmap.pipeline') ? 'nav-link-active' : '' }}">
-                <span class="nav-mark">P</span>
-                <span class="flex-1">Pipeline</span>
-                <span class="nav-badge-muted">Em breve</span>
-            </a>
+            @can('viewAny', App\Models\Opportunity::class)
+                <a href="{{ route('roadmap.pipeline') }}" class="nav-link {{ request()->routeIs('roadmap.pipeline', 'opportunities.*') ? 'nav-link-active' : '' }}">
+                    <span class="nav-mark">P</span>
+                    <span class="flex-1">Pipeline</span>
+                    <span class="nav-badge">Sprint 5</span>
+                </a>
+            @endcan
 
             <p class="nav-section-title mt-6">Operação</p>
             <a href="{{ route('roadmap.activities') }}" class="nav-link {{ request()->routeIs('roadmap.activities') ? 'nav-link-active' : '' }}">
@@ -103,7 +105,7 @@
                 <p class="text-xs font-semibold text-slate-300">Sprint atual</p>
                 <div class="mt-2 flex items-center justify-between gap-3">
                     <div>
-                        <p class="text-sm font-bold text-white">Sprint 4 — Leads</p>
+                        <p class="text-sm font-bold text-white">Sprint 5 — Pipeline</p>
                         <p class="mt-0.5 text-xs text-slate-500">Módulo em desenvolvimento</p>
                     </div>
                     <span class="h-2.5 w-2.5 rounded-full bg-teal-400 shadow-[0_0_0_4px_rgba(45,212,191,0.10)]"></span>

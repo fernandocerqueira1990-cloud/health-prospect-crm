@@ -20,6 +20,9 @@ class DatabaseSeeder extends Seeder
             RolePermissionSeeder::class,
             LeadSourceSeeder::class,
             ChannelSeeder::class,
+            PipelineSeeder::class,
+            StageSeeder::class,
+            LossReasonSeeder::class,
         ]);
     }
 }

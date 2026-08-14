@@ -9,6 +9,7 @@ use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LeadController;
+use App\Http\Controllers\OpportunityController;
 use App\Http\Middleware\EnsureUserIsActive;
 use Illuminate\Support\Facades\Route;
 
@@ -34,12 +35,22 @@ Route::middleware(['auth', EnsureUserIsActive::class])->group(function (): void 
         ->name('leads.mutation-complete');
     Route::resource('leads', LeadController::class);
 
-    Route::view('/pipeline', 'modules.coming-soon', [
-        'module' => 'Pipeline',
-        'sprint' => 'Sprint 5',
-        'description' => 'Oportunidades, estágios comerciais, histórico e visualização Kanban.',
-        'items' => ['Pipelines', 'Stages', 'Opportunities', 'Stage History', 'Kanban', 'Loss Reasons'],
-    ])->name('roadmap.pipeline');
+    Route::get(
+        '/opportunities/operation-complete',
+        [OpportunityController::class, 'mutationComplete'],
+    )->name('opportunities.mutation-complete');
+
+    Route::patch(
+        '/opportunities/{opportunity}/stage',
+        [OpportunityController::class, 'moveStage'],
+    )->name('opportunities.move-stage');
+
+    Route::resource('opportunities', OpportunityController::class);
+
+    Route::get(
+        '/pipeline',
+        [OpportunityController::class, 'kanban'],
+    )->name('roadmap.pipeline');
 
     Route::view('/activities', 'modules.coming-soon', [
         'module' => 'Atividades',

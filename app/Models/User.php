@@ -39,6 +39,12 @@ class User extends Authenticatable
         return $this->hasMany(Company::class, 'assigned_user_id');
     }
 
+    /** @return HasMany<Opportunity, $this> */
+    public function assignedOpportunities(): HasMany
+    {
+        return $this->hasMany(Opportunity::class, 'assigned_user_id');
+    }
+
     public function hasRole(string $slug): bool
     {
         return $this->roles->contains(fn (Role $role): bool => $role->active && $role->slug === $slug);
