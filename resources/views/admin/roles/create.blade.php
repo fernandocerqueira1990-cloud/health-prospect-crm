@@ -1,0 +1,1 @@
+<x-layouts.app title="Nova role"><x-page-header title="Nova role" description="Crie um perfil de acesso reutilizável." /><form class="card" method="POST" action="{{ route('admin.roles.store') }}">@csrf @include('admin.roles._form', ['role' => null])</form></x-layouts.app>

@@ -1,0 +1,1 @@
+<x-layouts.app title="Novo usuário"><x-page-header title="Novo usuário" description="Crie uma conta e defina seu acesso inicial." /><form class="card" method="POST" action="{{ route('admin.users.store') }}">@csrf @include('admin.users._form', ['managedUser' => null])</form></x-layouts.app>

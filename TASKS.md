@@ -11,31 +11,37 @@ Não misturar implementações antigas com o novo núcleo sem uma decisão expl�
 
 - [x] TASK-001 Criar branch `migration/laravel-core`
 - [x] TASK-002 Preservar snapshot da versão React/Supabase (`legacy/react-supabase`, `main` e histórico Git)
-- [ ] TASK-003 Inicializar Laravel
-- [ ] TASK-004 Configurar PostgreSQL
-- [ ] TASK-005 Configurar Redis
-- [ ] TASK-006 Configurar Tailwind
-- [ ] TASK-007 Configurar testes
-- [ ] TASK-008 Configurar Pint
-- [ ] TASK-009 Adicionar Larastan/PHPStan
-- [ ] TASK-010 Criar `.env.example`
-- [ ] TASK-011 Criar health check
-- [ ] TASK-012 Criar CI inicial
+- [x] TASK-003 Inicializar Laravel
+- [x] TASK-004 Configurar PostgreSQL
+- [x] TASK-005 Configurar Redis
+- [x] TASK-006 Configurar Tailwind
+- [x] TASK-007 Configurar testes
+- [x] TASK-008 Configurar Pint
+- [x] TASK-009 Adicionar Larastan/PHPStan
+- [x] TASK-010 Criar `.env.example`
+- [x] TASK-011 Criar health check
+- [x] TASK-012 Criar CI inicial
 
 ### Validação da Sprint 0
 
 - Frontend Blade + Tailwind configurado; instalação com pnpm e build de produção validados em 2026-08-13.
-- Scaffold Laravel 13, PostgreSQL, Redis, testes, Pint, Larastan e CI foram preparados, mas permanecem desmarcados até validação em ambiente com PHP 8.3+, Composer, PostgreSQL e Redis.
-- O ambiente Windows atual não possui `php`, `composer`, `psql` ou `redis-server` no `PATH`; por isso migrations, testes PHP, Pint e Larastan não foram executados localmente.
+- Laravel 13, PHP 8.4, PostgreSQL 17, Redis, Node.js 22, pnpm 11, Vite, testes, Pint, Larastan e CI validados no Debian 13 em 2026-08-13.
 
 ## Sprint 1 — Identidade
 
-- [ ] TASK-020 Autenticação
-- [ ] TASK-021 Users
-- [ ] TASK-022 Roles
-- [ ] TASK-023 Permissions
-- [ ] TASK-024 Policies
-- [ ] TASK-025 Audit log básico
+- [x] TASK-020 Autenticação
+- [x] TASK-021 Users
+- [x] TASK-022 Roles
+- [x] TASK-023 Permissions
+- [x] TASK-024 Policies
+- [x] TASK-025 Audit log básico
+
+### Validação da Sprint 1
+
+- Autenticação web nativa com remember me, rate limiting, bloqueio de inativos, renovação de sessão e atualização de último login.
+- RBAC muitos-para-muitos, Gates/Policies, seeders idempotentes, comando seguro para primeiro administrador e auditoria centralizada.
+- Interface administrativa Blade + Tailwind e suíte de 68 testes / 224 assertions validadas no PostgreSQL dedicado `health_prospect_crm_test` em 2026-08-13.
+- Pint, PHPStan/Larastan, instalação pnpm congelada, build Vite e `git diff --check` aprovados.
 
 ## Sprint 2 — Empresas
 

@@ -7,14 +7,11 @@ use Tests\TestCase;
 
 class ExampleTest extends TestCase
 {
-    public function test_home_page_uses_the_initial_blade_view(): void
+    public function test_home_page_redirects_to_the_authenticated_dashboard(): void
     {
         $response = $this->get('/');
 
-        $response
-            ->assertOk()
-            ->assertViewIs('welcome')
-            ->assertSee('Health Prospect CRM');
+        $response->assertRedirect('/dashboard');
     }
 
     public function test_health_check_returns_application_status(): void

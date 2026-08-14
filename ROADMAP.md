@@ -1,21 +1,21 @@
 # ROADMAP — Health Prospect CRM
 
 ## Fase 0 — Reestruturação
-- [ ] congelar arquitetura antiga React/Supabase
-- [ ] criar branch de migração
-- [ ] inicializar Laravel
-- [ ] PostgreSQL
-- [ ] Redis
-- [ ] Apache/dev local
-- [ ] documentação base
+- [x] congelar arquitetura antiga React/Supabase
+- [x] criar branch de migração
+- [x] inicializar Laravel
+- [x] PostgreSQL
+- [x] Redis
+- [x] Apache/dev local
+- [x] documentação base
 
 ## Fase 1 — Fundação
-- [ ] autenticação
-- [ ] usuários
-- [ ] roles
-- [ ] permissions
-- [ ] layout
-- [ ] auditoria básica
+- [x] autenticação
+- [x] usuários
+- [x] roles
+- [x] permissions
+- [x] layout
+- [x] auditoria básica
 
 ## Fase 2 — CRM Core
 - [ ] companies

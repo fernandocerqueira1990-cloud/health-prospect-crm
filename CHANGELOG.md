@@ -19,3 +19,23 @@
 - Health check inicial adicionado em `GET /health`.
 - PHPUnit, Laravel Pint e Larastan/PHPStan configurados; execução PHP pendente por ausência do runtime local.
 - CI inicial adicionada com PostgreSQL, Redis, testes, Pint, Larastan e build frontend.
+
+### Sprint 1 — Identidade, autenticação e RBAC
+- Autenticação web nativa adicionada com login, logout, remember me, proteção CSRF, rate limiting, renovação de sessão, bloqueio de usuários inativos e atualização de `last_login_at`.
+- Estrutura nativa de recuperação de senha preservada e fluxo de autenticação isolado para futura inclusão de MFA.
+- Gestão administrativa de usuários adicionada com criação, edição, ativação/desativação e atribuição autorizada de roles, sem exclusão definitiva.
+- RBAC muitos-para-muitos adicionado com roles, permissions, pivôs protegidos contra duplicidade e matriz inicial de menor privilégio.
+- Policies e Gates adicionados para Dashboard, Users, Roles, Permissions e Audit Logs, com acesso global do role Administrador e autorização obrigatória no backend.
+- Auditoria centralizada adicionada para autenticação e mudanças administrativas, com sanitização recursiva de senhas, tokens, cookies e secrets.
+- Seeders idempotentes adicionados para roles, permissions e associações padrão; Administrador recebe todas as permissions.
+- Comando interativo `php artisan crm:create-admin` adicionado para bootstrap seguro do primeiro administrador, sem senha versionada.
+- Layout administrativo responsivo Blade + Tailwind adicionado com Dashboard, Usuários, Roles, Permissões e Auditoria, respeitando permissões nos menus.
+- Configuração de sessão de exemplo reforçada com criptografia, HttpOnly e SameSite; cookie Secure documentado como obrigatório em produção HTTPS.
+- Suíte da Sprint 1 adicionada e validada no PostgreSQL dedicado `health_prospect_crm_test` com 68 testes e 224 assertions; Pint, PHPStan/Larastan e build Vite aprovados.
+- Sincronização RBAC corrigida para permitir remover a última role de um usuário ou a última permission de uma role por meio dos formulários administrativos.
+- Testes locais isolados obrigatoriamente no PostgreSQL `health_prospect_crm_test`, com bloqueio de bancos sem sufixo `_test` no ambiente `testing`.
+- Role interna `admin` protegida contra alteração de slug, desativação e apropriação do slug reservado; suas permissions completas são preservadas.
+- `crm:create-admin` passou a preparar somente a role Administrador e seu catálogo de permissions, sem restaurar customizações das demais roles.
+- Alterações de usuário agora preservam obrigatoriamente ao menos um administrador ativo, com validação transacional e lock da role reservada para evitar demissões concorrentes.
+- E-mails de usuários passaram a ser normalizados com trim e lowercase antes da validação, consulta e persistência em todos os fluxos atuais.
+- Migration de dados adicionada para detectar colisões, normalizar e-mails preexistentes e aplicar uma CHECK constraint PostgreSQL que exige o formato canônico.

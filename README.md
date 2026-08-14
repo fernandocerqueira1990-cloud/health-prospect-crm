@@ -45,10 +45,31 @@ php artisan key:generate
 php artisan migrate
 npm install
 npm run build
-php artisan test
 ./vendor/bin/pint --test
 ./vendor/bin/phpstan analyse
 ```
+
+### Banco PostgreSQL exclusivo para testes
+
+Os testes nunca devem utilizar `health_prospect_crm`. Crie uma vez o banco dedicado com um usuário PostgreSQL autorizado:
+
+```bash
+createdb -O health_prospect_crm health_prospect_crm_test
+```
+
+O `phpunit.xml` força `APP_ENV=testing`, `DB_CONNECTION=pgsql` e
+`DB_DATABASE=health_prospect_crm_test`. Host, porta, usuário e senha continuam
+vindos do ambiente local; nenhuma senha de teste é versionada. Caso sejam
+diferentes do `.env`, crie um `.env.testing` local e não versionado com esses
+valores.
+
+```bash
+php artisan test
+```
+
+A aplicação interrompe a inicialização em `testing` se o banco configurado não
+terminar com `_test`. A CI mantém suas próprias credenciais temporárias para o
+mesmo banco dedicado.
 
 A POC React/Supabase está preservada em `legacy/react-supabase`, na branch
 `main` e no histórico Git. Ela não integra o núcleo Laravel.
