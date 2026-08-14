@@ -79,6 +79,28 @@ Não misturar implementações antigas com o novo núcleo sem uma decisão expl�
 - Achados P1/P2 do review corrigidos: Contacts preservam acesso à Company arquivada com indicação histórica, validações bloqueiam novos vínculos arquivados e todas as mutações seguem lock ordering determinístico `Companies por ID → Contacts`.
 - Achados P2 adicionais corrigidos: buscas telefônicas formatadas são normalizadas sem afetar buscas textuais, e a Company Show pagina Contacts em blocos de 10 com `contacts_page`, sem carregar a relação completa.
 
+## Sprint 3.5 — Front-base / UI Shell
+
+- [x] TASK-045 Evoluir shell visual principal e navegação responsiva
+- [x] TASK-046 Criar dashboard comercial com métricas autorizadas
+- [x] TASK-047 Adicionar navegação antecipada para módulos futuros com placeholders
+- [x] TASK-048 Validar acesso pelo navegador no Debian/WSL
+- [x] TASK-049 Criar e validar testes do Dashboard/UI Shell
+
+### Validação da Sprint 3.5
+
+- Shell principal evoluído com sidebar responsiva, header autenticado e navegação comercial.
+- Dashboard passou a consumir dados reais de Companies e Contacts respeitando RBAC.
+- Empresas e Contatos validados manualmente pelo navegador com criação de registros reais.
+- Leads, Pipeline, Atividades, Tarefas, Campanhas e Relatórios possuem placeholders autenticados.
+- Navegação mobile preparada com abertura/fechamento do menu e comportamento responsivo.
+- Validação funcional realizada via `http://localhost:8000` no Debian/WSL.
+- Suíte completa aprovada com 129 testes e 595 assertions.
+- Laravel Pint aprovado em 115 arquivos.
+- PHPStan/Larastan aprovado sem erros.
+- Build Vite de produção aprovado.
+- `git diff --check` aprovado.
+
 ## Sprint 4 — Leads
 
 - [ ] TASK-050 Lead Sources

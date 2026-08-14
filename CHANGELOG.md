@@ -69,3 +69,14 @@
 - Lock ordering das Actions foi padronizado como Companies em ordem crescente de ID antes de Contacts, com revalidação transacional do vínculo para reduzir deadlocks e janelas TOCTOU.
 - Filtro de telefone e busca geral passaram a reutilizar a normalização internacional de `phone`/`whatsapp`, encontrando valores persistidos mesmo quando a consulta contém espaços, parênteses ou hífens.
 - Company Show deixou de eager-load todos os Contacts e passou a usar paginação própria de 10 itens, parâmetro `contacts_page`, total eficiente e ordenação por principal/nome.
+
+### Sprint 3.5 — Front-base / UI Shell
+- Shell visual do CRM evoluído com sidebar responsiva, header autenticado e navegação comercial completa.
+- Dashboard inicial passou a exibir indicadores reais de Companies e Contacts somente quando o usuário possui autorização correspondente.
+- Indicadores adicionados para empresas cadastradas, contatos ativos, empresas de alta prioridade e decisores/champions.
+- Atalhos para criação de empresa e contato e roadmap visual da Sprint 4 adicionados.
+- Leads, Pipeline, Atividades, Tarefas, Campanhas e Relatórios receberam placeholders autenticados para validação antecipada da experiência de navegação.
+- Navegação mobile reforçada com comportamento responsivo.
+- Fluxo visual validado no navegador através de login, criação de Company, criação de Contact e atualização das métricas do Dashboard.
+- Suíte completa validada com 129 testes e 595 assertions.
+- Laravel Pint aprovado em 115 arquivos, PHPStan/Larastan sem erros, build Vite aprovado e `git diff --check` sem inconsistências.

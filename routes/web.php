@@ -28,6 +28,49 @@ Route::middleware('guest')->group(function (): void {
 Route::middleware(['auth', EnsureUserIsActive::class])->group(function (): void {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+
+    Route::view('/leads', 'modules.coming-soon', [
+        'module' => 'Leads',
+        'sprint' => 'Sprint 4',
+        'description' => 'Captação, origem, qualificação e acompanhamento inicial de leads.',
+        'items' => ['Lead Sources', 'Channels', 'Cadastro de Leads', 'Lead Source Events', 'First / Last Touch', 'Filtros e testes'],
+    ])->name('roadmap.leads');
+
+    Route::view('/pipeline', 'modules.coming-soon', [
+        'module' => 'Pipeline',
+        'sprint' => 'Sprint 5',
+        'description' => 'Oportunidades, estágios comerciais, histórico e visualização Kanban.',
+        'items' => ['Pipelines', 'Stages', 'Opportunities', 'Stage History', 'Kanban', 'Loss Reasons'],
+    ])->name('roadmap.pipeline');
+
+    Route::view('/activities', 'modules.coming-soon', [
+        'module' => 'Atividades',
+        'sprint' => 'Sprint 6',
+        'description' => 'Registro das interações comerciais e linha do tempo do relacionamento.',
+        'items' => ['Ligações', 'E-mails', 'WhatsApp', 'Reuniões', 'Follow-ups', 'Timeline'],
+    ])->name('roadmap.activities');
+
+    Route::view('/tasks', 'modules.coming-soon', [
+        'module' => 'Tarefas',
+        'sprint' => 'Sprint 6',
+        'description' => 'Organização de pendências, responsáveis, prazos e próximas ações.',
+        'items' => ['Tarefas', 'Responsáveis', 'Prioridades', 'Prazos', 'Lembretes', 'Conclusão'],
+    ])->name('roadmap.tasks');
+
+    Route::view('/campaigns', 'modules.coming-soon', [
+        'module' => 'Campanhas',
+        'sprint' => 'Fase de Aquisição',
+        'description' => 'Organização de campanhas, canais, UTMs e atribuição de origem.',
+        'items' => ['Campanhas', 'UTM Source', 'UTM Medium', 'UTM Campaign', 'Canais', 'Conversão'],
+    ])->name('roadmap.campaigns');
+
+    Route::view('/reports', 'modules.coming-soon', [
+        'module' => 'Relatórios',
+        'sprint' => 'Fase Analytics',
+        'description' => 'Indicadores comerciais e futura integração com Grafana.',
+        'items' => ['Funil', 'Conversão', 'Origem dos Leads', 'Performance Comercial', 'Tempo por Etapa', 'Grafana'],
+    ])->name('roadmap.reports');
+
     Route::get('/companies/operation-complete', [CompanyController::class, 'mutationComplete'])->name('companies.mutation-complete');
     Route::resource('companies', CompanyController::class);
     Route::get('/contacts/operation-complete', [ContactController::class, 'mutationComplete'])->name('contacts.mutation-complete');
