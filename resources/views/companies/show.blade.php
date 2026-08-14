@@ -5,7 +5,8 @@
 
     <nav class="mb-6 flex gap-1 overflow-x-auto border-b border-slate-200" aria-label="Seções da empresa">
         <span class="border-b-2 border-teal-700 px-4 py-3 text-sm font-semibold text-teal-800">Resumo</span>
-        @foreach(['Contatos', 'Leads', 'Oportunidades', 'Atividades'] as $futureTab)<span class="cursor-not-allowed px-4 py-3 text-sm text-slate-400" title="Disponível em sprint futura">{{ $futureTab }}</span>@endforeach
+        @can('viewAny', App\Models\Contact::class)<a class="px-4 py-3 text-sm font-medium text-teal-700" href="#contatos">Contatos ({{ $contacts->total() }})</a>@endcan
+        @foreach(['Leads', 'Oportunidades', 'Atividades'] as $futureTab)<span class="cursor-not-allowed px-4 py-3 text-sm text-slate-400" title="Disponível em sprint futura">{{ $futureTab }}</span>@endforeach
     </nav>
 
     @php($priorityLabels = ['low' => 'Baixa', 'medium' => 'Média', 'high' => 'Alta', 'critical' => 'Crítica'])
@@ -26,6 +27,7 @@
                 <div class="sm:col-span-2"><dt class="text-xs font-semibold uppercase text-slate-500">Endereço</dt><dd class="mt-1">{{ collect([$company->street, $company->number, $company->complement, $company->district, $company->city, $company->state, $company->postal_code])->filter()->join(', ') ?: '—' }}</dd></div>
             </dl></section>
             <section class="card"><h2 class="text-base font-semibold text-slate-900">Observações</h2><p class="mt-4 whitespace-pre-line text-sm text-slate-700">{{ $company->notes ?? 'Nenhuma observação registrada.' }}</p></section>
+            @can('viewAny', App\Models\Contact::class)<section class="card" id="contatos"><div class="flex items-center justify-between"><h2 class="text-base font-semibold text-slate-900">Contatos</h2>@can('create', App\Models\Contact::class)<a class="btn-primary" href="{{ route('contacts.create',['company_id'=>$company->id]) }}">Novo contato</a>@endcan</div><div class="mt-4 overflow-x-auto"><table class="table"><thead><tr><th>Nome</th><th>Cargo / departamento</th><th>Contato</th><th>Relacionamento</th><th>Status</th></tr></thead><tbody>@forelse($contacts as $contact)<tr><td><a class="font-semibold text-teal-700" href="{{ route('contacts.show',$contact) }}">{{ $contact->name }}</a>@if($contact->is_primary) · Principal @endif</td><td>{{ collect([$contact->job_title,$contact->department])->filter()->join(' · ') ?: '—' }}</td><td>{{ $contact->email ?: $contact->phone ?: $contact->whatsapp ?: '—' }}</td><td>{{ $contact->decision_role ?? '—' }} · {{ $contact->influence_level ?? '—' }}</td><td>{{ $contact->active ? 'Ativo' : 'Inativo' }}</td></tr>@empty<tr><td colspan="5">Nenhum contato cadastrado.</td></tr>@endforelse</tbody></table></div><div class="mt-5">{{ $contacts->links() }}</div></section>@endcan
         </div>
         <aside class="space-y-6">
             <section class="card"><h2 class="text-base font-semibold text-slate-900">Comercial</h2><dl class="mt-4 space-y-4">

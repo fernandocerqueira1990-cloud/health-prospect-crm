@@ -1,0 +1,1 @@
+<x-layouts.app title="Operação concluída"><x-page-header title="Operação concluída" description="A alteração foi salva com sucesso."/><div class="card"><a class="btn-secondary" href="{{ route('dashboard') }}">Ir ao dashboard</a></div></x-layouts.app>

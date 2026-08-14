@@ -83,13 +83,29 @@ Regras implementadas na Sprint 2:
 - email
 - phone
 - whatsapp
+- linkedin_url
+- decision_role
 - influence_level
-- buying_role
+- is_primary
+- active
 - notes
 - timestamps
 - deleted_at
 
-### contact_social_profiles
+Regras implementadas na Sprint 3:
+- `company_id` é obrigatório, indexado pela foreign key e usa `ON DELETE RESTRICT`; soft delete de Company preserva integralmente seus Contacts;
+- a relação histórica `Contact::company()` inclui Companies soft-deleted; novos vínculos aceitam somente Companies ativas, enquanto updates podem manter a Company arquivada atual ou mover para outra ativa;
+- nome, e-mail, telefones e URLs são normalizados antes da persistência; e-mail não possui unicidade global;
+- filtros telefônicos reutilizam a mesma normalização da persistência; a busca geral mantém o termo textual e deriva separadamente um candidato normalizado para `phone` e `whatsapp`;
+- `decision_role` usa vocabulário evolutivo em `varchar`: `decision_maker`, `influencer`, `champion`, `user`, `technical`, `procurement`, `financial`, `gatekeeper`, `blocker` e `other`;
+- `influence_level` aceita `low`, `medium`, `high` e `critical`;
+- apenas um Contact ativo e não excluído pode ser principal por Company, garantido por Action transacional, lock da Company e índice unique parcial;
+- mutações bloqueiam primeiro todas as Companies envolvidas em ordem crescente de ID e somente depois os Contacts, evitando inversão de locks em movimentações e exclusões concorrentes;
+- desativar ou excluir o principal deixa a Company sem contato principal; não há promoção automática;
+- índices operacionais cobrem `company_id`, `name`, e-mail não nulo, `decision_role`, `influence_level` e `active`.
+- a seção Contacts da Company Show consulta no máximo 10 registros por página, ordenados por principal e nome, usando o parâmetro independente `contacts_page`.
+
+### contact_social_profiles (futuro, fora da Sprint 3)
 - id
 - contact_id
 - network

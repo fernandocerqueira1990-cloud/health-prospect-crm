@@ -55,3 +55,17 @@
 - País do identificador fiscal (`tax_id_country`) adicionado explicitamente com código ISO alpha-2, validação CNPJ restrita a `BR`, normalização conservadora internacional e unicidade parcial composta por país e documento.
 - Migração de `tax_id_country` preserva registros legados sem classificá-los automaticamente; o par legado pode ser mantido em edições, mas alterações de documento exigem país explícito.
 - Rollback da migração de país fiscal passou a detectar tax IDs duplicados antes de qualquer DDL, incluindo registros soft-deleted conforme a semântica do índice antigo, e aborta com orientação clara quando o schema anterior não pode representar os dados.
+
+### Sprint 3 — Contacts
+- Gestão completa de contatos adicionada com CRUD Blade, soft delete, status ativo/inativo, Company obrigatória, listagem global e integração na visão 360 da empresa.
+- Busca geral, filtros específicos, ordenação por whitelist, eager loading e paginação com preservação da query string adicionados.
+- E-mails são normalizados com trim/lowercase e telefones/WhatsApp usam normalização internacional conservadora que preserva o prefixo `+`.
+- Papel na decisão e nível de influência usam vocabulários previsíveis em strings evolutivas; perfis sociais genéricos permanecem fora do escopo e LinkedIn é armazenado como URL validada.
+- Invariável de contato principal implementada com transação, lock pessimista na Company e índice unique parcial para contatos ativos e não excluídos.
+- RBAC via `ContactPolicy`, Actions de criação/atualização/exclusão e auditoria de create, update, delete, ativação, desativação e marcação como principal adicionados.
+- Menu Comercial agora apresenta Empresas e Contatos conforme permissions independentes.
+- Relação histórica de Contact passou a incluir a Company soft-deleted; listagem, busca, show e edit identificam a empresa arquivada sem criar link para uma rota indisponível.
+- Validação impede criar ou mover Contacts para Companies arquivadas, mas permite manter o vínculo histórico atual e editar outros campos ou mover o contato para uma Company ativa.
+- Lock ordering das Actions foi padronizado como Companies em ordem crescente de ID antes de Contacts, com revalidação transacional do vínculo para reduzir deadlocks e janelas TOCTOU.
+- Filtro de telefone e busca geral passaram a reutilizar a normalização internacional de `phone`/`whatsapp`, encontrando valores persistidos mesmo quando a consulta contém espaços, parênteses ou hífens.
+- Company Show deixou de eager-load todos os Contacts e passou a usar paginação própria de 10 itens, parâmetro `contacts_page`, total eficiente e ordenação por principal/nome.

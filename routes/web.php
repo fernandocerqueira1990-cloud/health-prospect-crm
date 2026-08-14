@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Middleware\EnsureUserIsActive;
 use Illuminate\Support\Facades\Route;
@@ -29,6 +30,8 @@ Route::middleware(['auth', EnsureUserIsActive::class])->group(function (): void 
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
     Route::get('/companies/operation-complete', [CompanyController::class, 'mutationComplete'])->name('companies.mutation-complete');
     Route::resource('companies', CompanyController::class);
+    Route::get('/contacts/operation-complete', [ContactController::class, 'mutationComplete'])->name('contacts.mutation-complete');
+    Route::resource('contacts', ContactController::class);
 
     Route::prefix('admin')->name('admin.')->group(function (): void {
         Route::resource('users', UserController::class)->except(['show', 'destroy']);

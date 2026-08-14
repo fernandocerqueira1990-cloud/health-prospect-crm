@@ -64,10 +64,20 @@ Não misturar implementações antigas com o novo núcleo sem uma decisão expl�
 
 ## Sprint 3 — Contatos
 
-- [ ] TASK-040 Contacts model
-- [ ] TASK-041 Contacts CRUD
-- [ ] TASK-042 Social profiles
-- [ ] TASK-043 Contacts tests
+- [x] TASK-040 Contacts model
+- [x] TASK-041 Contacts CRUD
+- [ ] TASK-042 Social profiles (adiado; Sprint 3 armazena somente `linkedin_url`, conforme escopo aprovado)
+- [x] TASK-043 Contacts tests
+
+### Validação da Sprint 3
+
+- Gestão web completa de Contacts vinculados obrigatoriamente a Companies, com soft delete, status ativo/inativo, RBAC, auditoria e links seguros de contato.
+- Contato principal protegido transacionalmente por lock da Company e índice unique parcial PostgreSQL; desativação ou exclusão não promove outro contato automaticamente.
+- Listagem global e seção funcional na Company Show incluem busca, filtros, ordenação por whitelist e paginação de 15 registros com query string preservada.
+- E-mail, telefone e WhatsApp normalizados conservadoramente; LinkedIn restrito a URLs HTTP(S) de `linkedin.com` sem integração externa.
+- Suíte completa validada com 126 testes e 579 assertions exclusivamente em `health_prospect_crm_test`; Pint, PHPStan/Larastan, build Vite e `git diff --check` aprovados em 2026-08-14.
+- Achados P1/P2 do review corrigidos: Contacts preservam acesso à Company arquivada com indicação histórica, validações bloqueiam novos vínculos arquivados e todas as mutações seguem lock ordering determinístico `Companies por ID → Contacts`.
+- Achados P2 adicionais corrigidos: buscas telefônicas formatadas são normalizadas sem afetar buscas textuais, e a Company Show pagina Contacts em blocos de 10 com `contacts_page`, sem carregar a relação completa.
 
 ## Sprint 4 — Leads
 

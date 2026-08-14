@@ -27,10 +27,11 @@
                 @can('viewAny', App\Models\AuditLog::class)<a href="{{ route('admin.audit.index') }}" class="nav-link {{ request()->routeIs('admin.audit.*') ? 'nav-link-active' : '' }}">Auditoria</a>@endcan
             @endif
 
-            @can('viewAny', App\Models\Company::class)
+            @if(auth()->user()->can('viewAny', App\Models\Company::class) || auth()->user()->can('viewAny', App\Models\Contact::class))
                 <p class="px-3 pb-1 pt-6 text-xs font-semibold uppercase tracking-wider text-slate-500">Comercial</p>
-                <a href="{{ route('companies.index') }}" class="nav-link {{ request()->routeIs('companies.*') ? 'nav-link-active' : '' }}">Empresas</a>
-            @endcan
+                @can('viewAny', App\Models\Company::class)<a href="{{ route('companies.index') }}" class="nav-link {{ request()->routeIs('companies.*') ? 'nav-link-active' : '' }}">Empresas</a>@endcan
+                @can('viewAny', App\Models\Contact::class)<a href="{{ route('contacts.index') }}" class="nav-link {{ request()->routeIs('contacts.*') ? 'nav-link-active' : '' }}">Contatos</a>@endcan
+            @endif
         </nav>
     </aside>
 

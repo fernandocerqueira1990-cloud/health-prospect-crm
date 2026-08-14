@@ -9,6 +9,7 @@ use App\Http\Requests\Companies\CompanyIndexRequest;
 use App\Http\Requests\Companies\StoreCompanyRequest;
 use App\Http\Requests\Companies\UpdateCompanyRequest;
 use App\Models\Company;
+use App\Models\Contact;
 use App\Models\User;
 use App\Queries\CompanyIndexQuery;
 use Illuminate\Database\Eloquent\Collection;
@@ -49,8 +50,18 @@ class CompanyController extends Controller
     public function show(Company $company): View
     {
         Gate::authorize('view', $company);
+        $company->load('assignedUser');
+        $contacts = null;
+        if (Gate::allows('viewAny', Contact::class)) {
+            $contacts = $company->contacts()
+                ->orderByDesc('is_primary')
+                ->orderBy('name')
+                ->paginate(10, ['*'], 'contacts_page')
+                ->withQueryString()
+                ->fragment('contatos');
+        }
 
-        return view('companies.show', ['company' => $company->load('assignedUser')]);
+        return view('companies.show', ['company' => $company, 'contacts' => $contacts]);
     }
 
     public function edit(Company $company): View
