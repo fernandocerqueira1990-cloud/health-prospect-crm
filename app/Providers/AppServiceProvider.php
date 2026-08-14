@@ -3,10 +3,12 @@
 namespace App\Providers;
 
 use App\Models\AuditLog;
+use App\Models\Company;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
 use App\Policies\AuditLogPolicy;
+use App\Policies\CompanyPolicy;
 use App\Policies\PermissionPolicy;
 use App\Policies\RolePolicy;
 use App\Policies\UserPolicy;
@@ -38,6 +40,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Role::class, RolePolicy::class);
         Gate::policy(Permission::class, PermissionPolicy::class);
         Gate::policy(AuditLog::class, AuditLogPolicy::class);
+        Gate::policy(Company::class, CompanyPolicy::class);
 
         Gate::before(function (User $user): ?bool {
             return $user->hasRole('admin') ? true : null;

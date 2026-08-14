@@ -45,6 +45,7 @@ Campos principais:
 - legal_name
 - trade_name
 - tax_id
+- tax_id_country nullable, código ISO 3166-1 alpha-2
 - segment
 - category
 - website
@@ -59,10 +60,19 @@ Campos principais:
 - postal_code
 - employee_count_estimate
 - assigned_user_id
-- source_id
+- source_id nullable, reservado sem FK até a implementação de `lead_sources`
+- priority: low, medium, high, critical
 - notes
 - timestamps
 - deleted_at
+
+Regras implementadas na Sprint 2:
+- `assigned_user_id` referencia `users`, com `ON DELETE SET NULL`;
+- `tax_id_country` identifica explicitamente o país, sem inferência pelo comprimento do documento; registros legados permanecem nulos até classificação explícita;
+- `(tax_id_country, tax_id)` possui índice unique parcial quando ambos estão preenchidos;
+- CNPJs com país `BR` são armazenados somente com 14 dígitos e validados antes da persistência; identificadores de outros países usam normalização conservadora;
+- `source_id` permanece nullable e sem foreign key para não antecipar o módulo Lead Sources;
+- índices operacionais cobrem `legal_name`, `trade_name` não nulo, identidade fiscal composta, `city`, `state`, `assigned_user_id` e `priority`.
 
 ### contacts
 - id

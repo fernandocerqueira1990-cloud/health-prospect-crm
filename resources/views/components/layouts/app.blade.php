@@ -27,8 +27,10 @@
                 @can('viewAny', App\Models\AuditLog::class)<a href="{{ route('admin.audit.index') }}" class="nav-link {{ request()->routeIs('admin.audit.*') ? 'nav-link-active' : '' }}">Auditoria</a>@endcan
             @endif
 
-            <p class="px-3 pb-1 pt-6 text-xs font-semibold uppercase tracking-wider text-slate-600">CRM — em breve</p>
-            <span class="block px-3 py-2 text-sm text-slate-600">Empresas · Contatos · Leads</span>
+            @can('viewAny', App\Models\Company::class)
+                <p class="px-3 pb-1 pt-6 text-xs font-semibold uppercase tracking-wider text-slate-500">Comercial</p>
+                <a href="{{ route('companies.index') }}" class="nav-link {{ request()->routeIs('companies.*') ? 'nav-link-active' : '' }}">Empresas</a>
+            @endcan
         </nav>
     </aside>
 

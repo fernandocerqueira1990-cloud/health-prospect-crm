@@ -33,6 +33,12 @@ class User extends Authenticatable
         return $this->hasMany(AuditLog::class);
     }
 
+    /** @return HasMany<Company, $this> */
+    public function assignedCompanies(): HasMany
+    {
+        return $this->hasMany(Company::class, 'assigned_user_id');
+    }
+
     public function hasRole(string $slug): bool
     {
         return $this->roles->contains(fn (Role $role): bool => $role->active && $role->slug === $slug);

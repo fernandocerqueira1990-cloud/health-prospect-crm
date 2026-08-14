@@ -45,10 +45,22 @@ Não misturar implementações antigas com o novo núcleo sem uma decisão expl�
 
 ## Sprint 2 — Empresas
 
-- [ ] TASK-030 Companies migration/model
-- [ ] TASK-031 Companies CRUD
-- [ ] TASK-032 Companies filters/search
-- [ ] TASK-033 Companies tests
+- [x] TASK-030 Companies migration/model
+- [x] TASK-031 Companies CRUD
+- [x] TASK-032 Companies filters/search
+- [x] TASK-033 Companies tests
+
+### Validação da Sprint 2
+
+- CRUD web completo de Companies com soft delete, responsável comercial ativo, RBAC por Policy e auditoria via `AuditService`.
+- CNPJ brasileiro validado, normalizado e apresentado com máscara; identificadores fiscais internacionais continuam suportados.
+- Busca, filtros, ordenação por whitelist, eager loading e paginação com query string implementados.
+- `source_id` preparado como campo nullable, sem FK, até a Sprint de Lead Sources.
+- Suíte completa validada com 109 testes e 426 assertions exclusivamente em `health_prospect_crm_test`; Pint, PHPStan/Larastan, build Vite e `git diff --check` aprovados em 2026-08-14.
+- Achados P2 do review corrigidos: updates preservam o responsável atual inativo sem permitir novas atribuições inativas, e filtros de data são validados antes da construção da consulta.
+- Redirects pós-mutation respeitam permissions independentes: usuários sem `companies.view` recebem confirmação autenticada sem exposição de dados, enquanto show e index permanecem protegidos.
+- Identidade fiscal passou a exigir país explícito para novos documentos, validando CNPJ somente quando `tax_id_country=BR` e preservando IDs internacionais e registros legados.
+- Rollback de `tax_id_country` valida previamente colisões incompatíveis com o índice antigo e aborta de forma explícita e transacional sem modificar schema ou dados.
 
 ## Sprint 3 — Contatos
 

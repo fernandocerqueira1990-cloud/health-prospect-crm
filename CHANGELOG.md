@@ -39,3 +39,19 @@
 - Alterações de usuário agora preservam obrigatoriamente ao menos um administrador ativo, com validação transacional e lock da role reservada para evitar demissões concorrentes.
 - E-mails de usuários passaram a ser normalizados com trim e lowercase antes da validação, consulta e persistência em todos os fluxos atuais.
 - Migration de dados adicionada para detectar colisões, normalizar e-mails preexistentes e aplicar uma CHECK constraint PostgreSQL que exige o formato canônico.
+
+### Sprint 2 — Companies
+- Gestão web completa de empresas adicionada com listagem, criação, visão 360 inicial, edição e soft delete, sem hard delete ou implementação antecipada de módulos futuros.
+- Model, factory, Policy, Form Requests e Actions de Companies adicionados, mantendo controllers finos e autorização no backend.
+- Responsável comercial opcional ligado a usuários, com atribuição restrita a contas ativas e eager loading nas consultas.
+- CNPJ brasileiro validado e armazenado sem máscara, tax IDs internacionais preservados, e-mails normalizados e websites canonizados com esquema HTTPS quando ausente.
+- Busca geral, filtros específicos, intervalo de criação, ordenação por whitelist e paginação com preservação da query string adicionados.
+- Auditoria de criação, atualização e exclusão registra snapshots sanitizados, inclusive responsável e prioridade.
+- Índice unique parcial de identidade fiscal e índices seletivos para as consultas previstas adicionados com foco em PostgreSQL.
+- Campo `source_id` preparado sem FK até a implementação futura de Lead Sources.
+- Atualização de Companies passou a permitir manter ou remover o responsável atual que tenha sido desativado, sem permitir atribuição a outro usuário inativo; a invariiante também é verificada transacionalmente nas Actions.
+- Filtros, datas e ordenação da listagem passaram por `CompanyIndexRequest`, impedindo datas inválidas de chegarem ao PostgreSQL e validando intervalos cronológicos antes da consulta.
+- Redirects após create, update e delete passaram a consultar a `CompanyPolicy`; usuários mutation-only são encaminhados a uma confirmação autenticada, evitando 403 após operações bem-sucedidas sem conceder `companies.view` implicitamente.
+- País do identificador fiscal (`tax_id_country`) adicionado explicitamente com código ISO alpha-2, validação CNPJ restrita a `BR`, normalização conservadora internacional e unicidade parcial composta por país e documento.
+- Migração de `tax_id_country` preserva registros legados sem classificá-los automaticamente; o par legado pode ser mantido em edições, mas alterações de documento exigem país explícito.
+- Rollback da migração de país fiscal passou a detectar tax IDs duplicados antes de qualquer DDL, incluindo registros soft-deleted conforme a semântica do índice antigo, e aborta com orientação clara quando o schema anterior não pode representar os dados.
