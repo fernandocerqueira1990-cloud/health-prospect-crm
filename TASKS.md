@@ -9,8 +9,8 @@ Não misturar implementações antigas com o novo núcleo sem uma decisão expl�
 
 ## Sprint 0 — Preparação
 
-- [ ] TASK-001 Criar branch `migration/laravel-core`
-- [ ] TASK-002 Preservar snapshot da versão React/Supabase
+- [x] TASK-001 Criar branch `migration/laravel-core`
+- [x] TASK-002 Preservar snapshot da versão React/Supabase (`legacy/react-supabase`, `main` e histórico Git)
 - [ ] TASK-003 Inicializar Laravel
 - [ ] TASK-004 Configurar PostgreSQL
 - [ ] TASK-005 Configurar Redis
@@ -21,6 +21,12 @@ Não misturar implementações antigas com o novo núcleo sem uma decisão expl�
 - [ ] TASK-010 Criar `.env.example`
 - [ ] TASK-011 Criar health check
 - [ ] TASK-012 Criar CI inicial
+
+### Validação da Sprint 0
+
+- Frontend Blade + Tailwind configurado; instalação com pnpm e build de produção validados em 2026-08-13.
+- Scaffold Laravel 13, PostgreSQL, Redis, testes, Pint, Larastan e CI foram preparados, mas permanecem desmarcados até validação em ambiente com PHP 8.3+, Composer, PostgreSQL e Redis.
+- O ambiente Windows atual não possui `php`, `composer`, `psql` ou `redis-server` no `PATH`; por isso migrations, testes PHP, Pint e Larastan não foram executados localmente.
 
 ## Sprint 1 — Identidade
 
