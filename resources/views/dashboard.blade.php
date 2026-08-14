@@ -4,20 +4,20 @@
             <div>
                 <p class="text-xs font-bold uppercase tracking-[0.2em] text-teal-400">Central comercial</p>
                 <h1 class="mt-2 text-2xl font-bold tracking-tight text-white sm:text-3xl">Olá, {{ str(auth()->user()->name)->before(' ') }}.</h1>
-                <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-300">A base do CRM está pronta para validação visual. Empresas e Contatos já estão operacionais; Leads será o próximo módulo funcional.</p>
+                <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-300">A base do CRM está pronta para validação visual. Empresas e Contatos estão operacionais; o módulo de Leads está em implementação na Sprint 4.</p>
             </div>
             <div class="rounded-xl border border-slate-800 bg-slate-900/80 p-4">
                 <div class="flex items-center justify-between gap-4">
                     <div>
                         <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Sprint atual</p>
-                        <p class="mt-1 font-bold text-white">3.5 — Front-base / UI Shell</p>
+                        <p class="mt-1 font-bold text-white">Sprint 4 — Leads</p>
                     </div>
                     <span class="status-dot"></span>
                 </div>
                 <div class="mt-4 h-2 overflow-hidden rounded-full bg-slate-800">
                     <div class="h-full w-4/5 rounded-full bg-teal-400"></div>
                 </div>
-                <p class="mt-2 text-xs text-slate-400">Próximo marco: Sprint 4 — Leads</p>
+                <p class="mt-2 text-xs text-slate-400">Marco atual: cadastro, origem e qualificação de Leads</p>
             </div>
         </div>
     </div>
@@ -66,9 +66,9 @@
                         <span><strong>Novo contato</strong><small>Adicionar decisor ou influenciador</small></span>
                     </a>
                 @endcan
-                <a href="{{ route('roadmap.leads') }}" class="quick-action">
+                <a href="{{ route('leads.index') }}" class="quick-action">
                     <span class="quick-action-icon">→</span>
-                    <span><strong>Próximo: Leads</strong><small>Ver escopo da Sprint 4</small></span>
+                    <span><strong>Leads</strong><small>Acessar módulo comercial</small></span>
                 </a>
             </div>
         </section>
@@ -79,7 +79,7 @@
                     <p class="text-xs font-bold uppercase tracking-wider text-teal-700">Roadmap</p>
                     <h2 class="mt-1 text-lg font-bold text-slate-950">Sprint 4 — Leads</h2>
                 </div>
-                <span class="rounded-full bg-teal-50 px-3 py-1 text-xs font-bold text-teal-700">Próxima</span>
+                <span class="rounded-full bg-teal-50 px-3 py-1 text-xs font-bold text-teal-700">Em andamento</span>
             </div>
             <ul class="mt-5 space-y-3 text-sm text-slate-700">
                 <li class="roadmap-item"><span>01</span> Lead Sources e Channels</li>
@@ -87,7 +87,7 @@
                 <li class="roadmap-item"><span>03</span> First Touch / Last Touch</li>
                 <li class="roadmap-item"><span>04</span> Filtros, follow-up e testes</li>
             </ul>
-            <a href="{{ route('roadmap.leads') }}" class="mt-5 inline-flex text-sm font-bold text-teal-700 hover:text-teal-900">Ver escopo da Sprint 4 →</a>
+            <a href="{{ route('leads.index') }}" class="mt-5 inline-flex text-sm font-bold text-teal-700 hover:text-teal-900">Acessar Leads →</a>
         </section>
     </div>
 

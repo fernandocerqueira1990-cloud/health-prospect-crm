@@ -73,12 +73,24 @@ class DashboardShellTest extends TestCase
         );
     }
 
-    public function test_authenticated_active_user_can_open_future_module_placeholders(): void
+    public function test_authenticated_active_user_can_open_leads_and_future_module_placeholders(): void
     {
         $admin = $this->admin();
 
-        foreach (['roadmap.leads', 'roadmap.pipeline', 'roadmap.activities', 'roadmap.tasks', 'roadmap.campaigns', 'roadmap.reports'] as $routeName) {
-            $this->actingAs($admin)->get(route($routeName))->assertOk();
+        $this->actingAs($admin)
+            ->get(route('leads.index'))
+            ->assertOk();
+
+        foreach ([
+            'roadmap.pipeline',
+            'roadmap.activities',
+            'roadmap.tasks',
+            'roadmap.campaigns',
+            'roadmap.reports',
+        ] as $routeName) {
+            $this->actingAs($admin)
+                ->get(route($routeName))
+                ->assertOk();
         }
     }
 }

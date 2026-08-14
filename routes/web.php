@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\LeadController;
 use App\Http\Middleware\EnsureUserIsActive;
 use Illuminate\Support\Facades\Route;
 
@@ -29,12 +30,9 @@ Route::middleware(['auth', EnsureUserIsActive::class])->group(function (): void 
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
-    Route::view('/leads', 'modules.coming-soon', [
-        'module' => 'Leads',
-        'sprint' => 'Sprint 4',
-        'description' => 'Captação, origem, qualificação e acompanhamento inicial de leads.',
-        'items' => ['Lead Sources', 'Channels', 'Cadastro de Leads', 'Lead Source Events', 'First / Last Touch', 'Filtros e testes'],
-    ])->name('roadmap.leads');
+    Route::get('/leads/operation-complete', [LeadController::class, 'mutationComplete'])
+        ->name('leads.mutation-complete');
+    Route::resource('leads', LeadController::class);
 
     Route::view('/pipeline', 'modules.coming-soon', [
         'module' => 'Pipeline',

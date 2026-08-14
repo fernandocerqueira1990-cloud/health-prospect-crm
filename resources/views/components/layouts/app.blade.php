@@ -44,11 +44,13 @@
                     <span>Contatos</span>
                 </a>
             @endcan
-            <a href="{{ route('roadmap.leads') }}" class="nav-link {{ request()->routeIs('roadmap.leads') ? 'nav-link-active' : '' }}">
-                <span class="nav-mark">L</span>
-                <span class="flex-1">Leads</span>
-                <span class="nav-badge">Sprint 4</span>
-            </a>
+            @can('viewAny', App\Models\Lead::class)
+                <a href="{{ route('leads.index') }}" class="nav-link {{ request()->routeIs('leads.*') ? 'nav-link-active' : '' }}">
+                    <span class="nav-mark">L</span>
+                    <span class="flex-1">Leads</span>
+                    <span class="nav-badge">Sprint 4</span>
+                </a>
+            @endcan
             <a href="{{ route('roadmap.pipeline') }}" class="nav-link {{ request()->routeIs('roadmap.pipeline') ? 'nav-link-active' : '' }}">
                 <span class="nav-mark">P</span>
                 <span class="flex-1">Pipeline</span>
@@ -101,8 +103,8 @@
                 <p class="text-xs font-semibold text-slate-300">Sprint atual</p>
                 <div class="mt-2 flex items-center justify-between gap-3">
                     <div>
-                        <p class="text-sm font-bold text-white">3.5 — Front-base</p>
-                        <p class="mt-0.5 text-xs text-slate-500">Próxima: Leads</p>
+                        <p class="text-sm font-bold text-white">Sprint 4 — Leads</p>
+                        <p class="mt-0.5 text-xs text-slate-500">Módulo em desenvolvimento</p>
                     </div>
                     <span class="h-2.5 w-2.5 rounded-full bg-teal-400 shadow-[0_0_0_4px_rgba(45,212,191,0.10)]"></span>
                 </div>

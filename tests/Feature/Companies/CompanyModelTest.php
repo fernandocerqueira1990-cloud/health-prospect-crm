@@ -3,6 +3,7 @@
 namespace Tests\Feature\Companies;
 
 use App\Models\Company;
+use App\Models\LeadSource;
 use App\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -41,10 +42,26 @@ class CompanyModelTest extends TestCase
         $this->assertNull(Company::find($company->id));
     }
 
+    public function test_company_accepts_valid_lead_source_assignment(): void
+    {
+        $source = LeadSource::factory()->create();
+
+        $company = Company::create([
+            'legal_name' => 'Segura',
+            'source_id' => $source->id,
+        ]);
+
+        $this->assertSame($source->id, $company->source_id);
+        $this->assertTrue($company->source->is($source));
+    }
+
     public function test_mass_assignment_does_not_accept_unlisted_attributes(): void
     {
-        $company = Company::create(['legal_name' => 'Segura', 'source_id' => 999]);
+        $company = Company::create([
+            'legal_name' => 'Segura',
+            'deleted_at' => now(),
+        ]);
 
-        $this->assertNull($company->source_id);
+        $this->assertNull($company->deleted_at);
     }
 }

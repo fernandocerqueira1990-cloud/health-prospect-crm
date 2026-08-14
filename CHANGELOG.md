@@ -80,3 +80,25 @@
 - Fluxo visual validado no navegador através de login, criação de Company, criação de Contact e atualização das métricas do Dashboard.
 - Suíte completa validada com 129 testes e 595 assertions.
 - Laravel Pint aprovado em 115 arquivos, PHPStan/Larastan sem erros, build Vite aprovado e `git diff --check` sem inconsistências.
+
+### Sprint 4 — Leads
+- Implementados `LeadSource`, `Channel`, `Lead` e `LeadSourceEvent`.
+- Adicionadas migrations para origens, canais, leads, eventos e referências de First/Last Touch.
+- Company passou a suportar `source_id` com vínculo a Lead Source.
+- Adicionados seeders idempotentes para 8 origens comerciais e 11 canais.
+- CRUD completo de Leads implementado com listagem, cadastro, edição, visualização e soft delete.
+- Filtros de Leads implementados por busca, status, prioridade, temperatura, origem, canal e responsável.
+- RBAC implementado com `leads.view`, `leads.create`, `leads.update` e `leads.delete`.
+- Validação garante vínculo consistente entre Company e Contact.
+- Normalização de e-mail, telefone e WhatsApp aplicada aos Leads.
+- Lead Source Events implementados para rastreamento de aquisição.
+- Cadastro de novo Lead cria automaticamente evento `lead_created`.
+- First Touch e Last Touch são definidos automaticamente a partir do evento inicial.
+- Visão 360 de Lead implementada com dados comerciais, origem, atribuição e histórico.
+- Dashboard e navegação atualizados para substituir o placeholder de Leads pelo módulo funcional.
+- Banco PostgreSQL real migrado com preservação dos registros existentes.
+- Fluxo funcional validado no navegador com criação de Leads e atribuição automática.
+- Suite completa aprovada com 138 testes e 632 assertions.
+- Laravel Pint aprovado em 142 arquivos.
+- PHPStan/Larastan aprovado sem erros.
+- Build Vite de produção aprovado.

@@ -103,13 +103,28 @@ Não misturar implementações antigas com o novo núcleo sem uma decisão expl�
 
 ## Sprint 4 — Leads
 
-- [ ] TASK-050 Lead Sources
-- [ ] TASK-051 Channels
-- [ ] TASK-052 Leads
-- [ ] TASK-053 Lead source events
-- [ ] TASK-054 First/Last Touch
-- [ ] TASK-055 Lead filters
-- [ ] TASK-056 Lead tests
+- [x] TASK-050 Lead Sources
+- [x] TASK-051 Channels
+- [x] TASK-052 Leads
+- [x] TASK-053 Lead source events
+- [x] TASK-054 First/Last Touch
+- [x] TASK-055 Lead filters
+- [x] TASK-056 Lead tests
+
+### Validação da Sprint 4
+
+- Lead Sources e Channels implementados e populados no PostgreSQL.
+- Cadastro, edição, listagem, filtros, visualização e soft delete de Leads implementados.
+- RBAC de Leads validado com permissões `leads.view`, `leads.create`, `leads.update` e `leads.delete`.
+- Lead Source Events implementados com rastreamento de origem e canal.
+- Novo Lead gera automaticamente evento `lead_created`.
+- First Touch e Last Touch são definidos automaticamente no cadastro.
+- Visão 360 do Lead implementada com histórico de atribuição.
+- Integração com Companies e Contacts validada.
+- Banco real migrado preservando Users, Companies e Contacts existentes.
+- Fluxo visual validado no navegador com Leads reais de teste.
+- Suite completa aprovada com 138 testes e 632 assertions.
+- Laravel Pint, PHPStan/Larastan, Vite build e `git diff --check` aprovados.
 
 ## Sprint 5 — Pipeline
 

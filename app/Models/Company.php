@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 #[Fillable([
     'legal_name', 'trade_name', 'tax_id', 'tax_id_country', 'segment', 'category', 'website', 'phone', 'email',
     'street', 'number', 'complement', 'district', 'city', 'state', 'postal_code',
-    'employee_count_estimate', 'assigned_user_id', 'priority', 'notes',
+    'employee_count_estimate', 'assigned_user_id', 'source_id', 'priority', 'notes',
 ])]
 class Company extends Model
 {
@@ -36,6 +36,12 @@ class Company extends Model
     public function contacts(): HasMany
     {
         return $this->hasMany(Contact::class);
+    }
+
+    /** @return BelongsTo<LeadSource, $this> */
+    public function source(): BelongsTo
+    {
+        return $this->belongsTo(LeadSource::class, 'source_id');
     }
 
     public function formattedTaxId(): ?string
