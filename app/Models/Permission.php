@@ -25,7 +25,7 @@ class Permission extends Model
         'activities.view', 'activities.create', 'activities.update', 'activities.delete',
         'tasks.view', 'tasks.create', 'tasks.update', 'tasks.delete',
         'campaigns.view', 'campaigns.create', 'campaigns.update',
-        'reports.view', 'imports.execute', 'settings.view', 'settings.manage', 'audit.view',
+        'reports.view', 'imports.view', 'imports.create', 'imports.delete', 'settings.view', 'settings.manage', 'audit.view',
     ];
 
     /** @return BelongsToMany<Role, $this> */

@@ -145,7 +145,7 @@ Não misturar implementações antigas com o novo núcleo sem uma decisão expl�
 
 ## Sprint 7 — Importação
 
-- [ ] TASK-080 CSV
+- [x] TASK-080 CSV
 - [ ] TASK-081 XLSX
 - [ ] TASK-082 Column mapper
 - [ ] TASK-083 Preview

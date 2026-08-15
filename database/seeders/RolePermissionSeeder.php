@@ -9,12 +9,12 @@ use Illuminate\Database\Seeder;
 class RolePermissionSeeder extends Seeder
 {
     private const DEFAULTS = [
-        'sales_manager' => ['dashboard.view', 'companies.view', 'companies.create', 'companies.update', 'contacts.view', 'contacts.create', 'contacts.update', 'leads.view', 'leads.create', 'leads.update', 'opportunities.view', 'opportunities.create', 'opportunities.update', 'activities.view', 'activities.create', 'activities.update', 'activities.delete', 'tasks.view', 'tasks.create', 'tasks.update', 'tasks.delete', 'reports.view'],
-        'supervisor' => ['dashboard.view', 'companies.view', 'contacts.view', 'leads.view', 'leads.create', 'leads.update', 'opportunities.view', 'opportunities.create', 'opportunities.update', 'activities.view', 'activities.create', 'activities.update', 'tasks.view', 'tasks.create', 'tasks.update', 'reports.view'],
+        'sales_manager' => ['dashboard.view', 'companies.view', 'companies.create', 'companies.update', 'contacts.view', 'contacts.create', 'contacts.update', 'leads.view', 'leads.create', 'leads.update', 'opportunities.view', 'opportunities.create', 'opportunities.update', 'activities.view', 'activities.create', 'activities.update', 'activities.delete', 'tasks.view', 'tasks.create', 'tasks.update', 'tasks.delete', 'imports.view', 'imports.create', 'imports.delete', 'reports.view'],
+        'supervisor' => ['dashboard.view', 'companies.view', 'contacts.view', 'leads.view', 'leads.create', 'leads.update', 'opportunities.view', 'opportunities.create', 'opportunities.update', 'activities.view', 'activities.create', 'activities.update', 'tasks.view', 'tasks.create', 'tasks.update', 'imports.view', 'imports.create', 'reports.view'],
         'sales_rep' => ['dashboard.view', 'companies.view', 'contacts.view', 'leads.view', 'leads.create', 'leads.update', 'opportunities.view', 'opportunities.create', 'opportunities.update', 'activities.view', 'activities.create', 'activities.update', 'tasks.view', 'tasks.create', 'tasks.update'],
-        'marketing' => ['dashboard.view', 'companies.view', 'contacts.view', 'leads.view', 'campaigns.view', 'campaigns.create', 'campaigns.update', 'reports.view'],
-        'analyst' => ['dashboard.view', 'companies.view', 'contacts.view', 'leads.view', 'opportunities.view', 'activities.view', 'tasks.view', 'campaigns.view', 'reports.view'],
-        'readonly' => ['dashboard.view', 'companies.view', 'contacts.view', 'leads.view', 'opportunities.view', 'activities.view', 'tasks.view', 'campaigns.view', 'reports.view'],
+        'marketing' => ['dashboard.view', 'companies.view', 'contacts.view', 'leads.view', 'campaigns.view', 'campaigns.create', 'campaigns.update', 'imports.view', 'imports.create', 'reports.view'],
+        'analyst' => ['dashboard.view', 'companies.view', 'contacts.view', 'leads.view', 'opportunities.view', 'activities.view', 'tasks.view', 'campaigns.view', 'imports.view', 'reports.view'],
+        'readonly' => ['dashboard.view', 'companies.view', 'contacts.view', 'leads.view', 'opportunities.view', 'activities.view', 'tasks.view', 'campaigns.view', 'imports.view', 'reports.view'],
     ];
 
     public function run(): void

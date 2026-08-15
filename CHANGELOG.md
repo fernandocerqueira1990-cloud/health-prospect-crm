@@ -155,3 +155,20 @@
 - PHPStan/Larastan aprovado sem erros.
 - Build Vite de produção aprovado.
 - `git diff --check` aprovado sem inconsistências.
+
+### Sprint 7 — Importação / TASK-080 CSV
+
+- Fundação do módulo de importações adicionada com tabelas `imports` e `import_rows`, models `DataImport` e `ImportRow`, relacionamentos, constraints PostgreSQL e índices operacionais.
+- Fluxo autenticado de upload CSV implementado com Form Request, Policy, RBAC (`imports.view`, `imports.create`, `imports.delete`), controller fino, Actions, Query de listagem e auditoria sanitizada.
+- Arquivos recebem nome interno UUID e são armazenados em disco Laravel privado dedicado, sem acesso público direto; nome original é preservado apenas para exibição e auditoria.
+- Reader CSV nativo implementado com `SplFileObject`, UTF-8/BOM, cabeçalho, linhas vazias, aspas e detecção conservadora de vírgula, ponto e vírgula ou TAB.
+- Parsing síncrono em streaming persiste `import_rows` em lotes configuráveis, preserva o número físico da linha, mantém `normalized_data` nulo e não cria entidades comerciais.
+- Máquina de estados inicial limitada a `uploaded`, `processing`, `parsed` e `failed`, com falhas seguras e sem conteúdo integral do CSV no Audit Log.
+- Telas responsivas de listagem, nova importação e confirmação de resultado adicionadas à navegação da Sprint 7, sem antecipar preview ou column mapper.
+- Suíte completa aprovada com 277 testes e 1070 assertions no banco exclusivo `health_prospect_crm_test`; Pint, PHPStan/Larastan, instalação pnpm congelada, build Vite e `git diff --check` aprovados.
+- Revisão pré-commit reforçou o parser com validação estrutural estrita, rejeição de aspas não fechadas, headers vazios/duplicados e divergência de colunas, usando códigos de falha sanitizados.
+- Numeração de `import_rows` passou a preservar a linha física inicial do registro, inclusive com campos CSV multilinha e linhas vazias intermediárias.
+- Nome original passou a remover caminhos Unix/Windows e caracteres de controle, além de ser limitado a 255 caracteres sem influenciar o caminho interno UUID.
+- Exclusão passou a tratar arquivo ausente de forma idempotente e a preservar registros para retry quando o filesystem falha, documentando a ausência de atomicidade distribuída.
+- Permissão legada `imports.execute` é removida de forma cirúrgica por migration e seeder idempotente, incluindo associações residuais, sem afetar permissões não relacionadas.
+- Testes PostgreSQL foram ampliados para defaults, JSONB, constraints, índices, FKs e ações `ON DELETE`.

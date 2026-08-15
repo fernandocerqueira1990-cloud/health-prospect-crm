@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ImportController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\OpportunityController;
 use App\Http\Controllers\TaskController;
@@ -33,6 +34,10 @@ Route::middleware('guest')->group(function (): void {
 Route::middleware(['auth', EnsureUserIsActive::class])->group(function (): void {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+
+    Route::resource('imports', ImportController::class)
+        ->parameters(['imports' => 'dataImport'])
+        ->only(['index', 'create', 'store', 'show', 'destroy']);
 
     Route::get('/leads/operation-complete', [LeadController::class, 'mutationComplete'])
         ->name('leads.mutation-complete');

@@ -69,6 +69,12 @@ class User extends Authenticatable
         return $this->hasMany(Activity::class, 'created_by_user_id');
     }
 
+    /** @return HasMany<DataImport, $this> */
+    public function dataImports(): HasMany
+    {
+        return $this->hasMany(DataImport::class, 'user_id');
+    }
+
     public function hasRole(string $slug): bool
     {
         return $this->roles->contains(fn (Role $role): bool => $role->active && $role->slug === $slug);

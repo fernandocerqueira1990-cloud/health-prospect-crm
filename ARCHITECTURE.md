@@ -133,3 +133,25 @@ Futuro:
 - load balancer;
 - replicas;
 - backups offsite.
+
+## Importação de dados
+
+Fundação implementada na TASK-080:
+
+```text
+Upload autenticado
+  |
+Disco Laravel privado (nome interno UUID)
+  |
+Action -> CSV Reader nativo / SplFileObject
+  |
+PostgreSQL: imports -> import_rows JSONB
+```
+
+- parsing CSV síncrono e em streaming, com escrita em lotes configuráveis;
+- o reader valida registros CSV de forma conservadora, rejeita estrutura malformada e preserva em `row_number` a linha física inicial de cada registro, inclusive quando campos válidos ocupam múltiplas linhas;
+- estados mínimos `uploaded`, `processing`, `parsed` e `failed` permitem mover o processamento para queue futuramente sem alterar o contrato persistido;
+- arquivos não são servidos diretamente e o conteúdo integral não é enviado à auditoria;
+- o parser da TASK-080 exige um disco Laravel com driver `local`, pois `SplFileObject` opera sobre caminho local; discos remotos não são suportados nesta versão;
+- exclusões removem primeiro o arquivo privado e depois os registros em transação PostgreSQL; arquivo já ausente é tratado de forma idempotente e falha de filesystem preserva o banco para nova tentativa, sem alegar atomicidade distribuída;
+- `normalized_data` e vínculos com entidades permanecem reservados para as tarefas posteriores de mapping, preview, deduplicação e relatório.

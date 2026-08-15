@@ -95,6 +95,11 @@
             </a>
 
             <p class="nav-section-title mt-6">Inteligência</p>
+            @can('viewAny', App\Models\DataImport::class)
+                <a href="{{ route('imports.index') }}" class="nav-link {{ request()->routeIs('imports.*') ? 'nav-link-active' : '' }}">
+                    <span class="nav-mark">I</span><span class="flex-1">Importações</span><span class="nav-badge">Sprint 7</span>
+                </a>
+            @endcan
             <a href="{{ route('roadmap.reports') }}" class="nav-link {{ request()->routeIs('roadmap.reports') ? 'nav-link-active' : '' }}">
                 <span class="nav-mark">R</span>
                 <span class="flex-1">Relatórios</span>
@@ -123,7 +128,7 @@
                 <p class="text-xs font-semibold text-slate-300">Sprint atual</p>
                 <div class="mt-2 flex items-center justify-between gap-3">
                     <div>
-                        <p class="text-sm font-bold text-white">Sprint 6 — Atividades</p>
+                        <p class="text-sm font-bold text-white">Sprint 7 — Importação</p>
                         <p class="mt-0.5 text-xs text-slate-500">Módulo em desenvolvimento</p>
                     </div>
                     <span class="h-2.5 w-2.5 rounded-full bg-teal-400 shadow-[0_0_0_4px_rgba(45,212,191,0.10)]"></span>

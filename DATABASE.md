@@ -275,6 +275,7 @@ Regras implementadas na Sprint 3:
 - id
 - user_id
 - filename
+- original_filename
 - type
 - status
 - total_rows
@@ -284,6 +285,16 @@ Regras implementadas na Sprint 3:
 - started_at
 - finished_at
 - metadata JSONB
+- timestamps
+
+Regras implementadas na TASK-080:
+- `user_id` referencia `users` com `ON DELETE RESTRICT`;
+- `filename` guarda somente o nome interno UUID do arquivo no disco privado e `original_filename` é informação de exibição/auditoria;
+- `type` aceita somente `csv` nesta tarefa;
+- estados iniciais: `uploaded`, `processing`, `parsed` e `failed`;
+- falhas de parsing persistem somente código técnico sanitizado em `metadata` (`invalid_header`, `column_count_mismatch`, `malformed_csv`, entre outros); detalhes de exceção permanecem nos logs;
+- contadores usam zero como default seguro e `metadata` usa objeto JSONB vazio;
+- índices cobrem usuário, tipo, status e datas operacionais.
 
 ### import_rows
 - id
@@ -295,6 +306,15 @@ Regras implementadas na Sprint 3:
 - error_message nullable
 - related_entity_type nullable
 - related_entity_id nullable
+- timestamps
+
+Regras implementadas na TASK-080:
+- `import_id` referencia `imports` com `ON DELETE CASCADE`;
+- `(import_id, row_number)` é único e preserva a linha física do arquivo, inclusive quando linhas vazias são ignoradas;
+- para registros com campos multilinha válidos, `row_number` representa a linha física em que o registro começou;
+- `original_data` guarda o par cabeçalho/valor interpretado; `normalized_data` permanece nulo até o Column Mapper;
+- `related_entity_type` e `related_entity_id` são campos simples e nulos, sem relação polimórfica prematura;
+- status de linha inicial limitado a `parsed` e `failed`.
 
 ### tracking_events
 - id
