@@ -195,3 +195,13 @@
 - `import_rows.original_data` permanece preservado; o mapper não cria Company, Contact, Lead ou Opportunity e não antecipa Preview, deduplicação ou relatório de importação.
 - Atualizações de mapping são transacionais, processadas em chunks e registradas em auditoria sem incluir os valores comerciais das linhas.
 - Validação final aprovada com 76 testes focados e 331 assertions, suíte completa de 316 testes e 1.266 assertions, Pint, PHPStan/Larastan, Composer, auditoria de dependências, requisitos de plataforma, instalação pnpm congelada, build Vite e `git diff --check`.
+
+### Sprint 7 — Importação / TASK-083 Preview
+
+- Preview read-only adicionado em `GET /imports/{dataImport}/preview`, protegido por `imports.view` e disponível somente para importações interpretadas com mapping válido e `normalized_data` gerado.
+- Validador transitório classifica cada linha como válida, com aviso ou com erro usando apenas targets mapeados e regras derivadas dos schemas e Models de Company, Contact e Lead.
+- Validações cobrem e-mail, URLs HTTP(S), LinkedIn, telefones ambíguos, CNPJ brasileiro com país explícito, enums, inteiros, limites numéricos, comprimentos e identificadores mínimos por grupo, com códigos internos estáveis e mensagens em português.
+- Filtros por classificação, contadores completos e paginação de 25, 50 ou 100 linhas são calculados em uma varredura ordenada por lotes, sem persistir a classificação e sem carregar todas as linhas em memória.
+- Interface Blade apresenta resumo, dados compactos de empresa/contato/lead e detalhes de `original_data`, `normalized_data` e issues; todo conteúdo importado usa escaping, inclusive HTML e fórmulas exibidas apenas como texto.
+- A visualização não altera imports, import_rows, counters, status, vínculos ou dados JSON, não gera audit log e não cria Company, Contact, Lead ou Opportunity; deduplicação, merge e relatório permanecem pendentes.
+- Validação funcional aprovada com 99 testes focados e 411 assertions e suíte completa de 339 testes e 1.346 assertions no banco exclusivo `health_prospect_crm_test`.

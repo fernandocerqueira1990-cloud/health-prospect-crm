@@ -46,6 +46,9 @@
 
             <div class="mt-6 flex flex-wrap gap-3">
                 <button class="btn-primary" type="submit">Salvar mapeamento</button>
+                @if($savedMapping !== [])
+                    <a class="btn-secondary" href="{{ route('imports.preview', $dataImport) }}">Visualizar Preview</a>
+                @endif
                 <a class="btn-secondary" href="{{ route('imports.show', $dataImport) }}">Cancelar</a>
             </div>
         </form>

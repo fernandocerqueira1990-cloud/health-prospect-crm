@@ -11,6 +11,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\ImportMappingController;
+use App\Http\Controllers\ImportPreviewController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\OpportunityController;
 use App\Http\Controllers\TaskController;
@@ -38,6 +39,7 @@ Route::middleware(['auth', EnsureUserIsActive::class])->group(function (): void 
 
     Route::get('/imports/{dataImport}/mapping', [ImportMappingController::class, 'edit'])->name('imports.mapping.edit');
     Route::put('/imports/{dataImport}/mapping', [ImportMappingController::class, 'update'])->name('imports.mapping.update');
+    Route::get('/imports/{dataImport}/preview', ImportPreviewController::class)->name('imports.preview');
 
     Route::resource('imports', ImportController::class)
         ->parameters(['imports' => 'dataImport'])

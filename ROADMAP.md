@@ -42,7 +42,7 @@
 - [x] importação CSV
 - [x] importação XLSX
 - [x] mapping de colunas
-- [ ] preview
+- [x] preview
 - [ ] deduplicação
 - [ ] merge
 - [ ] relatório de importação

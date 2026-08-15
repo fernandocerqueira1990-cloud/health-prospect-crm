@@ -28,6 +28,7 @@ class ImportMappingController extends Controller
             'headers' => $headers,
             'groups' => $catalog->groups(),
             'samples' => $viewData->samples($dataImport, $headers),
+            'savedMapping' => $savedMapping,
             'selections' => collect($headers)->mapWithKeys(fn (string $header): array => [$header => $savedMapping[$header] ?? $catalog->suggest($header)])->all(),
         ]);
     }
