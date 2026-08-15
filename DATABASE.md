@@ -315,6 +315,10 @@ Regras implementadas na TASK-080:
 - para registros com campos multilinha válidos, `row_number` representa a linha física em que o registro começou;
 - `original_data` guarda o par cabeçalho/valor interpretado e permanece imutável durante mapping e remapping;
 - `normalized_data` permanece nulo até o primeiro mapping e depois é integralmente reconstruído a partir de `original_data` e `imports.metadata.mapping`, sem criar entidades comerciais;
+- `dedup_data` JSONB nullable guarda o contrato versionado da análise, separado de `original_data`, `normalized_data` e `error_message`, com status, candidatos mínimos por grupo e decisões para a etapa final;
+- candidatos podem apontar por ID para Company, Contact ou Lead no CRM, inclusive soft-deleted, ou para uma `ImportRow` anterior da mesma importação; não são copiados snapshots comerciais completos;
+- `duplicate_rows` representa a quantidade de linhas com ao menos um match forte/exato; matches possíveis ficam somente no resumo `imports.metadata.dedup.summary`;
+- remapping limpa `dedup_data`, remove `imports.metadata.dedup` e zera `duplicate_rows`; reanálises substituem integralmente o resultado anterior;
 - `related_entity_type` e `related_entity_id` são campos simples e nulos, sem relação polimórfica prematura;
 - status de linha inicial limitado a `parsed` e `failed`.
 

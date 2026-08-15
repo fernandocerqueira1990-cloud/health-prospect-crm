@@ -43,7 +43,7 @@
 - [x] importação XLSX
 - [x] mapping de colunas
 - [x] preview
-- [ ] deduplicação
+- [x] deduplicação
 - [ ] merge
 - [ ] relatório de importação
 

@@ -205,3 +205,16 @@
 - Interface Blade apresenta resumo, dados compactos de empresa/contato/lead e detalhes de `original_data`, `normalized_data` e issues; todo conteúdo importado usa escaping, inclusive HTML e fórmulas exibidas apenas como texto.
 - A visualização não altera imports, import_rows, counters, status, vínculos ou dados JSON, não gera audit log e não cria Company, Contact, Lead ou Opportunity; deduplicação, merge e relatório permanecem pendentes.
 - Validação funcional aprovada com 99 testes focados e 411 assertions e suíte completa de 339 testes e 1.346 assertions no banco exclusivo `health_prospect_crm_test`.
+
+### Sprint 7 — Importação / TASK-084 Deduplicação
+
+- Etapa de Deduplicação adicionada com tela protegida por `imports.view`, análise e decisões protegidas por `imports.update`, sem criar, atualizar, mesclar ou excluir entidades comerciais.
+- Migration nova adiciona `import_rows.dedup_data` JSONB nullable; o contrato versionado separa Company, Contact e Lead, registra candidatos mínimos do CRM ou de uma linha anterior da mesma importação, razões determinísticas, status e decisão.
+- Company usa identidade fiscal composta por país e documento como match forte, sem cruzar países; nomes, e-mail, telefone e website são sinais possíveis conservadores, com inclusão de registros soft-deleted.
+- Contact considera LinkedIn e sinais de e-mail/telefone com contexto de Company, sem transformar nome comum isolado em match forte; Lead usa e-mail/telefone/WhatsApp fortes e nome com empresa como possível.
+- Duplicidades internas usam mapas de chaves normalizadas e preservam a primeira linha física como candidato, sem comparação O(N²); consultas ao CRM são executadas em lote por chunk e os candidatos ficam limitados a cinco por grupo.
+- Decisões `create_new`, `use_existing`, `reuse_import_row` e `skip` são revalidadas contra o resultado persistido, tipo, origem, mesma importação e existência atual; identidade fiscal exata de Company bloqueia `create_new`.
+- Usuários sem permissão de leitura da entidade recebem somente indicação genérica do candidato; a interface usa escaping Blade e não interpreta HTML ou fórmulas.
+- `imports.duplicate_rows` conta linhas com match forte/exato e `imports.metadata.dedup.summary` mantém contadores detalhados; reanálise substitui resultados e remapping invalida `dedup_data`, metadata e contador.
+- A análise registra auditoria sanitizada sem dados comerciais completos e persiste `analyzed_at`; a etapa final deverá revalidar constraints fortes devido a staleness e race conditions possíveis.
+- Regressão focada aprovada com 110 testes e 479 assertions e suíte completa com 350 testes e 1.414 assertions no banco exclusivo `health_prospect_crm_test`.

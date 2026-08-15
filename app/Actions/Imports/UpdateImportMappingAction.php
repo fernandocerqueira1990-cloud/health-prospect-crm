@@ -38,11 +38,13 @@ class UpdateImportMappingAction
                 ->chunkById(500, function ($rows) use ($mapping): void {
                     foreach ($rows as $row) {
                         $row->normalized_data = $this->normalizer->normalize($row->original_data, $mapping);
+                        $row->dedup_data = null;
                         $row->save();
                     }
                 });
 
             $metadata = $lockedImport->metadata;
+            unset($metadata['dedup']);
             $metadata['mapping'] = [
                 'version' => 1,
                 'mapped_at' => now()->toIso8601String(),
@@ -50,7 +52,7 @@ class UpdateImportMappingAction
                 'columns' => $mapping,
                 'ignored_columns' => $ignored,
             ];
-            $lockedImport->update(['metadata' => $metadata]);
+            $lockedImport->update(['metadata' => $metadata, 'duplicate_rows' => 0]);
             $this->audit->record('import_mapping_updated', $lockedImport, before: ['columns' => $previousMapping], after: ['columns' => $mapping, 'ignored_columns' => $ignored], user: $user);
 
             return $lockedImport->refresh();

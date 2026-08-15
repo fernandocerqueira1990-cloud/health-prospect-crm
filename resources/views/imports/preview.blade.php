@@ -101,7 +101,11 @@
 
     <div class="mt-6 flex flex-wrap items-center gap-3">
         @can('update', $dataImport)<a class="btn-secondary" href="{{ route('imports.mapping.edit', $dataImport) }}">Voltar ao mapeamento</a>@endcan
-        <button class="btn-primary cursor-not-allowed opacity-50" type="button" disabled>Continuar para deduplicação</button>
-        <span class="text-sm text-slate-500">Disponível na TASK-084.</span>
+        @can('update', $dataImport)
+            <form method="POST" action="{{ route('imports.dedup.analyze', $dataImport) }}">@csrf<button class="btn-primary" type="submit">Analisar duplicidades</button></form>
+        @endcan
+        @if(isset($dataImport->metadata['dedup']))
+            <a class="btn-secondary" href="{{ route('imports.dedup.index', $dataImport) }}">Ver deduplicação</a>
+        @endif
     </div>
 </x-layouts.app>

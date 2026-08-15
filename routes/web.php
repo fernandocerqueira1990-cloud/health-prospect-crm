@@ -10,6 +10,7 @@ use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ImportController;
+use App\Http\Controllers\ImportDedupController;
 use App\Http\Controllers\ImportMappingController;
 use App\Http\Controllers\ImportPreviewController;
 use App\Http\Controllers\LeadController;
@@ -40,6 +41,9 @@ Route::middleware(['auth', EnsureUserIsActive::class])->group(function (): void 
     Route::get('/imports/{dataImport}/mapping', [ImportMappingController::class, 'edit'])->name('imports.mapping.edit');
     Route::put('/imports/{dataImport}/mapping', [ImportMappingController::class, 'update'])->name('imports.mapping.update');
     Route::get('/imports/{dataImport}/preview', ImportPreviewController::class)->name('imports.preview');
+    Route::get('/imports/{dataImport}/dedup', [ImportDedupController::class, 'index'])->name('imports.dedup.index');
+    Route::post('/imports/{dataImport}/dedup/analyze', [ImportDedupController::class, 'analyze'])->name('imports.dedup.analyze');
+    Route::put('/imports/{dataImport}/dedup/{importRow}', [ImportDedupController::class, 'update'])->name('imports.dedup.update');
 
     Route::resource('imports', ImportController::class)
         ->parameters(['imports' => 'dataImport'])
