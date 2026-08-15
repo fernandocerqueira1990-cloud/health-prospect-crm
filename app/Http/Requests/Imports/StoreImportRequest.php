@@ -20,10 +20,10 @@ class StoreImportRequest extends FormRequest
         return [
             'file' => [
                 'required',
-                File::types(['csv'])->max((int) config('imports.max_upload_kb')),
+                File::types(['csv', 'xlsx'])->max((int) config('imports.max_upload_kb')),
                 function (string $attribute, mixed $value, \Closure $fail): void {
-                    if (! $value instanceof UploadedFile || strtolower($value->getClientOriginalExtension()) !== 'csv') {
-                        $fail('O arquivo deve possuir a extensão .csv.');
+                    if (! $value instanceof UploadedFile || ! in_array(strtolower($value->getClientOriginalExtension()), ['csv', 'xlsx'], true)) {
+                        $fail('O arquivo deve possuir a extensão .csv ou .xlsx.');
                     }
                 },
             ],

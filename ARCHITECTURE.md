@@ -143,15 +143,20 @@ Upload autenticado
   |
 Disco Laravel privado (nome interno UUID)
   |
-Action -> CSV Reader nativo / SplFileObject
+  Action -> CSV Reader / SplFileObject ou XLSX Reader / PhpSpreadsheet
   |
 PostgreSQL: imports -> import_rows JSONB
 ```
 
 - parsing CSV síncrono e em streaming, com escrita em lotes configuráveis;
+- parsing XLSX síncrono com PhpSpreadsheet em modo somente dados, escrita em lotes e processamento determinístico apenas da worksheet de índice 0, mesmo quando oculta;
+- antes do carregamento do workbook, o contêiner ZIP e as dimensões informadas pelo PhpSpreadsheet são inspecionados; somente a primeira worksheet é carregada e um read filter limita defensivamente linhas e colunas;
+- limites configuráveis de entradas, bytes descompactados, razão de compressão, linhas e colunas reduzem o risco de consumo excessivo de recursos, mas XLSX continua possuindo maior custo de memória que CSV e a mitigação não constitui proteção absoluta contra todo DoS ou ZIP bomb;
+- valores de staging preservam tipos escalares do XLSX sem normalização comercial; formatos visuais do Excel não são interpretados nesta etapa, portanto datas e números formatados permanecem com o valor subjacente fornecido pelo reader;
+- fórmulas são preservadas como texto e nunca são calculadas durante a importação;
 - o reader valida registros CSV de forma conservadora, rejeita estrutura malformada e preserva em `row_number` a linha física inicial de cada registro, inclusive quando campos válidos ocupam múltiplas linhas;
 - estados mínimos `uploaded`, `processing`, `parsed` e `failed` permitem mover o processamento para queue futuramente sem alterar o contrato persistido;
 - arquivos não são servidos diretamente e o conteúdo integral não é enviado à auditoria;
-- o parser da TASK-080 exige um disco Laravel com driver `local`, pois `SplFileObject` opera sobre caminho local; discos remotos não são suportados nesta versão;
+- os parsers atuais exigem um disco Laravel com driver `local`; discos remotos não são suportados nesta versão;
 - exclusões removem primeiro o arquivo privado e depois os registros em transação PostgreSQL; arquivo já ausente é tratado de forma idempotente e falha de filesystem preserva o banco para nova tentativa, sem alegar atomicidade distribuída;
 - `normalized_data` e vínculos com entidades permanecem reservados para as tarefas posteriores de mapping, preview, deduplicação e relatório.

@@ -19,6 +19,8 @@ class DataImport extends Model
 
     public const TYPE_CSV = 'csv';
 
+    public const TYPE_XLSX = 'xlsx';
+
     public const STATUS_UPLOADED = 'uploaded';
 
     public const STATUS_PROCESSING = 'processing';

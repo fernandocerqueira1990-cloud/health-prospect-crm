@@ -172,3 +172,15 @@
 - Exclusão passou a tratar arquivo ausente de forma idempotente e a preservar registros para retry quando o filesystem falha, documentando a ausência de atomicidade distribuída.
 - Permissão legada `imports.execute` é removida de forma cirúrgica por migration e seeder idempotente, incluindo associações residuais, sem afetar permissões não relacionadas.
 - Testes PostgreSQL foram ampliados para defaults, JSONB, constraints, índices, FKs e ações `ON DELETE`.
+
+### Sprint 7 — Importação / TASK-081 XLSX
+
+- Suporte a upload e interpretação de arquivos XLSX adicionado ao fluxo autenticado de importações, preservando armazenamento privado, nomes internos UUID, RBAC e auditoria sanitizada.
+- PhpSpreadsheet adicionado como dependência com requisitos de plataforma validados, sem ignorar extensões PHP obrigatórias.
+- Reader XLSX dedicado implementado em modo somente dados, persistindo tipos escalares em `import_rows` por lotes e preservando os números físicos das linhas sem normalização comercial.
+- Somente a primeira worksheet é processada, inclusive quando oculta; worksheets posteriores são ignoradas e uma primeira worksheet vazia falha sem fallback automático.
+- Cabeçalhos vazios ou duplicados, arquivos corrompidos e dimensões acima dos limites configuráveis são rejeitados com falhas transacionais e códigos sanitizados.
+- Inspeção conservadora do ZIP e `listWorksheetInfo()` antecedem o carregamento restrito à primeira worksheet; limites e read filter reduzem, sem eliminar por completo, o maior risco de memória inerente ao XLSX.
+- Fórmulas são preservadas como conteúdo sem cálculo durante a importação; column mapper, preview, deduplicação e relatório permanecem fora do escopo desta tarefa.
+- Constraint PostgreSQL de tipos de importação ampliada de forma reversível para aceitar `csv` e `xlsx`.
+- Interface e validação de upload atualizadas para aceitar somente CSV e XLSX, mantendo o limite configurável de tamanho.

@@ -40,7 +40,7 @@
 
 ## Fase 4 — Dados
 - [ ] importação CSV
-- [ ] importação XLSX
+- [x] importação XLSX
 - [ ] mapping de colunas
 - [ ] preview
 - [ ] deduplicação

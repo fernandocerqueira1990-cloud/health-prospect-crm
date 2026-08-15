@@ -12,7 +12,7 @@
             <div><dt class="text-sm font-medium text-slate-500">Data</dt><dd class="mt-1">{{ $dataImport->created_at->format('d/m/Y H:i') }}</dd></div>
         </dl>
         @if($dataImport->status === App\Models\DataImport::STATUS_FAILED)
-            <p class="mt-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">O CSV não pôde ser interpretado. Verifique o cabeçalho, delimitador, codificação UTF-8 e consistência das colunas.</p>
+            <p class="mt-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">O arquivo não pôde ser interpretado. Verifique o formato, o cabeçalho e a consistência das colunas.</p>
         @endif
         @can('delete', $dataImport)
             <form class="mt-6 border-t border-slate-200 pt-6" method="POST" action="{{ route('imports.destroy', $dataImport) }}" onsubmit="return confirm('Excluir esta importação e seu arquivo privado?')">

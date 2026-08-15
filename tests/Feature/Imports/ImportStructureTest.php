@@ -74,7 +74,14 @@ class ImportStructureTest extends TestCase
     public function test_database_rejects_invalid_import_type(): void
     {
         $this->expectException(QueryException::class);
-        DataImport::factory()->create(['type' => 'xlsx']);
+        DataImport::factory()->create(['type' => 'xls']);
+    }
+
+    public function test_database_accepts_xlsx_import_type(): void
+    {
+        $dataImport = DataImport::factory()->create(['type' => DataImport::TYPE_XLSX]);
+
+        $this->assertSame(DataImport::TYPE_XLSX, $dataImport->type);
     }
 
     public function test_database_rejects_invalid_import_status(): void
