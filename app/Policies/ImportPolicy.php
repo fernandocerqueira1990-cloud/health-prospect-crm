@@ -22,6 +22,11 @@ class ImportPolicy
         return $user->hasPermission('imports.create');
     }
 
+    public function update(User $user, DataImport $dataImport): bool
+    {
+        return $user->hasPermission('imports.update');
+    }
+
     public function delete(User $user, DataImport $dataImport): bool
     {
         return $user->hasPermission('imports.delete');

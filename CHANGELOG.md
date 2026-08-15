@@ -184,3 +184,14 @@
 - Fórmulas são preservadas como conteúdo sem cálculo durante a importação; column mapper, preview, deduplicação e relatório permanecem fora do escopo desta tarefa.
 - Constraint PostgreSQL de tipos de importação ampliada de forma reversível para aceitar `csv` e `xlsx`.
 - Interface e validação de upload atualizadas para aceitar somente CSV e XLSX, mantendo o limite configurável de tamanho.
+
+### Sprint 7 — Importação / TASK-082 Column Mapper
+
+- Column Mapper adicionado para importações interpretadas, com catálogo explícito (`ImportFieldCatalog`) e whitelist de targets de Company, Contact e Lead, sem expor campos internos de relacionamento.
+- Auto-suggest conservador implementado somente para cabeçalhos de alta confiança, mantendo nomes ambíguos sem seleção automática; a tela apresenta até três amostras distintas por coluna.
+- RBAC ampliado com `imports.update`, aplicado pela `ImportPolicy` e distribuído aos papéis operacionais definidos pelo seeder de menor privilégio.
+- Mapping persistido em `imports.metadata.mapping`, incluindo versão, usuário, data, colunas mapeadas e ignoradas; remapping reconstrói os dados normalizados e remove targets anteriores.
+- `import_rows.normalized_data` passou a ser gerado a partir do mapping, com normalização conservadora de strings, e-mails, telefones, websites, identificação fiscal brasileira com país explícito, prioridades, temperatura e inteiros não ambíguos.
+- `import_rows.original_data` permanece preservado; o mapper não cria Company, Contact, Lead ou Opportunity e não antecipa Preview, deduplicação ou relatório de importação.
+- Atualizações de mapping são transacionais, processadas em chunks e registradas em auditoria sem incluir os valores comerciais das linhas.
+- Validação final aprovada com 76 testes focados e 331 assertions, suíte completa de 316 testes e 1.266 assertions, Pint, PHPStan/Larastan, Composer, auditoria de dependências, requisitos de plataforma, instalação pnpm congelada, build Vite e `git diff --check`.

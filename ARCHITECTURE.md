@@ -159,4 +159,5 @@ PostgreSQL: imports -> import_rows JSONB
 - arquivos não são servidos diretamente e o conteúdo integral não é enviado à auditoria;
 - os parsers atuais exigem um disco Laravel com driver `local`; discos remotos não são suportados nesta versão;
 - exclusões removem primeiro o arquivo privado e depois os registros em transação PostgreSQL; arquivo já ausente é tratado de forma idempotente e falha de filesystem preserva o banco para nova tentativa, sem alegar atomicidade distribuída;
-- `normalized_data` e vínculos com entidades permanecem reservados para as tarefas posteriores de mapping, preview, deduplicação e relatório.
+- o Column Mapper autorizado por `imports.update` aplica uma whitelist de targets, persiste o contrato em `imports.metadata.mapping` e reconstrói `import_rows.normalized_data` em chunks a cada mapping ou remapping;
+- `original_data` permanece imutável durante o mapping, que não cria entidades comerciais; vínculos com entidades continuam reservados para Preview, deduplicação, merge e relatório.

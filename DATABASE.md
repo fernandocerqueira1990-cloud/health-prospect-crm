@@ -294,6 +294,7 @@ Regras implementadas na TASK-080:
 - estados iniciais: `uploaded`, `processing`, `parsed` e `failed`;
 - falhas de parsing persistem somente código técnico sanitizado em `metadata` (`invalid_header`, `column_count_mismatch`, `malformed_csv`, entre outros); detalhes de exceção permanecem nos logs;
 - contadores usam zero como default seguro e `metadata` usa objeto JSONB vazio;
+- o Column Mapper persiste em `metadata.mapping` a versão do contrato, data, usuário, mapa de coluna original para target permitido e lista de colunas ignoradas;
 - índices cobrem usuário, tipo, status e datas operacionais.
 
 ### import_rows
@@ -312,7 +313,8 @@ Regras implementadas na TASK-080:
 - `import_id` referencia `imports` com `ON DELETE CASCADE`;
 - `(import_id, row_number)` é único e preserva a linha física do arquivo, inclusive quando linhas vazias são ignoradas;
 - para registros com campos multilinha válidos, `row_number` representa a linha física em que o registro começou;
-- `original_data` guarda o par cabeçalho/valor interpretado; `normalized_data` permanece nulo até o Column Mapper;
+- `original_data` guarda o par cabeçalho/valor interpretado e permanece imutável durante mapping e remapping;
+- `normalized_data` permanece nulo até o primeiro mapping e depois é integralmente reconstruído a partir de `original_data` e `imports.metadata.mapping`, sem criar entidades comerciais;
 - `related_entity_type` e `related_entity_id` são campos simples e nulos, sem relação polimórfica prematura;
 - status de linha inicial limitado a `parsed` e `failed`.
 

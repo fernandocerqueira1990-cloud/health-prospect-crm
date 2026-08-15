@@ -8,6 +8,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property array<string, mixed> $original_data
+ * @property array<string, mixed>|null $normalized_data
+ */
 #[Fillable(['import_id', 'row_number', 'status', 'original_data', 'normalized_data', 'error_message', 'related_entity_type', 'related_entity_id'])]
 class ImportRow extends Model
 {
@@ -24,7 +28,6 @@ class ImportRow extends Model
         return $this->belongsTo(DataImport::class, 'import_id');
     }
 
-    /** @return array<string, string> */
     protected function casts(): array
     {
         return ['row_number' => 'integer', 'original_data' => 'array', 'normalized_data' => 'array', 'related_entity_id' => 'integer'];

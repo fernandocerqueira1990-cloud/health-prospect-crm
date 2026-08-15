@@ -39,9 +39,9 @@
 - [ ] loss reasons
 
 ## Fase 4 — Dados
-- [ ] importação CSV
+- [x] importação CSV
 - [x] importação XLSX
-- [ ] mapping de colunas
+- [x] mapping de colunas
 - [ ] preview
 - [ ] deduplicação
 - [ ] merge

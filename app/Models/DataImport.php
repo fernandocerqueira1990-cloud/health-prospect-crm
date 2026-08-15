@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/** @property array<string, mixed> $metadata */
 #[Fillable(['user_id', 'filename', 'original_filename', 'type', 'status', 'total_rows', 'imported_rows', 'duplicate_rows', 'failed_rows', 'started_at', 'finished_at', 'metadata'])]
 class DataImport extends Model
 {
@@ -41,7 +42,6 @@ class DataImport extends Model
         return $this->hasMany(ImportRow::class, 'import_id');
     }
 
-    /** @return array<string, string> */
     protected function casts(): array
     {
         return ['total_rows' => 'integer', 'imported_rows' => 'integer', 'duplicate_rows' => 'integer', 'failed_rows' => 'integer', 'started_at' => 'datetime', 'finished_at' => 'datetime', 'metadata' => 'array'];
