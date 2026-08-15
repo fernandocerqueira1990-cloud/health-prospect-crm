@@ -138,10 +138,10 @@ Não misturar implementações antigas com o novo núcleo sem uma decisão expl�
 
 ## Sprint 6 — Atividades
 
-- [ ] TASK-070 Activities
-- [ ] TASK-071 Tasks
-- [ ] TASK-072 Follow-up
-- [ ] TASK-073 Activity timeline
+- [x] TASK-070 Activities
+- [x] TASK-071 Tasks
+- [x] TASK-072 Follow-up
+- [x] TASK-073 Activity timeline
 
 ## Sprint 7 — Importação
 

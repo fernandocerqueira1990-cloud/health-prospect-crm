@@ -22,8 +22,8 @@ class Permission extends Model
         'contacts.view', 'contacts.create', 'contacts.update', 'contacts.delete',
         'leads.view', 'leads.create', 'leads.update', 'leads.delete',
         'opportunities.view', 'opportunities.create', 'opportunities.update', 'opportunities.delete',
-        'activities.view', 'activities.create', 'activities.update',
-        'tasks.view', 'tasks.create', 'tasks.update',
+        'activities.view', 'activities.create', 'activities.update', 'activities.delete',
+        'tasks.view', 'tasks.create', 'tasks.update', 'tasks.delete',
         'campaigns.view', 'campaigns.create', 'campaigns.update',
         'reports.view', 'imports.execute', 'settings.view', 'settings.manage', 'audit.view',
     ];

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\Admin\AuditLogController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\RoleController;
@@ -10,6 +11,8 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\OpportunityController;
+use App\Http\Controllers\TaskController;
+use App\Http\Controllers\TimelineController;
 use App\Http\Middleware\EnsureUserIsActive;
 use Illuminate\Support\Facades\Route;
 
@@ -52,19 +55,28 @@ Route::middleware(['auth', EnsureUserIsActive::class])->group(function (): void 
         [OpportunityController::class, 'kanban'],
     )->name('roadmap.pipeline');
 
-    Route::view('/activities', 'modules.coming-soon', [
-        'module' => 'Atividades',
-        'sprint' => 'Sprint 6',
-        'description' => 'Registro das interações comerciais e linha do tempo do relacionamento.',
-        'items' => ['Ligações', 'E-mails', 'WhatsApp', 'Reuniões', 'Follow-ups', 'Timeline'],
-    ])->name('roadmap.activities');
+    Route::get(
+        '/activities/operation-complete',
+        [ActivityController::class, 'mutationComplete'],
+    )->name('activities.mutation-complete');
 
-    Route::view('/tasks', 'modules.coming-soon', [
-        'module' => 'Tarefas',
-        'sprint' => 'Sprint 6',
-        'description' => 'Organização de pendências, responsáveis, prazos e próximas ações.',
-        'items' => ['Tarefas', 'Responsáveis', 'Prioridades', 'Prazos', 'Lembretes', 'Conclusão'],
-    ])->name('roadmap.tasks');
+    Route::resource('activities', ActivityController::class);
+    Route::get(
+        '/tasks/operation-complete',
+        [TaskController::class, 'mutationComplete'],
+    )->name('tasks.mutation-complete');
+
+    Route::post(
+        '/tasks/{task}/complete-follow-up',
+        [TaskController::class, 'completeFollowUp'],
+    )->name('tasks.complete-follow-up');
+
+    Route::resource('tasks', TaskController::class);
+
+    Route::get(
+        '/timeline',
+        [TimelineController::class, 'index'],
+    )->name('timeline.index');
 
     Route::view('/campaigns', 'modules.coming-soon', [
         'module' => 'Campanhas',

@@ -130,3 +130,28 @@
 - PHPStan/Larastan aprovado sem erros.
 - Build Vite de produção aprovado.
 - `git diff --check` aprovado sem inconsistências.
+
+### Sprint 6 — Atividades
+
+- Implementado módulo completo de Activities com CRUD, filtros, RBAC, auditoria e soft delete.
+- Activities passaram a suportar Ligações, E-mails, WhatsApp, Reuniões, Notas e outras interações comerciais.
+- Implementado vínculo de Activities com Companies, Contacts, Leads e Opportunities.
+- Implementado módulo completo de Tasks com responsáveis, prioridades, prazos e estados Pending, In Progress, Completed e Cancelled.
+- Transições de Tasks passaram a controlar automaticamente `started_at`, `completed_at` e `cancelled_at`.
+- Implementado RBAC e auditoria para criação, edição e exclusão de Tasks.
+- Implementado Follow-up como especialização comercial de Task, exigindo canal, prazo e vínculo comercial.
+- Follow-ups suportam Ligação, E-mail, WhatsApp e Reunião.
+- Conclusão de Follow-up passou a gerar automaticamente uma Activity correspondente e vinculada ao histórico comercial.
+- Implementada proteção contra conclusão duplicada de Follow-ups e contra conclusão pelo fluxo comum de Tasks.
+- Implementada Timeline Comercial unificando Activities, Follow-ups abertos e Tasks comerciais em ordem cronológica.
+- Follow-ups concluídos são representados somente pela Activity gerada, evitando duplicidade no histórico.
+- Tasks internas sem vínculo comercial são excluídas da Timeline Comercial.
+- Timeline recebeu filtros por tipo de evento, canal, status, empresa, responsável e período.
+- Interface autenticada atualizada com módulos Atividades, Tarefas e Timeline da Sprint 6.
+- Banco PostgreSQL real atualizado preservando os registros existentes.
+- Fluxos funcionais validados no navegador para Activities, Tasks, Follow-ups e Timeline.
+- Suite completa aprovada com 240 testes e 932 assertions.
+- Laravel Pint aprovado sem inconsistências.
+- PHPStan/Larastan aprovado sem erros.
+- Build Vite de produção aprovado.
+- `git diff --check` aprovado sem inconsistências.

@@ -45,6 +45,30 @@ class User extends Authenticatable
         return $this->hasMany(Opportunity::class, 'assigned_user_id');
     }
 
+    /** @return HasMany<Task, $this> */
+    public function assignedTasks(): HasMany
+    {
+        return $this->hasMany(Task::class, 'assigned_user_id');
+    }
+
+    /** @return HasMany<Task, $this> */
+    public function createdTasks(): HasMany
+    {
+        return $this->hasMany(Task::class, 'created_by_user_id');
+    }
+
+    /** @return HasMany<Activity, $this> */
+    public function assignedActivities(): HasMany
+    {
+        return $this->hasMany(Activity::class, 'assigned_user_id');
+    }
+
+    /** @return HasMany<Activity, $this> */
+    public function createdActivities(): HasMany
+    {
+        return $this->hasMany(Activity::class, 'created_by_user_id');
+    }
+
     public function hasRole(string $slug): bool
     {
         return $this->roles->contains(fn (Role $role): bool => $role->active && $role->slug === $slug);

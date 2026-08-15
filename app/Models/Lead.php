@@ -155,6 +155,18 @@ class Lead extends Model
         );
     }
 
+    /** @return HasMany<Task, $this> */
+    public function tasks(): HasMany
+    {
+        return $this->hasMany(Task::class);
+    }
+
+    /** @return HasMany<Activity, $this> */
+    public function activities(): HasMany
+    {
+        return $this->hasMany(Activity::class);
+    }
+
     /** @return array<string, string> */
     protected function casts(): array
     {

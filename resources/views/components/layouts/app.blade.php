@@ -60,16 +60,34 @@
             @endcan
 
             <p class="nav-section-title mt-6">Operação</p>
-            <a href="{{ route('roadmap.activities') }}" class="nav-link {{ request()->routeIs('roadmap.activities') ? 'nav-link-active' : '' }}">
-                <span class="nav-mark">A</span>
-                <span class="flex-1">Atividades</span>
-                <span class="nav-badge-muted">Em breve</span>
-            </a>
-            <a href="{{ route('roadmap.tasks') }}" class="nav-link {{ request()->routeIs('roadmap.tasks') ? 'nav-link-active' : '' }}">
-                <span class="nav-mark">T</span>
-                <span class="flex-1">Tarefas</span>
-                <span class="nav-badge-muted">Em breve</span>
-            </a>
+            @can('viewAny', App\Models\Activity::class)
+                <a href="{{ route('activities.index') }}" class="nav-link {{ request()->routeIs('activities.*') ? 'nav-link-active' : '' }}">
+                    <span class="nav-mark">A</span>
+                    <span class="flex-1">Atividades</span>
+                    <span class="nav-badge">Sprint 6</span>
+                </a>
+            @endcan
+            @can('viewAny', App\Models\Task::class)
+                <a href="{{ route('tasks.index') }}" class="nav-link {{ request()->routeIs('tasks.*') ? 'nav-link-active' : '' }}">
+                    <span class="nav-mark">T</span>
+                    <span class="flex-1">Tarefas</span>
+                    <span class="nav-badge">Sprint 6</span>
+                </a>
+            @endcan
+            @if(
+                auth()->user()->hasPermission('activities.view')
+                || auth()->user()->hasPermission('tasks.view')
+            )
+                <a
+                    href="{{ route('timeline.index') }}"
+                    class="nav-link {{ request()->routeIs('timeline.*') ? 'nav-link-active' : '' }}"
+                >
+                    <span class="nav-mark">TL</span>
+                    <span class="flex-1">Timeline</span>
+                    <span class="nav-badge">Sprint 6</span>
+                </a>
+            @endif
+
             <a href="{{ route('roadmap.campaigns') }}" class="nav-link {{ request()->routeIs('roadmap.campaigns') ? 'nav-link-active' : '' }}">
                 <span class="nav-mark">M</span>
                 <span class="flex-1">Campanhas</span>
@@ -105,7 +123,7 @@
                 <p class="text-xs font-semibold text-slate-300">Sprint atual</p>
                 <div class="mt-2 flex items-center justify-between gap-3">
                     <div>
-                        <p class="text-sm font-bold text-white">Sprint 5 — Pipeline</p>
+                        <p class="text-sm font-bold text-white">Sprint 6 — Atividades</p>
                         <p class="mt-0.5 text-xs text-slate-500">Módulo em desenvolvimento</p>
                     </div>
                     <span class="h-2.5 w-2.5 rounded-full bg-teal-400 shadow-[0_0_0_4px_rgba(45,212,191,0.10)]"></span>

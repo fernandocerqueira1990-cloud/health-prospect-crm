@@ -83,8 +83,8 @@ class DashboardShellTest extends TestCase
 
         foreach ([
             'roadmap.pipeline',
-            'roadmap.activities',
-            'roadmap.tasks',
+            'activities.index',
+            'tasks.index',
             'roadmap.campaigns',
             'roadmap.reports',
         ] as $routeName) {
