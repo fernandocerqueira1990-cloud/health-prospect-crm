@@ -36,7 +36,7 @@ Projeto em fase de migração da prova de conceito React/Supabase para o núcleo
 
 ## Desenvolvimento local
 
-Requisitos: PHP 8.3+, Composer, Node.js 22+, PostgreSQL e Redis.
+Requisitos: PHP 8.4.1+, Composer, Node.js 22+, PostgreSQL e Redis.
 
 ```bash
 composer install
