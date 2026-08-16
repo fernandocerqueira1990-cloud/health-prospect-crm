@@ -84,5 +84,7 @@
         @endforelse
     </div>
     <div class="mt-5">{{ $rows->links() }}</div>
-    <div class="mt-6 flex items-center gap-3"><button class="btn-primary cursor-not-allowed opacity-50" disabled type="button">Continuar</button><span class="text-sm text-slate-500">Disponível na próxima etapa.</span></div>
+    <div class="mt-6 flex items-center gap-3">
+        @can('update', $dataImport)<a class="btn-primary" href="{{ route('imports.execute.confirm', $dataImport) }}">Continuar para execução</a>@endcan
+    </div>
 </x-layouts.app>

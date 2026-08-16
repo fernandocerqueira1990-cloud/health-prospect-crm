@@ -15,7 +15,7 @@
                     <tr>
                         <td><a class="font-semibold text-teal-700 hover:text-teal-900" href="{{ route('imports.show', $dataImport) }}">{{ $dataImport->original_filename }}</a></td>
                         <td>{{ strtoupper($dataImport->type) }}</td>
-                        <td>{{ ['uploaded' => 'Enviado', 'processing' => 'Processando', 'parsed' => 'Interpretado', 'failed' => 'Falhou'][$dataImport->status] ?? $dataImport->status }}</td>
+                        <td>{{ ['uploaded' => 'Enviado', 'processing' => 'Processando', 'parsed' => 'Interpretado', 'completed' => 'Concluído', 'failed' => 'Falhou'][$dataImport->status] ?? $dataImport->status }}</td>
                         <td>{{ $dataImport->total_rows }}</td>
                         <td>{{ $dataImport->user->name }}</td>
                         <td>{{ $dataImport->created_at->format('d/m/Y H:i') }}</td>

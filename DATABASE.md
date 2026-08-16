@@ -291,7 +291,7 @@ Regras implementadas na TASK-080:
 - `user_id` referencia `users` com `ON DELETE RESTRICT`;
 - `filename` guarda somente o nome interno UUID do arquivo no disco privado e `original_filename` é informação de exibição/auditoria;
 - `type` aceita somente `csv` nesta tarefa;
-- estados iniciais: `uploaded`, `processing`, `parsed` e `failed`;
+- estados: `uploaded`, `processing`, `parsed`, `completed` e `failed`; `completed` é introduzido pela execução final da TASK-085;
 - falhas de parsing persistem somente código técnico sanitizado em `metadata` (`invalid_header`, `column_count_mismatch`, `malformed_csv`, entre outros); detalhes de exceção permanecem nos logs;
 - contadores usam zero como default seguro e `metadata` usa objeto JSONB vazio;
 - o Column Mapper persiste em `metadata.mapping` a versão do contrato, data, usuário, mapa de coluna original para target permitido e lista de colunas ignoradas;
@@ -316,11 +316,20 @@ Regras implementadas na TASK-080:
 - `original_data` guarda o par cabeçalho/valor interpretado e permanece imutável durante mapping e remapping;
 - `normalized_data` permanece nulo até o primeiro mapping e depois é integralmente reconstruído a partir de `original_data` e `imports.metadata.mapping`, sem criar entidades comerciais;
 - `dedup_data` JSONB nullable guarda o contrato versionado da análise, separado de `original_data`, `normalized_data` e `error_message`, com status, candidatos mínimos por grupo e decisões para a etapa final;
+- `execution_data` JSONB nullable guarda o resultado final versionado por grupo (`created`, `reused` ou `skipped`) e o estado sanitizado da linha, preservando decisões em `dedup_data` e sem copiar snapshots comerciais;
 - candidatos podem apontar por ID para Company, Contact ou Lead no CRM, inclusive soft-deleted, ou para uma `ImportRow` anterior da mesma importação; não são copiados snapshots comerciais completos;
 - `duplicate_rows` representa a quantidade de linhas com ao menos um match forte/exato; matches possíveis ficam somente no resumo `imports.metadata.dedup.summary`;
 - remapping limpa `dedup_data`, remove `imports.metadata.dedup` e zera `duplicate_rows`; reanálises substituem integralmente o resultado anterior;
 - `related_entity_type` e `related_entity_id` são campos simples e nulos, sem relação polimórfica prematura;
 - status de linha inicial limitado a `parsed` e `failed`.
+
+Contrato da execução final:
+- `imports.metadata.execution_config` versão 1 registra `lead_source_slug = importacao` e a FK de Channel previamente validada quando novos Leads serão criados; o backend revalida existência e atividade na execução;
+- `imports.metadata.execution` registra início, término, usuário executor, estado e resumo por linhas/entidades, sem `original_data` ou `normalized_data` completos;
+- `imported_rows` conta linhas com ao menos uma criação ou reutilização comercial bem-sucedida; `failed_rows` soma linhas com falha ou bloqueadas; `duplicate_rows` continua contando matches fortes/exatos da deduplicação;
+- `original_data`, `normalized_data`, `ImportRow.status` e `related_entity_*` não são alterados pela execução; múltiplas entidades por linha são representadas somente em `execution_data`;
+- remapping anterior à execução limpa `dedup_data`, `execution_data`, metadata de dedup/execução, counters e timestamps para impedir resultados stale;
+- não existe retry parcial automático, merge ou atualização de entidades reutilizadas no MVP.
 
 ### tracking_events
 - id

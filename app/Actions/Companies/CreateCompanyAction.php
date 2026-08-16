@@ -13,14 +13,15 @@ class CreateCompanyAction
         private readonly AuditService $audit,
     ) {}
 
-    public function execute(array $data): Company
+    /** @param array<string, mixed> $data @param array<string, mixed>|null $auditAfter */
+    public function execute(array $data, ?array $auditAfter = null): Company
     {
-        return DB::transaction(function () use ($data): Company {
+        return DB::transaction(function () use ($data, $auditAfter): Company {
             $this->ensureAssigneeIsAllowed->execute(
                 isset($data['assigned_user_id']) ? (int) $data['assigned_user_id'] : null,
             );
             $company = Company::create($data);
-            $this->audit->record('company_created', $company, after: $company->attributesToArray());
+            $this->audit->record('company_created', $company, after: $auditAfter ?? $company->attributesToArray());
 
             return $company;
         });

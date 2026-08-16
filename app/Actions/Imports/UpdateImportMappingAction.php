@@ -39,12 +39,14 @@ class UpdateImportMappingAction
                     foreach ($rows as $row) {
                         $row->normalized_data = $this->normalizer->normalize($row->original_data, $mapping);
                         $row->dedup_data = null;
+                        $row->execution_data = null;
                         $row->save();
                     }
                 });
 
             $metadata = $lockedImport->metadata;
             unset($metadata['dedup']);
+            unset($metadata['execution'], $metadata['execution_config']);
             $metadata['mapping'] = [
                 'version' => 1,
                 'mapped_at' => now()->toIso8601String(),
@@ -52,7 +54,7 @@ class UpdateImportMappingAction
                 'columns' => $mapping,
                 'ignored_columns' => $ignored,
             ];
-            $lockedImport->update(['metadata' => $metadata, 'duplicate_rows' => 0]);
+            $lockedImport->update(['metadata' => $metadata, 'imported_rows' => 0, 'duplicate_rows' => 0, 'failed_rows' => 0, 'started_at' => null, 'finished_at' => null]);
             $this->audit->record('import_mapping_updated', $lockedImport, before: ['columns' => $previousMapping], after: ['columns' => $mapping, 'ignored_columns' => $ignored], user: $user);
 
             return $lockedImport->refresh();

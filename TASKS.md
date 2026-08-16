@@ -150,7 +150,7 @@ Não misturar implementações antigas com o novo núcleo sem uma decisão expl�
 - [x] TASK-082 Column mapper
 - [x] TASK-083 Preview
 - [x] TASK-084 Dedup
-- [ ] TASK-085 Import report
+- [x] TASK-085 Import report
 
 ## Definition of Done
 

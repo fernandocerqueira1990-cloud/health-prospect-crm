@@ -18,7 +18,7 @@ class ImportStructureTest extends TestCase
     public function test_import_tables_have_expected_columns(): void
     {
         $this->assertTrue(Schema::hasColumns('imports', ['id', 'user_id', 'filename', 'original_filename', 'type', 'status', 'total_rows', 'imported_rows', 'duplicate_rows', 'failed_rows', 'started_at', 'finished_at', 'metadata', 'created_at', 'updated_at']));
-        $this->assertTrue(Schema::hasColumns('import_rows', ['id', 'import_id', 'row_number', 'status', 'original_data', 'normalized_data', 'dedup_data', 'error_message', 'related_entity_type', 'related_entity_id', 'created_at', 'updated_at']));
+        $this->assertTrue(Schema::hasColumns('import_rows', ['id', 'import_id', 'row_number', 'status', 'original_data', 'normalized_data', 'dedup_data', 'execution_data', 'error_message', 'related_entity_type', 'related_entity_id', 'created_at', 'updated_at']));
     }
 
     public function test_import_relationships_resolve(): void
@@ -90,6 +90,13 @@ class ImportStructureTest extends TestCase
         DataImport::factory()->create(['status' => 'unknown']);
     }
 
+    public function test_database_accepts_completed_import_status(): void
+    {
+        $dataImport = DataImport::factory()->create(['status' => DataImport::STATUS_COMPLETED]);
+
+        $this->assertSame(DataImport::STATUS_COMPLETED, $dataImport->status);
+    }
+
     public function test_database_rejects_invalid_import_row_status(): void
     {
         $this->expectException(QueryException::class);
@@ -120,7 +127,7 @@ class ImportStructureTest extends TestCase
         $columns = DB::table('information_schema.columns')
             ->where('table_schema', 'public')
             ->whereIn('table_name', ['imports', 'import_rows'])
-            ->whereIn('column_name', ['metadata', 'original_data', 'normalized_data', 'dedup_data'])
+            ->whereIn('column_name', ['metadata', 'original_data', 'normalized_data', 'dedup_data', 'execution_data'])
             ->get(['table_name', 'column_name', 'data_type'])
             ->mapWithKeys(fn (object $column): array => [
                 $column->table_name.'.'.$column->column_name => $column->data_type,
@@ -130,5 +137,6 @@ class ImportStructureTest extends TestCase
         $this->assertSame('jsonb', $columns->get('import_rows.original_data'));
         $this->assertSame('jsonb', $columns->get('import_rows.normalized_data'));
         $this->assertSame('jsonb', $columns->get('import_rows.dedup_data'));
+        $this->assertSame('jsonb', $columns->get('import_rows.execution_data'));
     }
 }

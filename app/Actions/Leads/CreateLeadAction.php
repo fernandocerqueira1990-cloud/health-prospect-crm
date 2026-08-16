@@ -13,10 +13,10 @@ class CreateLeadAction
         private readonly AuditService $audit,
     ) {}
 
-    /** @param array<string, mixed> $data */
-    public function execute(array $data): Lead
+    /** @param array<string, mixed> $data @param array<string, mixed>|null $auditAfter */
+    public function execute(array $data, ?array $auditAfter = null): Lead
     {
-        return DB::transaction(function () use ($data): Lead {
+        return DB::transaction(function () use ($data, $auditAfter): Lead {
             $lead = Lead::create($data);
 
             $lead->loadMissing([
@@ -46,7 +46,7 @@ class CreateLeadAction
             $this->audit->record(
                 'lead_created',
                 $lead,
-                after: $lead->attributesToArray(),
+                after: $auditAfter ?? $lead->attributesToArray(),
             );
 
             return $lead;

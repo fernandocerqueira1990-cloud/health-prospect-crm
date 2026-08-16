@@ -45,7 +45,9 @@
 - [x] preview
 - [x] deduplicação
 - [ ] merge
-- [ ] relatório de importação
+- [x] execução final e relatório de importação
+
+Sprint 7 de importação concluída; merge permanece como evolução posterior e não faz parte da execução final atual.
 
 ## Fase 5 — API
 - [ ] Sanctum

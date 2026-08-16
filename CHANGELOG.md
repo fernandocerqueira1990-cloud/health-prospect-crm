@@ -218,3 +218,16 @@
 - `imports.duplicate_rows` conta linhas com match forte/exato e `imports.metadata.dedup.summary` mantém contadores detalhados; reanálise substitui resultados e remapping invalida `dedup_data`, metadata e contador.
 - A análise registra auditoria sanitizada sem dados comerciais completos e persiste `analyzed_at`; a etapa final deverá revalidar constraints fortes devido a staleness e race conditions possíveis.
 - Regressão focada aprovada com 110 testes e 479 assertions e suíte completa com 350 testes e 1.414 assertions no banco exclusivo `health_prospect_crm_test`.
+
+### Sprint 7 — Importação / TASK-085 Execução final e relatório
+
+- Execução final adicionada como primeira etapa capaz de materializar Company, Contact e Lead, consumindo exclusivamente `normalized_data` e as decisões persistidas em `dedup_data`; não há merge, atualização implícita de registros existentes ou criação de Opportunity.
+- Pré-requisitos revalidam status, mapping, dados normalizados, análise de deduplicação, decisões e dependências entre linhas; `use_existing` e `reuse_import_row` são novamente conferidos no backend, e dependências futuras ou externas são rejeitadas.
+- Cada linha é executada em transação própria e na ordem Company → Contact → Lead, com rollback conjunto em falha; o import usa lock pessimista e estado `processing` para impedir execução concorrente, enquanto resultados versionados em `import_rows.execution_data` tornam uma execução concluída idempotente.
+- Criação usa whitelists explícitas e Actions do domínio. Leads recebem a origem ativa resolvida pelo slug `importacao` e um Channel ativo escolhido explicitamente pelo usuário quando houver `lead.create_new`; IDs internos enviados pelo formulário são proibidos e source/channel são revalidados durante a gravação.
+- A configuração validada fica em `imports.metadata.execution_config`; a evolução futura poderá mapear origem/canal por linha com fallback para a configuração da importação, sem fazer parte desta entrega.
+- Identidade fiscal forte de Company é reconsultada imediatamente antes de `create_new`, candidatos arquivados não são restaurados ou reutilizados, e conflitos por staleness/race condition viram falhas sanitizadas por linha.
+- `imported_rows` conta linhas com ao menos uma criação ou reutilização bem-sucedida, `failed_rows` soma linhas falhas e bloqueadas e `duplicate_rows` preserva a semântica da análise; resumos por linha e entidade ficam em metadata sem snapshots comerciais.
+- Relatório protegido por `imports.view` apresenta cards, entidades criadas/reutilizadas/ignoradas, executor, duração, erros sanitizados, filtros e paginação server-side de 50 linhas; conteúdo usa escaping Blade e IDs técnicos respeitam as Policies das entidades.
+- Auditoria registra início, resultado por linha, conclusão ou falha sem copiar `original_data`, `normalized_data` ou PII completa; execução permanece síncrona e em chunks no MVP, preparada para migração futura a Queue.
+- Validação funcional aprovada com 125 testes focados e 560 assertions e suíte completa com 365 testes e 1.495 assertions no banco exclusivo `health_prospect_crm_test`.

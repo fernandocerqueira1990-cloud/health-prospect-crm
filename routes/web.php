@@ -11,8 +11,10 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\ImportDedupController;
+use App\Http\Controllers\ImportExecutionController;
 use App\Http\Controllers\ImportMappingController;
 use App\Http\Controllers\ImportPreviewController;
+use App\Http\Controllers\ImportReportController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\OpportunityController;
 use App\Http\Controllers\TaskController;
@@ -44,6 +46,9 @@ Route::middleware(['auth', EnsureUserIsActive::class])->group(function (): void 
     Route::get('/imports/{dataImport}/dedup', [ImportDedupController::class, 'index'])->name('imports.dedup.index');
     Route::post('/imports/{dataImport}/dedup/analyze', [ImportDedupController::class, 'analyze'])->name('imports.dedup.analyze');
     Route::put('/imports/{dataImport}/dedup/{importRow}', [ImportDedupController::class, 'update'])->name('imports.dedup.update');
+    Route::get('/imports/{dataImport}/execute', [ImportExecutionController::class, 'confirm'])->name('imports.execute.confirm');
+    Route::post('/imports/{dataImport}/execute', [ImportExecutionController::class, 'execute'])->name('imports.execute');
+    Route::get('/imports/{dataImport}/report', ImportReportController::class)->name('imports.report');
 
     Route::resource('imports', ImportController::class)
         ->parameters(['imports' => 'dataImport'])

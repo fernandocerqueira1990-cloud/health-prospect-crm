@@ -165,14 +165,27 @@ class ImportDedupTest extends TestCase
         $import = $this->mappedImport([['company' => ['legal_name' => 'Duplicada']], ['company' => ['legal_name' => 'Duplicada']]]);
         $this->analyze($import);
         $this->assertNotNull($import->rows()->first()->dedup_data);
-        $import->update(['duplicate_rows' => 2]);
+        $row = $import->rows()->firstOrFail();
+        $row->execution_data = ['version' => 1, 'status' => 'success'];
+        $row->save();
+        $metadata = $import->metadata;
+        $metadata['execution'] = ['version' => 1];
+        $metadata['execution_config'] = ['version' => 1];
+        $import->update(['duplicate_rows' => 2, 'imported_rows' => 1, 'failed_rows' => 1, 'started_at' => now(), 'finished_at' => now(), 'metadata' => $metadata]);
 
         $user = $this->userWithPermission('imports.update');
         $this->actingAs($user)->put(route('imports.mapping.update', $import), ['columns' => [['source' => $import->metadata['header'][0], 'target' => 'company.legal_name']]])->assertSessionHasNoErrors();
 
         $this->assertNull($import->rows()->first()->refresh()->dedup_data);
+        $this->assertNull($import->rows()->first()->execution_data);
         $this->assertArrayNotHasKey('dedup', $import->refresh()->metadata);
+        $this->assertArrayNotHasKey('execution', $import->metadata);
+        $this->assertArrayNotHasKey('execution_config', $import->metadata);
         $this->assertSame(0, $import->duplicate_rows);
+        $this->assertSame(0, $import->imported_rows);
+        $this->assertSame(0, $import->failed_rows);
+        $this->assertNull($import->started_at);
+        $this->assertNull($import->finished_at);
     }
 
     public function test_ui_escapes_data_and_hides_candidate_details_without_entity_permission(): void
