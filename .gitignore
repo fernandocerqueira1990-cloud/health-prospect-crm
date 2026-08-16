@@ -1,4 +1,25 @@
-node_modules
-dist
+# Node / frontend
+node_modules/
+dist/
+
+# Environment
 .env
+.env.*
+!.env.example
+
+# Laravel / PHP
+vendor/
+.phpunit.result.cache
+.tmp-laravel-scaffold/
+
+# Laravel runtime
+storage/logs/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+
+# OS / IDE
 .DS_Store
+Thumbs.db
+.vscode/
+.idea/
