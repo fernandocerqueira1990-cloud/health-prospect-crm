@@ -23,3 +23,4 @@ storage/framework/views/*
 Thumbs.db
 .vscode/
 .idea/
+*.tsbuildinfo
