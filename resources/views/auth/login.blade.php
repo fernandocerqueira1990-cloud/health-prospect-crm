@@ -19,6 +19,10 @@
             <label class="flex items-center gap-2 text-sm text-slate-700"><input class="rounded border-slate-300" name="remember" type="checkbox" value="1" @checked(old('remember'))> Lembrar de mim</label>
             <button class="btn-primary w-full" type="submit">Entrar</button>
         </form>
+        <div class="mt-6 border-t border-slate-200 pt-6 text-center">
+            <p class="text-sm text-slate-600">Ainda não tem uma conta?</p>
+            <a class="mt-1 inline-block text-sm font-semibold text-teal-700 hover:text-teal-800" href="{{ route('register') }}">Criar uma conta para testar</a>
+        </div>
     </main>
 </body>
 </html>
