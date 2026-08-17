@@ -112,6 +112,18 @@
     .form-section-header { @apply flex flex-col gap-2 border-b border-slate-100 px-4 py-3 sm:flex-row sm:items-start sm:justify-between; }
     .form-section-body { @apply p-4; }
     .form-section-footer { @apply flex flex-wrap items-center justify-end gap-2 border-t border-slate-100 bg-slate-50/60 px-4 py-3; }
+    .form-grid { @apply grid gap-x-4 gap-y-3 sm:grid-cols-2; }
+    .form-grid-3 { @apply lg:grid-cols-3; }
+    .form-grid-4 { @apply lg:grid-cols-4; }
+    .form-actions { @apply flex flex-col-reverse gap-2 rounded-xl border border-slate-200 bg-white p-3 shadow-sm sm:flex-row sm:items-center sm:justify-end; }
+    .choice-card { @apply flex min-h-16 cursor-pointer items-start gap-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-700 transition hover:border-slate-300 hover:bg-white; }
+    .choice-card input { @apply mt-1 h-4 w-4 shrink-0 rounded border-slate-300 text-teal-700 focus:ring-teal-600; }
+    .choice-card strong { @apply block font-semibold text-slate-900; }
+    .choice-card small { @apply mt-0.5 block text-xs leading-4 text-slate-500; }
+    .detail-grid { @apply grid gap-x-5 gap-y-4 sm:grid-cols-2; }
+    .detail-item { @apply min-w-0; }
+    .detail-label { @apply text-[11px] font-bold uppercase tracking-[0.08em] text-slate-500; }
+    .detail-value { @apply mt-1 break-words text-sm font-medium leading-5 text-slate-900; }
     .metric-card { @apply rounded-xl border border-slate-200 bg-white p-4 shadow-sm; }
     .metric-label { @apply text-xs font-bold uppercase tracking-[0.1em] text-slate-500; }
     .metric-value { @apply mt-1.5 text-2xl font-bold tracking-tight text-slate-950; }
