@@ -10,7 +10,7 @@
 
     <div class="card mb-6">
         <dl class="grid gap-4 text-sm sm:grid-cols-4">
-            <div><dt class="font-medium text-slate-500">Arquivo</dt><dd class="mt-1 font-semibold text-slate-900">{{ $dataImport->original_filename }}</dd></div>
+            <x-import-filename value-class="text-slate-900">{{ $dataImport->original_filename }}</x-import-filename>
             <div><dt class="font-medium text-slate-500">Tipo</dt><dd class="mt-1">{{ strtoupper($dataImport->type) }}</dd></div>
             <div><dt class="font-medium text-slate-500">Linhas</dt><dd class="mt-1">{{ $counts['total'] }}</dd></div>
             <div><dt class="font-medium text-slate-500">Campos mapeados</dt><dd class="mt-1">{{ $mappedCount }}</dd></div>

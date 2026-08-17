@@ -3,6 +3,7 @@
 namespace Tests\Feature\Imports;
 
 use App\Services\ImportValueNormalizer;
+use App\Services\ImportPreviewValidator;
 use Tests\TestCase;
 
 class ImportValueNormalizerTest extends TestCase
@@ -50,5 +51,56 @@ class ImportValueNormalizerTest extends TestCase
 
         $this->assertArrayNotHasKey('company', $normalized);
         $this->assertSame(0, $normalized['lead']['score']);
+    }
+
+    public function test_brazil_name_and_code_are_normalized_case_insensitively_with_trim(): void
+    {
+        $normalizer = app(ImportValueNormalizer::class);
+
+        $this->assertSame('BR', $normalizer->normalize(['País' => '  Brasil  '], ['País' => 'company.tax_id_country'])['company']['tax_id_country']);
+        $this->assertSame('BR', $normalizer->normalize(['País' => ' br '], ['País' => 'company.tax_id_country'])['company']['tax_id_country']);
+    }
+
+    public function test_all_import_enum_fields_accept_friendly_portuguese_values(): void
+    {
+        $normalized = app(ImportValueNormalizer::class)->normalize([
+            'Empresa prioridade' => ' A ',
+            'Papel' => ' Decisor ',
+            'Influência' => ' ALTO ',
+            'Status' => ' novo ',
+            'Lead prioridade' => 'a',
+            'Temperatura' => ' Morno ',
+        ], [
+            'Empresa prioridade' => 'company.priority',
+            'Papel' => 'contact.decision_role',
+            'Influência' => 'contact.influence_level',
+            'Status' => 'lead.status',
+            'Lead prioridade' => 'lead.priority',
+            'Temperatura' => 'lead.temperature',
+        ]);
+
+        $this->assertSame('high', $normalized['company']['priority']);
+        $this->assertSame('decision_maker', $normalized['contact']['decision_role']);
+        $this->assertSame('high', $normalized['contact']['influence_level']);
+        $this->assertSame('new', $normalized['lead']['status']);
+        $this->assertSame('high', $normalized['lead']['priority']);
+        $this->assertSame('warm', $normalized['lead']['temperature']);
+    }
+
+    public function test_unknown_country_and_enum_values_remain_invalid_candidates(): void
+    {
+        $normalized = app(ImportValueNormalizer::class)->normalize([
+            'País' => '  Atlântida  ', 'Status' => '  Pendente externo  ',
+        ], [
+            'País' => 'company.tax_id_country', 'Status' => 'lead.status',
+        ]);
+
+        $this->assertSame('Atlântida', $normalized['company']['tax_id_country']);
+        $this->assertSame('Pendente externo', $normalized['lead']['status']);
+
+        $validation = app(ImportPreviewValidator::class)->validate($normalized, ['company.tax_id_country', 'lead.status']);
+        $codes = array_column($validation['issues'], 'code');
+        $this->assertContains('invalid_country', $codes);
+        $this->assertContains('invalid_enum', $codes);
     }
 }

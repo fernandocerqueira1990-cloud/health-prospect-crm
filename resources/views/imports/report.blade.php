@@ -6,7 +6,7 @@
     @php($rowSummary = $summary['rows'] ?? [])
     @php($entitySummary = $summary['entities'] ?? [])
     <div class="card mb-6"><dl class="grid gap-4 text-sm sm:grid-cols-3 lg:grid-cols-6">
-        <div><dt class="text-slate-500">Arquivo</dt><dd class="font-semibold">{{ $dataImport->original_filename }}</dd></div>
+        <x-import-filename label-class="text-slate-500">{{ $dataImport->original_filename }}</x-import-filename>
         <div><dt class="text-slate-500">Início</dt><dd>{{ $dataImport->started_at?->format('d/m/Y H:i:s') ?? '—' }}</dd></div>
         <div><dt class="text-slate-500">Término</dt><dd>{{ $dataImport->finished_at?->format('d/m/Y H:i:s') ?? '—' }}</dd></div>
         <div><dt class="text-slate-500">Duração</dt><dd>{{ $duration_seconds === null ? '—' : $duration_seconds.'s' }}</dd></div>

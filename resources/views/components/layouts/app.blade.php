@@ -1,3 +1,4 @@
+@props(['title' => null, 'activeSprint' => null])
 <!DOCTYPE html>
 <html lang="pt-BR" class="h-full bg-slate-100">
 <head>
@@ -48,14 +49,12 @@
                 <a href="{{ route('leads.index') }}" class="nav-link {{ request()->routeIs('leads.*') ? 'nav-link-active' : '' }}">
                     <span class="nav-mark">L</span>
                     <span class="flex-1">Leads</span>
-                    <span class="nav-badge">Sprint 4</span>
                 </a>
             @endcan
             @can('viewAny', App\Models\Opportunity::class)
                 <a href="{{ route('roadmap.pipeline') }}" class="nav-link {{ request()->routeIs('roadmap.pipeline', 'opportunities.*') ? 'nav-link-active' : '' }}">
                     <span class="nav-mark">P</span>
                     <span class="flex-1">Pipeline</span>
-                    <span class="nav-badge">Sprint 5</span>
                 </a>
             @endcan
 
@@ -64,14 +63,12 @@
                 <a href="{{ route('activities.index') }}" class="nav-link {{ request()->routeIs('activities.*') ? 'nav-link-active' : '' }}">
                     <span class="nav-mark">A</span>
                     <span class="flex-1">Atividades</span>
-                    <span class="nav-badge">Sprint 6</span>
                 </a>
             @endcan
             @can('viewAny', App\Models\Task::class)
                 <a href="{{ route('tasks.index') }}" class="nav-link {{ request()->routeIs('tasks.*') ? 'nav-link-active' : '' }}">
                     <span class="nav-mark">T</span>
                     <span class="flex-1">Tarefas</span>
-                    <span class="nav-badge">Sprint 6</span>
                 </a>
             @endcan
             @if(
@@ -84,7 +81,6 @@
                 >
                     <span class="nav-mark">TL</span>
                     <span class="flex-1">Timeline</span>
-                    <span class="nav-badge">Sprint 6</span>
                 </a>
             @endif
 
@@ -97,7 +93,7 @@
             <p class="nav-section-title mt-6">Inteligência</p>
             @can('viewAny', App\Models\DataImport::class)
                 <a href="{{ route('imports.index') }}" class="nav-link {{ request()->routeIs('imports.*') ? 'nav-link-active' : '' }}">
-                    <span class="nav-mark">I</span><span class="flex-1">Importações</span><span class="nav-badge">Sprint 7</span>
+                    <span class="nav-mark">I</span><span class="flex-1">Importações</span>
                 </a>
             @endcan
             <a href="{{ route('roadmap.reports') }}" class="nav-link {{ request()->routeIs('roadmap.reports') ? 'nav-link-active' : '' }}">
@@ -123,18 +119,20 @@
             @endif
         </nav>
 
-        <div class="border-t border-slate-800 p-4">
-            <div class="rounded-xl bg-slate-900 p-3">
-                <p class="text-xs font-semibold text-slate-300">Sprint atual</p>
-                <div class="mt-2 flex items-center justify-between gap-3">
-                    <div>
-                        <p class="text-sm font-bold text-white">Sprint 7 — Importação</p>
-                        <p class="mt-0.5 text-xs text-slate-500">Módulo em desenvolvimento</p>
+        @if($activeSprint)
+            <div class="border-t border-slate-800 p-4" data-active-sprint>
+                <div class="rounded-xl bg-slate-900 p-3">
+                    <p class="text-xs font-semibold text-slate-300">Sprint atual</p>
+                    <div class="mt-2 flex items-center justify-between gap-3">
+                        <div>
+                            <p class="text-sm font-bold text-white">{{ $activeSprint['title'] }}</p>
+                            <p class="mt-0.5 text-xs text-slate-500">{{ $activeSprint['description'] }}</p>
+                        </div>
+                        <span class="h-2.5 w-2.5 rounded-full bg-teal-400 shadow-[0_0_0_4px_rgba(45,212,191,0.10)]"></span>
                     </div>
-                    <span class="h-2.5 w-2.5 rounded-full bg-teal-400 shadow-[0_0_0_4px_rgba(45,212,191,0.10)]"></span>
                 </div>
             </div>
-        </div>
+        @endif
     </aside>
 
     <div class="min-h-screen lg:pl-72">

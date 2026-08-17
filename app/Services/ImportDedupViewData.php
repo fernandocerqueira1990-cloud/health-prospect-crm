@@ -34,17 +34,23 @@ class ImportDedupViewData
         ];
         foreach ($rows as $row) {
             $dedup = $row->dedup_data;
-            foreach (($dedup['groups'] ?? []) as $group => &$groupData) {
-                foreach (($groupData['candidates'] ?? []) as &$candidate) {
+            if (! is_array($dedup) || ! isset($dedup['groups']) || ! is_array($dedup['groups'])) {
+                continue;
+            }
+            foreach ($dedup['groups'] as $group => $groupData) {
+                if (! is_array($groupData) || ! isset($groupData['candidates']) || ! is_array($groupData['candidates'])) {
+                    continue;
+                }
+                foreach ($groupData['candidates'] as $index => $candidate) {
                     $candidateId = (int) $candidate[$candidate['source'] === 'crm' ? 'id' : 'import_row_id'];
                     $candidate['decision_ref'] = Crypt::encryptString(json_encode(['source' => $candidate['source'], 'entity' => $group, 'id' => $candidateId], JSON_THROW_ON_ERROR));
                     if (($candidate['source'] ?? null) === 'crm') {
                         $model = $visible[$group]->get($candidateId);
                         $candidate['display'] = $model === null ? ['restricted' => true] : $this->display($group, $model);
                     }
+                    $dedup['groups'][$group]['candidates'][$index] = $candidate;
                 }
             }
-            unset($groupData, $candidate);
             $row->setAttribute('dedup_data', $dedup);
         }
 

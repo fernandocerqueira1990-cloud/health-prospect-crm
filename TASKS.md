@@ -143,7 +143,7 @@ Não misturar implementações antigas com o novo núcleo sem uma decisão expl�
 - [x] TASK-072 Follow-up
 - [x] TASK-073 Activity timeline
 
-## Sprint 7 — Importação
+## Sprint 7 — Importação — CONCLUÍDA
 
 - [x] TASK-080 CSV
 - [x] TASK-081 XLSX
@@ -151,6 +151,19 @@ Não misturar implementações antigas com o novo núcleo sem uma decisão expl�
 - [x] TASK-083 Preview
 - [x] TASK-084 Dedup
 - [x] TASK-085 Import report
+
+### Validação da Sprint 7
+
+- Importação CSV e XLSX concluída, incluindo upload, leitura e preservação segura do nome original.
+- Mapeamento manual e auto-mapeamento dos 40 cabeçalhos do template oficial validados.
+- Normalização e validação de dados concluídas, com classificação de registros válidos, avisos e erros no Preview.
+- Deduplicação de Empresas, Contatos e Leads concluída, com decisões entre criar novo, reutilizar existente ou ignorar.
+- Execução transacional concluída com prevenção de duplicidades, sem atualização ou merge automático de registros existentes.
+- Seleção de canal para novos Leads e execução sem exigência de canal quando não há novos Leads validadas.
+- Relatório final concluído com contabilização de registros criados, reutilizados, ignorados, bloqueados e falhos.
+- Importação em lote validada com 10 registros: nove novos e um reutilizado para Empresa, Contato e Lead.
+- Preview, confirmação de execução e relatório final ajustados responsivamente para nomes longos de arquivos, sem truncar o conteúdo.
+- Testes automatizados focados da Sprint 7 e suíte completa do projeto aprovados no fechamento técnico.
 
 ## Definition of Done
 

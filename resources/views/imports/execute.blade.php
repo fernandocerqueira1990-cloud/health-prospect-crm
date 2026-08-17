@@ -6,7 +6,7 @@
     <div class="card max-w-3xl">
         <x-errors />
         <dl class="grid gap-4 text-sm sm:grid-cols-3">
-            <div><dt class="font-medium text-slate-500">Arquivo</dt><dd class="mt-1 font-semibold">{{ $dataImport->original_filename }}</dd></div>
+            <x-import-filename>{{ $dataImport->original_filename }}</x-import-filename>
             <div><dt class="font-medium text-slate-500">Linhas</dt><dd class="mt-1">{{ $dedupSummary['total'] ?? $dataImport->total_rows }}</dd></div>
             <div><dt class="font-medium text-slate-500">Duplicados fortes</dt><dd class="mt-1">{{ $dedupSummary['exact_matches'] ?? $dataImport->duplicate_rows }}</dd></div>
         </dl>

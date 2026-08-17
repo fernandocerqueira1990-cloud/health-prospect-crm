@@ -12,6 +12,8 @@ use App\Models\Opportunity;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
+use App\Services\ImportPreviewValidator;
+use App\Support\ImportFieldCatalog;
 use Database\Seeders\PermissionSeeder;
 use Database\Seeders\RolePermissionSeeder;
 use Database\Seeders\RoleSeeder;
@@ -47,6 +49,47 @@ class ImportMappingTest extends TestCase
         $response->assertDontSee('<option value="contact.name" selected>', false);
     }
 
+    public function test_official_template_is_automatically_mapped_and_unknown_column_stays_ignored(): void
+    {
+        $headers = ['empresa_nome_fantasia', 'empresa_cnpj', 'contato_nome', 'contato_email', 'lead_nome', 'lead_status', 'campo_desconhecido'];
+        $dataImport = $this->import($headers, []);
+
+        $response = $this->actingAs($this->userWithPermission('imports.update'))->get(route('imports.mapping.edit', $dataImport));
+
+        $response->assertOk();
+        foreach (['company.trade_name', 'company.tax_id', 'contact.name', 'contact.email', 'lead.name', 'lead.status'] as $target) {
+            $response->assertSee('<option value="'.$target.'" selected>', false);
+        }
+        $response->assertSee('<input type="hidden" name="columns[6][source]" value="campo_desconhecido">', false);
+        $response->assertSee('<option value="">Ignorar</option>', false);
+    }
+
+    public function test_generic_unknown_file_has_no_automatic_mapping(): void
+    {
+        $dataImport = $this->import(['Coluna XPTO', 'Outro dado externo'], []);
+
+        $response = $this->actingAs($this->userWithPermission('imports.update'))->get(route('imports.mapping.edit', $dataImport));
+
+        $response->assertOk()->assertDontSee(' selected>', false);
+    }
+
+    public function test_saved_manual_mapping_overrides_official_template_suggestion(): void
+    {
+        $dataImport = $this->import(['empresa_nome_fantasia'], []);
+        $user = $this->userWithPermission('imports.update');
+
+        $this->actingAs($user)->put(route('imports.mapping.update', $dataImport), ['columns' => [
+            ['source' => 'empresa_nome_fantasia', 'target' => 'lead.company_name'],
+        ]])->assertSessionHasNoErrors();
+
+        $response = $this->actingAs($user)->get(route('imports.mapping.edit', $dataImport));
+
+        $response->assertOk()
+            ->assertSee('<option value="lead.company_name" selected>', false)
+            ->assertDontSee('<option value="company.trade_name" selected>', false);
+        $this->assertSame(['empresa_nome_fantasia' => 'lead.company_name'], $dataImport->refresh()->metadata['mapping']['columns']);
+    }
+
     public function test_valid_mapping_normalizes_rows_preserves_original_metadata_and_creates_no_entities(): void
     {
         $original = ['Nome da Empresa' => '  Clínica   ABC ', 'Email' => ' COMERCIAL@EMPRESA.COM ', 'Ignorada' => 'segredo'];
@@ -74,6 +117,50 @@ class ImportMappingTest extends TestCase
         $audit = AuditLog::query()->where('action', 'import_mapping_updated')->sole();
         $this->assertEqualsCanonicalizing(['Nome da Empresa' => 'company.trade_name', 'Email' => 'company.email'], $audit->after['columns']);
         $this->assertStringNotContainsString('segredo', json_encode($audit->after, JSON_THROW_ON_ERROR));
+    }
+
+    public function test_complete_official_template_example_reaches_preview_without_friendly_value_errors(): void
+    {
+        $original = [
+            'empresa_nome_fantasia' => 'Clínica Exemplo', 'empresa_razao_social' => 'Clínica Exemplo Ltda.',
+            'empresa_cnpj' => '04.252.011/0001-10', 'empresa_pais_id_fiscal' => ' Brasil ',
+            'empresa_segmento' => 'Saúde', 'empresa_categoria' => 'Clínica', 'empresa_site' => 'clinica.example.com.br',
+            'empresa_telefone' => '(11) 3333-4444', 'empresa_email' => 'contato@clinica.example',
+            'empresa_logradouro' => 'Rua Saúde', 'empresa_numero' => '100', 'empresa_complemento' => 'Sala 1',
+            'empresa_bairro' => 'Centro', 'empresa_cidade' => 'São Paulo', 'empresa_estado_uf' => 'SP',
+            'empresa_cep' => '01001000', 'empresa_estimativa_funcionarios' => '25', 'empresa_prioridade' => ' A ',
+            'empresa_observacoes' => 'Exemplo oficial', 'contato_nome' => 'Ana Silva', 'contato_cargo' => 'Diretora',
+            'contato_departamento' => 'Diretoria', 'contato_email' => 'ana@clinica.example',
+            'contato_telefone' => '(11) 99999-1111', 'contato_whatsapp' => '(11) 99999-1111',
+            'contato_linkedin' => 'https://www.linkedin.com/in/ana-silva', 'contato_papel_decisao' => ' Decisor ',
+            'contato_nivel_influencia' => ' ALTO ', 'contato_observacoes' => 'Contato principal',
+            'lead_nome' => 'Ana Silva', 'lead_empresa' => 'Clínica Exemplo', 'lead_cargo' => 'Diretora',
+            'lead_email' => 'ana@clinica.example', 'lead_telefone' => '(11) 99999-1111',
+            'lead_whatsapp' => '(11) 99999-1111', 'lead_status' => ' NOVO ', 'lead_prioridade' => 'A',
+            'lead_temperatura' => ' Morno ', 'lead_score' => '80', 'lead_observacoes' => 'Lead de exemplo',
+        ];
+        $catalog = app(ImportFieldCatalog::class);
+        $mapping = collect(array_keys($original))->mapWithKeys(fn (string $header): array => [$header => $catalog->suggest($header)])->all();
+        $this->assertNotContains(null, $mapping, true);
+        $dataImport = $this->import(array_keys($original), [$original]);
+
+        $this->actingAs($this->userWithPermission('imports.update'))
+            ->put(route('imports.mapping.update', $dataImport), ['columns' => collect($mapping)->map(fn (string $target, string $source): array => compact('source', 'target'))->values()->all()])
+            ->assertSessionHasNoErrors();
+
+        $row = $dataImport->rows()->sole();
+        $validation = app(ImportPreviewValidator::class)->validate($row->normalized_data, array_values($mapping));
+        $friendlyFields = ['company.tax_id_country', 'company.priority', 'contact.decision_role', 'contact.influence_level', 'lead.status', 'lead.priority'];
+        $friendlyIssues = array_filter($validation['issues'], fn (array $issue): bool => in_array($issue['field'], $friendlyFields, true));
+
+        $this->assertSame('BR', $row->normalized_data['company']['tax_id_country']);
+        $this->assertSame('high', $row->normalized_data['company']['priority']);
+        $this->assertSame('decision_maker', $row->normalized_data['contact']['decision_role']);
+        $this->assertSame('high', $row->normalized_data['contact']['influence_level']);
+        $this->assertSame('new', $row->normalized_data['lead']['status']);
+        $this->assertSame('high', $row->normalized_data['lead']['priority']);
+        $this->assertSame('warm', $row->normalized_data['lead']['temperature']);
+        $this->assertSame([], array_values($friendlyIssues));
     }
 
     public function test_remapping_rebuilds_normalized_data_and_removes_old_targets(): void

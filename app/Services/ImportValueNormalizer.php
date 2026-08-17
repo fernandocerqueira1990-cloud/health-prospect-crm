@@ -10,12 +10,62 @@ use Illuminate\Support\Str;
 
 class ImportValueNormalizer
 {
+    /** @var array<string, array<string, string>> */
+    private const FRIENDLY_ENUM_VALUES = [
+        'company.priority' => [
+            'low' => 'low', 'baixa' => 'low', 'baixo' => 'low',
+            'medium' => 'medium', 'media' => 'medium', 'medio' => 'medium',
+            'high' => 'high', 'alta' => 'high', 'alto' => 'high', 'a' => 'high',
+            'critical' => 'critical', 'critica' => 'critical', 'critico' => 'critical',
+        ],
+        'contact.decision_role' => [
+            'decision_maker' => 'decision_maker', 'decisor' => 'decision_maker',
+            'influencer' => 'influencer', 'influenciador' => 'influencer',
+            'champion' => 'champion', 'defensor' => 'champion',
+            'user' => 'user', 'usuario' => 'user',
+            'technical' => 'technical', 'tecnico' => 'technical',
+            'procurement' => 'procurement', 'compras' => 'procurement',
+            'financial' => 'financial', 'financeiro' => 'financial',
+            'gatekeeper' => 'gatekeeper', 'guardiao' => 'gatekeeper',
+            'blocker' => 'blocker', 'bloqueador' => 'blocker',
+            'other' => 'other', 'outro' => 'other',
+        ],
+        'contact.influence_level' => [
+            'low' => 'low', 'baixa' => 'low', 'baixo' => 'low',
+            'medium' => 'medium', 'media' => 'medium', 'medio' => 'medium',
+            'high' => 'high', 'alta' => 'high', 'alto' => 'high',
+            'critical' => 'critical', 'critica' => 'critical', 'critico' => 'critical',
+        ],
+        'lead.status' => [
+            'new' => 'new', 'novo' => 'new',
+            'contacted' => 'contacted', 'contatado' => 'contacted',
+            'qualified' => 'qualified', 'qualificado' => 'qualified',
+            'nurturing' => 'nurturing', 'nutricao' => 'nurturing', 'em nutricao' => 'nurturing',
+            'converted' => 'converted', 'convertido' => 'converted',
+            'disqualified' => 'disqualified', 'desqualificado' => 'disqualified',
+        ],
+        'lead.priority' => [
+            'low' => 'low', 'baixa' => 'low', 'baixo' => 'low',
+            'medium' => 'medium', 'media' => 'medium', 'medio' => 'medium',
+            'high' => 'high', 'alta' => 'high', 'alto' => 'high', 'a' => 'high',
+            'critical' => 'critical', 'critica' => 'critical', 'critico' => 'critical',
+        ],
+        'lead.temperature' => [
+            'cold' => 'cold', 'fria' => 'cold', 'frio' => 'cold',
+            'warm' => 'warm', 'morna' => 'warm', 'morno' => 'warm',
+            'hot' => 'hot', 'quente' => 'hot',
+        ],
+    ];
+
     /** @param array<string, mixed> $original @param array<string, string> $mapping @return array<string, array<string, mixed>> */
     public function normalize(array $original, array $mapping): array
     {
         $normalized = [];
         $country = $this->mappedValue('company.tax_id_country', $original, $mapping);
-        $normalizedCountry = is_scalar($country) ? strtoupper($this->cleanString((string) $country)) : null;
+        $normalizedCountry = is_scalar($country)
+            ? $this->normalizeValue('company.tax_id_country', $country, null)
+            : null;
+        $normalizedCountry = is_string($normalizedCountry) ? $normalizedCountry : null;
 
         foreach ($mapping as $source => $target) {
             $value = $this->normalizeValue($target, $original[$source] ?? null, $normalizedCountry);
@@ -56,13 +106,10 @@ class ImportValueNormalizer
             return TaxIdNormalizer::normalize((string) $value, $country);
         }
         if ($target === 'company.tax_id_country') {
-            return strtoupper((string) $value);
+            return $this->alias((string) $value, ['br' => 'BR', 'brasil' => 'BR']);
         }
-        if (in_array($target, ['company.priority', 'lead.priority'], true)) {
-            return $this->alias((string) $value, ['baixa' => 'low', 'baixo' => 'low', 'media' => 'medium', 'medio' => 'medium', 'alta' => 'high', 'alto' => 'high', 'critica' => 'critical', 'critico' => 'critical']);
-        }
-        if ($target === 'lead.temperature') {
-            return $this->alias((string) $value, ['frio' => 'cold', 'morno' => 'warm', 'quente' => 'hot']);
+        if (isset(self::FRIENDLY_ENUM_VALUES[$target])) {
+            return $this->alias((string) $value, self::FRIENDLY_ENUM_VALUES[$target]);
         }
         if (in_array($target, ['company.employee_count_estimate', 'lead.score'], true)) {
             return $this->integerWhenUnambiguous($value);

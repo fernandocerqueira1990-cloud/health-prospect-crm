@@ -93,4 +93,19 @@ class DashboardShellTest extends TestCase
                 ->assertOk();
         }
     }
+
+    public function test_sidebar_has_no_completed_sprint_badges_or_inactive_current_sprint_card(): void
+    {
+        $response = $this->actingAs($this->admin())->get(route('imports.index'));
+
+        $response->assertOk();
+        foreach (['Leads', 'Pipeline', 'Atividades', 'Tarefas', 'Timeline', 'Importações'] as $module) {
+            $response->assertSee($module);
+        }
+        foreach (['Sprint 4', 'Sprint 5', 'Sprint 6', 'Sprint 7'] as $sprint) {
+            $response->assertDontSee('<span class="nav-badge">'.$sprint.'</span>', false);
+        }
+        $response->assertDontSee('data-active-sprint', false)
+            ->assertDontSee('Módulo em desenvolvimento');
+    }
 }

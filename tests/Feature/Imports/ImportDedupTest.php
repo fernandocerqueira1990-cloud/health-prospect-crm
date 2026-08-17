@@ -10,6 +10,7 @@ use App\Models\ImportRow;
 use App\Models\Lead;
 use App\Models\Opportunity;
 use App\Models\User;
+use App\Services\ImportDedupViewData;
 use Database\Seeders\PermissionSeeder;
 use Database\Seeders\RolePermissionSeeder;
 use Database\Seeders\RoleSeeder;
@@ -198,6 +199,83 @@ class ImportDedupTest extends TestCase
         $response->assertOk()->assertSee('não possui permissão para visualizar seus detalhes')->assertDontSee('<script>alert(1)</script>', false);
     }
 
+    public function test_duplicate_screen_enriches_company_contact_and_lead_candidates_with_decision_references(): void
+    {
+        $company = Company::factory()->create(['legal_name' => 'Empresa Reimportada', 'tax_id_country' => 'BR', 'tax_id' => '11222333000181']);
+        $contact = Contact::factory()->for($company)->create(['name' => 'Contato Reimportado', 'email' => 'contato-reimportado@example.test']);
+        $lead = Lead::factory()->create(['name' => 'Lead Reimportado', 'company_name' => 'Empresa Reimportada', 'email' => 'lead-reimportado@example.test']);
+        $import = $this->mappedImport([
+            ['company' => ['legal_name' => $company->legal_name, 'tax_id_country' => 'BR', 'tax_id' => $company->tax_id]],
+            ['contact' => ['name' => $contact->name, 'email' => $contact->email]],
+            ['lead' => ['name' => $lead->name, 'company_name' => $lead->company_name, 'email' => $lead->email]],
+        ]);
+        $this->analyze($import);
+        $user = $this->userWithImportViewAndUpdate();
+
+        $view = app(ImportDedupViewData::class)->build($import, $user);
+        foreach ($view['rows'] as $index => $row) {
+            $group = ['company', 'contact', 'lead'][$index];
+            $candidate = $row->dedup_data['groups'][$group]['candidates'][0];
+            $this->assertSame('crm', $candidate['source']);
+            $this->assertNotEmpty($candidate['decision_ref']);
+        }
+
+        $this->actingAs($user)->get(route('imports.dedup.index', $import))
+            ->assertOk()
+            ->assertSee('Usar registro correspondente');
+    }
+
+    public function test_exact_reimport_of_company_contact_and_lead_renders_and_accepts_reuse_create_and_skip(): void
+    {
+        $company = Company::factory()->create(['legal_name' => 'Clínica Reimportada', 'tax_id_country' => 'BR', 'tax_id' => '11222333000181']);
+        $contact = Contact::factory()->for($company)->create(['name' => 'Ana Reimportada', 'email' => 'ana-reimportada@example.test']);
+        $lead = Lead::factory()->create(['name' => 'Ana Reimportada', 'company_name' => 'Clínica Reimportada', 'email' => 'lead-ana-reimportada@example.test']);
+        $import = $this->mappedImport([[
+            'company' => ['legal_name' => $company->legal_name, 'tax_id_country' => $company->tax_id_country, 'tax_id' => $company->tax_id],
+            'contact' => ['name' => $contact->name, 'email' => $contact->email],
+            'lead' => ['name' => $lead->name, 'company_name' => $lead->company_name, 'email' => $lead->email],
+        ]]);
+        $user = $this->userWithImportViewAndUpdate();
+        $this->actingAs($user)->post(route('imports.dedup.analyze', $import))
+            ->assertRedirect(route('imports.dedup.index', $import));
+        $row = $import->rows()->sole();
+        $view = app(ImportDedupViewData::class)->build($import, $user);
+        $presented = $view['rows']->firstOrFail()->dedup_data;
+
+        foreach (['company', 'contact', 'lead'] as $group) {
+            $this->assertNotEmpty($presented['groups'][$group]['candidates']);
+            $this->assertNotEmpty($presented['groups'][$group]['candidates'][0]['decision_ref']);
+        }
+        $this->actingAs($user)->get(route('imports.dedup.index', $import))
+            ->assertOk()
+            ->assertSee('Clínica Reimportada')
+            ->assertSee('Ana Reimportada')
+            ->assertSee('Usar registro correspondente');
+
+        $companyRef = $presented['groups']['company']['candidates'][0]['decision_ref'];
+        $this->actingAs($user)->put(route('imports.dedup.update', [$import, $row]), ['group' => 'company', 'action' => 'use_existing', 'candidate_ref' => $companyRef])->assertSessionHasNoErrors();
+        $this->actingAs($user)->put(route('imports.dedup.update', [$import, $row]), ['group' => 'contact', 'action' => 'create_new'])->assertSessionHasNoErrors();
+        $this->actingAs($user)->put(route('imports.dedup.update', [$import, $row]), ['group' => 'lead', 'action' => 'skip'])->assertSessionHasNoErrors();
+
+        $decisions = $row->refresh()->dedup_data['groups'];
+        $this->assertSame('use_existing', $decisions['company']['decision']['action']);
+        $this->assertSame('create_new', $decisions['contact']['decision']['action']);
+        $this->assertSame('skip', $decisions['lead']['decision']['action']);
+        $this->assertSame('resolved', $row->dedup_data['status']);
+    }
+
+    public function test_duplicate_screen_without_candidates_remains_available(): void
+    {
+        $import = $this->mappedImport([['company' => ['legal_name' => 'Empresa realmente inédita']]]);
+        $this->analyze($import);
+
+        $this->actingAs($this->userWithImportViewAndUpdate())->get(route('imports.dedup.index', $import))
+            ->assertOk()
+            ->assertSee('Nenhum candidato encontrado.')
+            ->assertSee('Criar novo')
+            ->assertSee('Ignorar');
+    }
+
     public function test_candidates_are_limited_and_crm_queries_are_batched_per_chunk(): void
     {
         Company::factory()->count(7)->create(['legal_name' => 'Nome Compartilhado']);
@@ -249,6 +327,15 @@ class ImportDedupTest extends TestCase
     private function candidateRef(string $source, string $entity, int $id): string
     {
         return Crypt::encryptString(json_encode(compact('source', 'entity', 'id'), JSON_THROW_ON_ERROR));
+    }
+
+    private function userWithImportViewAndUpdate(): User
+    {
+        $user = $this->userWithPermission('imports.update');
+        $permissionIds = \App\Models\Permission::whereIn('slug', ['imports.view', 'companies.view', 'contacts.view', 'leads.view'])->pluck('id');
+        $user->roles()->firstOrFail()->permissions()->attach($permissionIds);
+
+        return $user;
     }
 
     /** @param list<array<string, mixed>> $rows */

@@ -3,7 +3,9 @@
 namespace Tests\Feature\Imports;
 
 use App\Actions\Contacts\CreateContactAction;
+use App\Actions\Imports\AnalyzeImportDedupAction;
 use App\Actions\Imports\ExecuteImportAction;
+use App\Actions\Imports\UpdateImportDedupDecisionAction;
 use App\Exceptions\ImportExecutionException;
 use App\Models\AuditLog;
 use App\Models\Channel;
@@ -22,6 +24,7 @@ use Database\Seeders\PermissionSeeder;
 use Database\Seeders\RolePermissionSeeder;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
 use Tests\Concerns\InteractsWithRbac;
@@ -207,6 +210,99 @@ class ImportExecutionTest extends TestCase
             $this->assertDatabaseHas('audit_logs', ['action' => $action]);
         }
         $this->assertStringNotContainsString('Segredo Comercial', AuditLog::query()->whereIn('action', ['import_execution_started', 'import_row_executed', 'import_execution_completed'])->get()->toJson());
+    }
+
+    public function test_long_filename_is_fully_preserved_and_contained_consistently_across_import_views(): void
+    {
+        $filename = 'template_importacao_crm_compativel_com_nome_extremamente_longo_sem_pontos_de_quebra_1234567890 (2).xlsx';
+        $import = $this->executableImport([['company' => ['legal_name' => 'Empresa do relatório']]]);
+        $import->update(['original_filename' => $filename]);
+        $viewer = $this->userWithPermission('imports.view');
+
+        foreach ([route('imports.preview', $import), route('imports.execute.confirm', $import)] as $url) {
+            $this->actingAs($viewer)->get($url)
+                ->assertOk()
+                ->assertSee($filename)
+                ->assertSee('class="min-w-0" data-import-filename', false)
+                ->assertSee('class="mt-1 break-words font-semibold', false)
+                ->assertDontSee('break-all', false);
+        }
+
+        $this->execute($import);
+
+        $this->actingAs($viewer)->get(route('imports.report', $import))
+            ->assertOk()
+            ->assertSee($filename)
+            ->assertSee('class="min-w-0" data-import-filename', false)
+            ->assertSee('class="mt-1 break-words font-semibold', false)
+            ->assertDontSee('break-all', false);
+    }
+
+    public function test_ten_row_batch_reuses_one_complete_record_and_creates_nine_with_linkedin_channel(): void
+    {
+        $existingCompany = Company::factory()->create(['legal_name' => 'Empresa Existente', 'tax_id_country' => 'BR', 'tax_id' => '11222333000181']);
+        $existingContact = Contact::factory()->for($existingCompany)->create(['name' => 'Contato Existente', 'email' => 'existente@example.test']);
+        $existingLead = Lead::factory()->create(['name' => 'Lead Existente', 'company_name' => 'Empresa Existente', 'email' => 'lead-existente@example.test']);
+        $rows = [[
+            'company' => ['legal_name' => $existingCompany->legal_name, 'tax_id_country' => 'BR', 'tax_id' => $existingCompany->tax_id],
+            'contact' => ['name' => $existingContact->name, 'email' => $existingContact->email],
+            'lead' => ['name' => $existingLead->name, 'company_name' => $existingLead->company_name, 'email' => $existingLead->email],
+        ]];
+        for ($index = 1; $index <= 9; $index++) {
+            $rows[] = [
+                'company' => ['legal_name' => "Empresa Nova {$index}"],
+                'contact' => ['name' => "Contato Novo {$index}", 'email' => "contato{$index}@example.test"],
+                'lead' => ['name' => "Lead Novo {$index}", 'company_name' => "Empresa Nova {$index}", 'email' => "lead{$index}@example.test"],
+            ];
+        }
+        $import = $this->executableImport($rows);
+        $officialTargets = [
+            'company.trade_name', 'company.legal_name', 'company.tax_id', 'company.tax_id_country', 'company.segment', 'company.category',
+            'company.website', 'company.phone', 'company.email', 'company.street', 'company.number', 'company.complement', 'company.district',
+            'company.city', 'company.state', 'company.postal_code', 'company.employee_count_estimate', 'company.priority', 'company.notes',
+            'contact.name', 'contact.job_title', 'contact.department', 'contact.email', 'contact.phone', 'contact.whatsapp', 'contact.linkedin_url',
+            'contact.decision_role', 'contact.influence_level', 'contact.notes',
+            'lead.name', 'lead.company_name', 'lead.job_title', 'lead.email', 'lead.phone', 'lead.whatsapp', 'lead.status', 'lead.priority',
+            'lead.temperature', 'lead.score', 'lead.notes',
+        ];
+        $headers = array_map(fn (int $index): string => 'Cabeçalho oficial '.($index + 1), array_keys($officialTargets));
+        $metadata = $import->metadata;
+        $metadata['header'] = $headers;
+        $metadata['mapping'] = ['version' => 1, 'columns' => array_combine($headers, $officialTargets), 'ignored_columns' => []];
+        $import->update(['metadata' => $metadata]);
+        $this->assertCount(40, $import->refresh()->metadata['mapping']['columns']);
+        app(AnalyzeImportDedupAction::class)->execute($import, $this->userWithPermission('imports.update'));
+
+        $summary = $import->refresh()->metadata['dedup']['summary'];
+        $this->assertSame(10, $summary['total']);
+        $this->assertSame(9, $summary['clear']);
+        $this->assertSame(1, $summary['review']);
+        $this->assertSame(1, $summary['exact_matches']);
+        $this->assertSame(0, $summary['possible_matches']);
+        $this->assertSame(0, $summary['blocked']);
+
+        $duplicate = $import->rows()->orderBy('row_number')->firstOrFail();
+        $decisionUser = $this->userWithPermission('imports.update');
+        foreach (['company', 'contact', 'lead'] as $group) {
+            $candidate = collect($duplicate->refresh()->dedup_data['groups'][$group]['candidates'])->firstWhere('source', 'crm');
+            $reference = Crypt::encryptString(json_encode(['source' => 'crm', 'entity' => $group, 'id' => $candidate['id']], JSON_THROW_ON_ERROR));
+            app(UpdateImportDedupDecisionAction::class)->execute($import, $duplicate, $group, 'use_existing', $reference, $decisionUser);
+        }
+        $this->assertSame(9, $import->refresh()->metadata['dedup']['summary']['clear']);
+        $this->assertSame(1, $import->metadata['dedup']['summary']['resolved']);
+
+        $linkedin = Channel::query()->where('slug', 'linkedin')->firstOrFail();
+        $this->execute($import, $linkedin->id);
+
+        $execution = $import->refresh()->metadata['execution']['summary'];
+        $this->assertEqualsCanonicalizing(['success' => 9, 'reused' => 1, 'skipped' => 0, 'failed' => 0, 'blocked' => 0], $execution['rows']);
+        foreach (['company', 'contact', 'lead'] as $group) {
+            $this->assertEqualsCanonicalizing(['created' => 9, 'reused' => 1, 'skipped' => 0], $execution['entities'][$group]);
+        }
+        $this->assertSame(10, $import->imported_rows);
+        $this->assertSame(0, $import->failed_rows);
+        $this->assertSame(9, Lead::query()->whereKeyNot($existingLead->id)->where('channel_id', $linkedin->id)->count());
+        $this->assertSame('Lead Existente', $existingLead->refresh()->name);
     }
 
     public function test_company_and_contact_share_a_row_transaction(): void
