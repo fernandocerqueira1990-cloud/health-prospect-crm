@@ -11,6 +11,7 @@ use Database\Seeders\RolePermissionSeeder;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 use Tests\TestCase;
 
@@ -24,6 +25,7 @@ class RegistrationTest extends TestCase
     {
         parent::setUp();
         $this->seed(DatabaseSeeder::class);
+        RateLimiter::clear(md5('registertester@example.com|127.0.0.1'));
     }
 
     public function test_registration_page_is_available_to_guests(): void
