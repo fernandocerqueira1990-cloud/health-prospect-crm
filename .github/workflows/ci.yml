@@ -66,8 +66,8 @@ jobs:
 
       - run: composer install --no-interaction --prefer-dist --no-progress
       - run: pnpm install --frozen-lockfile
+      - run: pnpm run build
       - run: php artisan migrate --force
       - run: php artisan test
       - run: ./vendor/bin/pint --test
       - run: ./vendor/bin/phpstan analyse --memory-limit=1G
-      - run: pnpm run build
