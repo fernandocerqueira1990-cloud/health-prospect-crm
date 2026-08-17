@@ -10,6 +10,10 @@ class PermissionSeeder extends Seeder
 {
     public function run(): void
     {
+        Permission::query()
+            ->where('slug', 'imports.execute')
+            ->delete();
+
         foreach (Permission::SLUGS as $slug) {
             Permission::updateOrCreate(['slug' => $slug], [
                 'name' => Str::headline(str_replace('.', ' ', $slug)),

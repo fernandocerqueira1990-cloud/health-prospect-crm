@@ -155,3 +155,79 @@
 - PHPStan/Larastan aprovado sem erros.
 - Build Vite de produção aprovado.
 - `git diff --check` aprovado sem inconsistências.
+
+### Sprint 7 — Importação / TASK-080 CSV
+
+- Fundação do módulo de importações adicionada com tabelas `imports` e `import_rows`, models `DataImport` e `ImportRow`, relacionamentos, constraints PostgreSQL e índices operacionais.
+- Fluxo autenticado de upload CSV implementado com Form Request, Policy, RBAC (`imports.view`, `imports.create`, `imports.delete`), controller fino, Actions, Query de listagem e auditoria sanitizada.
+- Arquivos recebem nome interno UUID e são armazenados em disco Laravel privado dedicado, sem acesso público direto; nome original é preservado apenas para exibição e auditoria.
+- Reader CSV nativo implementado com `SplFileObject`, UTF-8/BOM, cabeçalho, linhas vazias, aspas e detecção conservadora de vírgula, ponto e vírgula ou TAB.
+- Parsing síncrono em streaming persiste `import_rows` em lotes configuráveis, preserva o número físico da linha, mantém `normalized_data` nulo e não cria entidades comerciais.
+- Máquina de estados inicial limitada a `uploaded`, `processing`, `parsed` e `failed`, com falhas seguras e sem conteúdo integral do CSV no Audit Log.
+- Telas responsivas de listagem, nova importação e confirmação de resultado adicionadas à navegação da Sprint 7, sem antecipar preview ou column mapper.
+- Suíte completa aprovada com 277 testes e 1070 assertions no banco exclusivo `health_prospect_crm_test`; Pint, PHPStan/Larastan, instalação pnpm congelada, build Vite e `git diff --check` aprovados.
+- Revisão pré-commit reforçou o parser com validação estrutural estrita, rejeição de aspas não fechadas, headers vazios/duplicados e divergência de colunas, usando códigos de falha sanitizados.
+- Numeração de `import_rows` passou a preservar a linha física inicial do registro, inclusive com campos CSV multilinha e linhas vazias intermediárias.
+- Nome original passou a remover caminhos Unix/Windows e caracteres de controle, além de ser limitado a 255 caracteres sem influenciar o caminho interno UUID.
+- Exclusão passou a tratar arquivo ausente de forma idempotente e a preservar registros para retry quando o filesystem falha, documentando a ausência de atomicidade distribuída.
+- Permissão legada `imports.execute` é removida de forma cirúrgica por migration e seeder idempotente, incluindo associações residuais, sem afetar permissões não relacionadas.
+- Testes PostgreSQL foram ampliados para defaults, JSONB, constraints, índices, FKs e ações `ON DELETE`.
+
+### Sprint 7 — Importação / TASK-081 XLSX
+
+- Suporte a upload e interpretação de arquivos XLSX adicionado ao fluxo autenticado de importações, preservando armazenamento privado, nomes internos UUID, RBAC e auditoria sanitizada.
+- PhpSpreadsheet adicionado como dependência com requisitos de plataforma validados, sem ignorar extensões PHP obrigatórias.
+- Reader XLSX dedicado implementado em modo somente dados, persistindo tipos escalares em `import_rows` por lotes e preservando os números físicos das linhas sem normalização comercial.
+- Somente a primeira worksheet é processada, inclusive quando oculta; worksheets posteriores são ignoradas e uma primeira worksheet vazia falha sem fallback automático.
+- Cabeçalhos vazios ou duplicados, arquivos corrompidos e dimensões acima dos limites configuráveis são rejeitados com falhas transacionais e códigos sanitizados.
+- Inspeção conservadora do ZIP e `listWorksheetInfo()` antecedem o carregamento restrito à primeira worksheet; limites e read filter reduzem, sem eliminar por completo, o maior risco de memória inerente ao XLSX.
+- Fórmulas são preservadas como conteúdo sem cálculo durante a importação; column mapper, preview, deduplicação e relatório permanecem fora do escopo desta tarefa.
+- Constraint PostgreSQL de tipos de importação ampliada de forma reversível para aceitar `csv` e `xlsx`.
+- Interface e validação de upload atualizadas para aceitar somente CSV e XLSX, mantendo o limite configurável de tamanho.
+
+### Sprint 7 — Importação / TASK-082 Column Mapper
+
+- Column Mapper adicionado para importações interpretadas, com catálogo explícito (`ImportFieldCatalog`) e whitelist de targets de Company, Contact e Lead, sem expor campos internos de relacionamento.
+- Auto-suggest conservador implementado somente para cabeçalhos de alta confiança, mantendo nomes ambíguos sem seleção automática; a tela apresenta até três amostras distintas por coluna.
+- RBAC ampliado com `imports.update`, aplicado pela `ImportPolicy` e distribuído aos papéis operacionais definidos pelo seeder de menor privilégio.
+- Mapping persistido em `imports.metadata.mapping`, incluindo versão, usuário, data, colunas mapeadas e ignoradas; remapping reconstrói os dados normalizados e remove targets anteriores.
+- `import_rows.normalized_data` passou a ser gerado a partir do mapping, com normalização conservadora de strings, e-mails, telefones, websites, identificação fiscal brasileira com país explícito, prioridades, temperatura e inteiros não ambíguos.
+- `import_rows.original_data` permanece preservado; o mapper não cria Company, Contact, Lead ou Opportunity e não antecipa Preview, deduplicação ou relatório de importação.
+- Atualizações de mapping são transacionais, processadas em chunks e registradas em auditoria sem incluir os valores comerciais das linhas.
+- Validação final aprovada com 76 testes focados e 331 assertions, suíte completa de 316 testes e 1.266 assertions, Pint, PHPStan/Larastan, Composer, auditoria de dependências, requisitos de plataforma, instalação pnpm congelada, build Vite e `git diff --check`.
+
+### Sprint 7 — Importação / TASK-083 Preview
+
+- Preview read-only adicionado em `GET /imports/{dataImport}/preview`, protegido por `imports.view` e disponível somente para importações interpretadas com mapping válido e `normalized_data` gerado.
+- Validador transitório classifica cada linha como válida, com aviso ou com erro usando apenas targets mapeados e regras derivadas dos schemas e Models de Company, Contact e Lead.
+- Validações cobrem e-mail, URLs HTTP(S), LinkedIn, telefones ambíguos, CNPJ brasileiro com país explícito, enums, inteiros, limites numéricos, comprimentos e identificadores mínimos por grupo, com códigos internos estáveis e mensagens em português.
+- Filtros por classificação, contadores completos e paginação de 25, 50 ou 100 linhas são calculados em uma varredura ordenada por lotes, sem persistir a classificação e sem carregar todas as linhas em memória.
+- Interface Blade apresenta resumo, dados compactos de empresa/contato/lead e detalhes de `original_data`, `normalized_data` e issues; todo conteúdo importado usa escaping, inclusive HTML e fórmulas exibidas apenas como texto.
+- A visualização não altera imports, import_rows, counters, status, vínculos ou dados JSON, não gera audit log e não cria Company, Contact, Lead ou Opportunity; deduplicação, merge e relatório permanecem pendentes.
+- Validação funcional aprovada com 99 testes focados e 411 assertions e suíte completa de 339 testes e 1.346 assertions no banco exclusivo `health_prospect_crm_test`.
+
+### Sprint 7 — Importação / TASK-084 Deduplicação
+
+- Etapa de Deduplicação adicionada com tela protegida por `imports.view`, análise e decisões protegidas por `imports.update`, sem criar, atualizar, mesclar ou excluir entidades comerciais.
+- Migration nova adiciona `import_rows.dedup_data` JSONB nullable; o contrato versionado separa Company, Contact e Lead, registra candidatos mínimos do CRM ou de uma linha anterior da mesma importação, razões determinísticas, status e decisão.
+- Company usa identidade fiscal composta por país e documento como match forte, sem cruzar países; nomes, e-mail, telefone e website são sinais possíveis conservadores, com inclusão de registros soft-deleted.
+- Contact considera LinkedIn e sinais de e-mail/telefone com contexto de Company, sem transformar nome comum isolado em match forte; Lead usa e-mail/telefone/WhatsApp fortes e nome com empresa como possível.
+- Duplicidades internas usam mapas de chaves normalizadas e preservam a primeira linha física como candidato, sem comparação O(N²); consultas ao CRM são executadas em lote por chunk e os candidatos ficam limitados a cinco por grupo.
+- Decisões `create_new`, `use_existing`, `reuse_import_row` e `skip` são revalidadas contra o resultado persistido, tipo, origem, mesma importação e existência atual; identidade fiscal exata de Company bloqueia `create_new`.
+- Usuários sem permissão de leitura da entidade recebem somente indicação genérica do candidato; a interface usa escaping Blade e não interpreta HTML ou fórmulas.
+- `imports.duplicate_rows` conta linhas com match forte/exato e `imports.metadata.dedup.summary` mantém contadores detalhados; reanálise substitui resultados e remapping invalida `dedup_data`, metadata e contador.
+- A análise registra auditoria sanitizada sem dados comerciais completos e persiste `analyzed_at`; a etapa final deverá revalidar constraints fortes devido a staleness e race conditions possíveis.
+- Regressão focada aprovada com 110 testes e 479 assertions e suíte completa com 350 testes e 1.414 assertions no banco exclusivo `health_prospect_crm_test`.
+
+### Sprint 7 — Importação / TASK-085 Execução final e relatório
+
+- Execução final adicionada como primeira etapa capaz de materializar Company, Contact e Lead, consumindo exclusivamente `normalized_data` e as decisões persistidas em `dedup_data`; não há merge, atualização implícita de registros existentes ou criação de Opportunity.
+- Pré-requisitos revalidam status, mapping, dados normalizados, análise de deduplicação, decisões e dependências entre linhas; `use_existing` e `reuse_import_row` são novamente conferidos no backend, e dependências futuras ou externas são rejeitadas.
+- Cada linha é executada em transação própria e na ordem Company → Contact → Lead, com rollback conjunto em falha; o import usa lock pessimista e estado `processing` para impedir execução concorrente, enquanto resultados versionados em `import_rows.execution_data` tornam uma execução concluída idempotente.
+- Criação usa whitelists explícitas e Actions do domínio. Leads recebem a origem ativa resolvida pelo slug `importacao` e um Channel ativo escolhido explicitamente pelo usuário quando houver `lead.create_new`; IDs internos enviados pelo formulário são proibidos e source/channel são revalidados durante a gravação.
+- A configuração validada fica em `imports.metadata.execution_config`; a evolução futura poderá mapear origem/canal por linha com fallback para a configuração da importação, sem fazer parte desta entrega.
+- Identidade fiscal forte de Company é reconsultada imediatamente antes de `create_new`, candidatos arquivados não são restaurados ou reutilizados, e conflitos por staleness/race condition viram falhas sanitizadas por linha.
+- `imported_rows` conta linhas com ao menos uma criação ou reutilização bem-sucedida, `failed_rows` soma linhas falhas e bloqueadas e `duplicate_rows` preserva a semântica da análise; resumos por linha e entidade ficam em metadata sem snapshots comerciais.
+- Relatório protegido por `imports.view` apresenta cards, entidades criadas/reutilizadas/ignoradas, executor, duração, erros sanitizados, filtros e paginação server-side de 50 linhas; conteúdo usa escaping Blade e IDs técnicos respeitam as Policies das entidades.
+- Auditoria registra início, resultado por linha, conclusão ou falha sem copiar `original_data`, `normalized_data` ou PII completa; execução permanece síncrona e em chunks no MVP, preparada para migração futura a Queue.
+- Validação funcional aprovada com 125 testes focados e 560 assertions e suíte completa com 365 testes e 1.495 assertions no banco exclusivo `health_prospect_crm_test`.

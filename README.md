@@ -30,13 +30,17 @@ Antes de contribuir:
 7. `TASKS.md`
 8. `PROMPT_MESTRE_V2.md`
 
+A evolução técnica e o histórico arquitetural do projeto também estão documentados
+em [`docs/`](docs/README.md), incluindo a transição da POC React/Supabase para o
+núcleo Laravel atual.
+
 ## Estado
 
 Projeto em fase de migração da prova de conceito React/Supabase para o núcleo Laravel self-hosted.
 
 ## Desenvolvimento local
 
-Requisitos: PHP 8.3+, Composer, Node.js 22+, PostgreSQL e Redis.
+Requisitos: PHP 8.4.1+, Composer, Node.js 22+, PostgreSQL e Redis.
 
 ```bash
 composer install
@@ -71,14 +75,15 @@ A aplicação interrompe a inicialização em `testing` se o banco configurado n
 terminar com `_test`. A CI mantém suas próprias credenciais temporárias para o
 mesmo banco dedicado.
 
-A POC React/Supabase está preservada em `legacy/react-supabase`, na branch
-`main` e no histórico Git. Ela não integra o núcleo Laravel.
+A POC React/Supabase está preservada em `legacy/react-supabase` e no histórico
+Git. Ela não integra o núcleo Laravel.
 
 ## Estratégia
 
 O desenvolvimento será incremental e orientado por tarefas.
 
 Cada módulo deve possuir:
+
 - modelagem;
 - migrations;
 - autorização;

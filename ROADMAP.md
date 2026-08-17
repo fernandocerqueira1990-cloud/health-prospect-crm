@@ -39,13 +39,15 @@
 - [ ] loss reasons
 
 ## Fase 4 — Dados
-- [ ] importação CSV
-- [ ] importação XLSX
-- [ ] mapping de colunas
-- [ ] preview
-- [ ] deduplicação
+- [x] importação CSV
+- [x] importação XLSX
+- [x] mapping de colunas
+- [x] preview
+- [x] deduplicação
 - [ ] merge
-- [ ] relatório de importação
+- [x] execução final e relatório de importação
+
+Sprint 7 de importação concluída; merge permanece como evolução posterior e não faz parte da execução final atual.
 
 ## Fase 5 — API
 - [ ] Sanctum
