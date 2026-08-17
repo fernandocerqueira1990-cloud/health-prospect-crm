@@ -10,7 +10,8 @@
 
 @layer components {
     .crm-sidebar {
-        @apply fixed inset-y-0 left-0 z-50 flex w-72 -translate-x-full flex-col bg-slate-950 text-slate-200 shadow-2xl transition-transform duration-200 ease-out lg:translate-x-0;
+        @apply fixed inset-y-0 left-0 z-50 flex w-72 -translate-x-full flex-col text-slate-200 shadow-2xl transition-all duration-200 ease-out lg:translate-x-0;
+        background-color: #102a43;
     }
     .crm-sidebar-backdrop {
         @apply fixed inset-0 z-40 hidden bg-slate-950/60 backdrop-blur-[1px] lg:hidden;
@@ -27,6 +28,39 @@
     .nav-link-active .nav-badge { @apply bg-slate-950/10 text-slate-950; }
     .nav-badge-muted { @apply rounded-full border border-slate-700 px-2 py-0.5 text-[10px] font-semibold text-slate-500; }
     .nav-link-active .nav-badge-muted { @apply border-slate-950/10 text-slate-800; }
+
+    .crm-main { @apply transition-[padding] duration-200 ease-out lg:pl-72; }
+
+    .pipeline-board {
+        @apply overflow-x-auto overscroll-x-contain rounded-2xl border border-slate-200 bg-slate-200/50 p-3 shadow-inner;
+        scroll-behavior: smooth;
+        scrollbar-color: #0d9488 #ccfbf1;
+        scrollbar-width: thin;
+    }
+    .pipeline-board::-webkit-scrollbar { height: 8px; }
+    .pipeline-board::-webkit-scrollbar-track { @apply rounded-full bg-teal-100; }
+    .pipeline-board::-webkit-scrollbar-thumb { @apply rounded-full bg-teal-600; }
+    .pipeline-board::-webkit-scrollbar-thumb:hover { @apply bg-teal-700; }
+    .kanban-column { max-height: calc(100vh - 15rem); overflow-y: auto; }
+    .kanban-column-header { backdrop-filter: blur(8px); }
+
+    .pipeline-filter-backdrop { @apply fixed inset-0 z-[55] hidden bg-slate-950/40 backdrop-blur-[1px]; }
+    .pipeline-filter-drawer { @apply fixed inset-y-0 right-0 z-[60] flex w-full max-w-sm translate-x-full flex-col bg-white shadow-2xl transition-transform duration-200 ease-out; }
+    body.pipeline-filter-open .pipeline-filter-backdrop { @apply block; }
+    body.pipeline-filter-open .pipeline-filter-drawer { @apply translate-x-0; }
+
+    @media (min-width: 1024px) {
+        html.sidebar-collapsed .crm-sidebar { width: 5rem; }
+        html.sidebar-collapsed .crm-main { padding-left: 5rem; }
+        html.sidebar-collapsed .sidebar-brand { justify-content: center; padding-left: 0.75rem; padding-right: 0.75rem; }
+        html.sidebar-collapsed .sidebar-brand-copy,
+        html.sidebar-collapsed .nav-section-title,
+        html.sidebar-collapsed .nav-link > span:not(.nav-mark),
+        html.sidebar-collapsed [data-active-sprint] { display: none; }
+        html.sidebar-collapsed .sidebar-collapse-button { position: absolute; left: 3.85rem; top: 1.5rem; background-color: #102a43; box-shadow: 0 0 0 1px rgb(255 255 255 / 0.15); }
+        html.sidebar-collapsed nav { padding-left: 0.75rem; padding-right: 0.75rem; }
+        html.sidebar-collapsed .nav-link { justify-content: center; gap: 0; padding-left: 0; padding-right: 0; }
+    }
 
     .card { @apply rounded-2xl border border-slate-200 bg-white p-5 shadow-sm; }
     .metric-card { @apply rounded-2xl border border-slate-200 bg-white p-5 shadow-sm; }

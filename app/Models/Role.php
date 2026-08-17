@@ -17,6 +17,8 @@ class Role extends Model
 
     public const ADMIN_SLUG = 'admin';
 
+    public const TESTER_SLUG = 'tester';
+
     protected static function booted(): void
     {
         static::updating(function (Role $role): void {

@@ -6,27 +6,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $title ?? 'Health Prospect CRM' }} — Health Prospect CRM</title>
+    <script>
+        try {
+            if (localStorage.getItem('crm-sidebar-collapsed') === 'true') {
+                document.documentElement.classList.add('sidebar-collapsed');
+            }
+        } catch (error) {
+            // O layout expandido continua sendo o fallback seguro.
+        }
+    </script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="min-h-full bg-slate-100 text-slate-800 antialiased">
     <div class="crm-sidebar-backdrop" data-sidebar-backdrop></div>
 
-    <aside class="crm-sidebar" data-sidebar-panel aria-label="Navegação principal">
-        <div class="flex h-20 items-center justify-between border-b border-slate-800 px-5">
+    <aside id="crm-sidebar" class="crm-sidebar" data-sidebar-panel aria-label="Navegação principal">
+        <div class="sidebar-brand flex h-20 items-center justify-between border-b border-white/10 px-5">
             <a href="{{ route('dashboard') }}" class="group flex min-w-0 items-center gap-3">
                 <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-teal-500 font-black text-slate-950 shadow-lg shadow-teal-950/20">HP</span>
-                <span class="min-w-0">
+                <span class="sidebar-brand-copy min-w-0">
                     <span class="block truncate text-sm font-bold tracking-tight text-white">Health Prospect</span>
                     <span class="block text-xs text-slate-400">CRM Comercial</span>
                 </span>
             </a>
+            <button type="button" class="sidebar-collapse-button hidden rounded-lg p-2 text-slate-300 hover:bg-white/10 hover:text-white lg:inline-flex" data-sidebar-collapse aria-controls="crm-sidebar" aria-expanded="true" aria-label="Recolher menu" title="Recolher menu">
+                <span aria-hidden="true" data-sidebar-collapse-icon>‹</span>
+            </button>
             <button type="button" class="rounded-lg p-2 text-slate-400 hover:bg-slate-800 hover:text-white lg:hidden" data-sidebar-close aria-label="Fechar menu">✕</button>
         </div>
 
         <nav class="flex-1 overflow-y-auto px-3 py-5">
             @can('dashboard.view')
                 <p class="nav-section-title">Visão geral</p>
-                <a href="{{ route('dashboard') }}" class="nav-link {{ request()->routeIs('dashboard') ? 'nav-link-active' : '' }}">
+                <a href="{{ route('dashboard') }}" title="Dashboard" class="nav-link {{ request()->routeIs('dashboard') ? 'nav-link-active' : '' }}">
                     <span class="nav-mark">D</span>
                     <span>Dashboard</span>
                 </a>
@@ -34,25 +46,25 @@
 
             <p class="nav-section-title mt-6">Comercial</p>
             @can('viewAny', App\Models\Company::class)
-                <a href="{{ route('companies.index') }}" class="nav-link {{ request()->routeIs('companies.*') ? 'nav-link-active' : '' }}">
+                <a href="{{ route('companies.index') }}" title="Empresas" class="nav-link {{ request()->routeIs('companies.*') ? 'nav-link-active' : '' }}">
                     <span class="nav-mark">E</span>
                     <span>Empresas</span>
                 </a>
             @endcan
             @can('viewAny', App\Models\Contact::class)
-                <a href="{{ route('contacts.index') }}" class="nav-link {{ request()->routeIs('contacts.*') ? 'nav-link-active' : '' }}">
+                <a href="{{ route('contacts.index') }}" title="Contatos" class="nav-link {{ request()->routeIs('contacts.*') ? 'nav-link-active' : '' }}">
                     <span class="nav-mark">C</span>
                     <span>Contatos</span>
                 </a>
             @endcan
             @can('viewAny', App\Models\Lead::class)
-                <a href="{{ route('leads.index') }}" class="nav-link {{ request()->routeIs('leads.*') ? 'nav-link-active' : '' }}">
+                <a href="{{ route('leads.index') }}" title="Leads" class="nav-link {{ request()->routeIs('leads.*') ? 'nav-link-active' : '' }}">
                     <span class="nav-mark">L</span>
                     <span class="flex-1">Leads</span>
                 </a>
             @endcan
             @can('viewAny', App\Models\Opportunity::class)
-                <a href="{{ route('roadmap.pipeline') }}" class="nav-link {{ request()->routeIs('roadmap.pipeline', 'opportunities.*') ? 'nav-link-active' : '' }}">
+                <a href="{{ route('roadmap.pipeline') }}" title="Pipeline" class="nav-link {{ request()->routeIs('roadmap.pipeline', 'opportunities.*') ? 'nav-link-active' : '' }}">
                     <span class="nav-mark">P</span>
                     <span class="flex-1">Pipeline</span>
                 </a>
@@ -60,13 +72,13 @@
 
             <p class="nav-section-title mt-6">Operação</p>
             @can('viewAny', App\Models\Activity::class)
-                <a href="{{ route('activities.index') }}" class="nav-link {{ request()->routeIs('activities.*') ? 'nav-link-active' : '' }}">
+                <a href="{{ route('activities.index') }}" title="Atividades" class="nav-link {{ request()->routeIs('activities.*') ? 'nav-link-active' : '' }}">
                     <span class="nav-mark">A</span>
                     <span class="flex-1">Atividades</span>
                 </a>
             @endcan
             @can('viewAny', App\Models\Task::class)
-                <a href="{{ route('tasks.index') }}" class="nav-link {{ request()->routeIs('tasks.*') ? 'nav-link-active' : '' }}">
+                <a href="{{ route('tasks.index') }}" title="Tarefas" class="nav-link {{ request()->routeIs('tasks.*') ? 'nav-link-active' : '' }}">
                     <span class="nav-mark">T</span>
                     <span class="flex-1">Tarefas</span>
                 </a>
@@ -77,6 +89,7 @@
             )
                 <a
                     href="{{ route('timeline.index') }}"
+                    title="Timeline"
                     class="nav-link {{ request()->routeIs('timeline.*') ? 'nav-link-active' : '' }}"
                 >
                     <span class="nav-mark">TL</span>
@@ -84,7 +97,7 @@
                 </a>
             @endif
 
-            <a href="{{ route('roadmap.campaigns') }}" class="nav-link {{ request()->routeIs('roadmap.campaigns') ? 'nav-link-active' : '' }}">
+            <a href="{{ route('roadmap.campaigns') }}" title="Campanhas" class="nav-link {{ request()->routeIs('roadmap.campaigns') ? 'nav-link-active' : '' }}">
                 <span class="nav-mark">M</span>
                 <span class="flex-1">Campanhas</span>
                 <span class="nav-badge-muted">Em breve</span>
@@ -92,11 +105,11 @@
 
             <p class="nav-section-title mt-6">Inteligência</p>
             @can('viewAny', App\Models\DataImport::class)
-                <a href="{{ route('imports.index') }}" class="nav-link {{ request()->routeIs('imports.*') ? 'nav-link-active' : '' }}">
+                <a href="{{ route('imports.index') }}" title="Importações" class="nav-link {{ request()->routeIs('imports.*') ? 'nav-link-active' : '' }}">
                     <span class="nav-mark">I</span><span class="flex-1">Importações</span>
                 </a>
             @endcan
-            <a href="{{ route('roadmap.reports') }}" class="nav-link {{ request()->routeIs('roadmap.reports') ? 'nav-link-active' : '' }}">
+            <a href="{{ route('roadmap.reports') }}" title="Relatórios" class="nav-link {{ request()->routeIs('roadmap.reports') ? 'nav-link-active' : '' }}">
                 <span class="nav-mark">R</span>
                 <span class="flex-1">Relatórios</span>
                 <span class="nav-badge-muted">Em breve</span>
@@ -105,22 +118,22 @@
             @if(auth()->user()->can('viewAny', App\Models\User::class) || auth()->user()->can('viewAny', App\Models\Role::class) || auth()->user()->can('viewAny', App\Models\Permission::class) || auth()->user()->can('viewAny', App\Models\AuditLog::class))
                 <p class="nav-section-title mt-6">Administração</p>
                 @can('viewAny', App\Models\User::class)
-                    <a href="{{ route('admin.users.index') }}" class="nav-link {{ request()->routeIs('admin.users.*') ? 'nav-link-active' : '' }}"><span class="nav-mark">U</span><span>Usuários</span></a>
+                    <a href="{{ route('admin.users.index') }}" title="Usuários" class="nav-link {{ request()->routeIs('admin.users.*') ? 'nav-link-active' : '' }}"><span class="nav-mark">U</span><span>Usuários</span></a>
                 @endcan
                 @can('viewAny', App\Models\Role::class)
-                    <a href="{{ route('admin.roles.index') }}" class="nav-link {{ request()->routeIs('admin.roles.*') ? 'nav-link-active' : '' }}"><span class="nav-mark">R</span><span>Roles</span></a>
+                    <a href="{{ route('admin.roles.index') }}" title="Roles" class="nav-link {{ request()->routeIs('admin.roles.*') ? 'nav-link-active' : '' }}"><span class="nav-mark">R</span><span>Roles</span></a>
                 @endcan
                 @can('viewAny', App\Models\Permission::class)
-                    <a href="{{ route('admin.permissions.index') }}" class="nav-link {{ request()->routeIs('admin.permissions.*') ? 'nav-link-active' : '' }}"><span class="nav-mark">P</span><span>Permissões</span></a>
+                    <a href="{{ route('admin.permissions.index') }}" title="Permissões" class="nav-link {{ request()->routeIs('admin.permissions.*') ? 'nav-link-active' : '' }}"><span class="nav-mark">P</span><span>Permissões</span></a>
                 @endcan
                 @can('viewAny', App\Models\AuditLog::class)
-                    <a href="{{ route('admin.audit.index') }}" class="nav-link {{ request()->routeIs('admin.audit.*') ? 'nav-link-active' : '' }}"><span class="nav-mark">A</span><span>Auditoria</span></a>
+                    <a href="{{ route('admin.audit.index') }}" title="Auditoria" class="nav-link {{ request()->routeIs('admin.audit.*') ? 'nav-link-active' : '' }}"><span class="nav-mark">A</span><span>Auditoria</span></a>
                 @endcan
             @endif
         </nav>
 
         @if($activeSprint)
-            <div class="border-t border-slate-800 p-4" data-active-sprint>
+            <div class="border-t border-white/10 p-4" data-active-sprint>
                 <div class="rounded-xl bg-slate-900 p-3">
                     <p class="text-xs font-semibold text-slate-300">Sprint atual</p>
                     <div class="mt-2 flex items-center justify-between gap-3">
@@ -135,7 +148,7 @@
         @endif
     </aside>
 
-    <div class="min-h-screen lg:pl-72">
+    <div class="crm-main min-h-screen">
         <header class="sticky top-0 z-30 flex h-20 items-center justify-between border-b border-slate-200 bg-white/95 px-4 backdrop-blur sm:px-6 lg:px-8">
             <div class="flex min-w-0 items-center gap-3">
                 <button type="button" class="rounded-lg border border-slate-200 bg-white p-2.5 text-slate-700 shadow-sm hover:bg-slate-50 lg:hidden" data-sidebar-toggle aria-label="Abrir menu">☰</button>

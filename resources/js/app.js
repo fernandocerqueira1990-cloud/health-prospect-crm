@@ -2,25 +2,111 @@ const body = document.body;
 const openButton = document.querySelector('[data-sidebar-toggle]');
 const closeButton = document.querySelector('[data-sidebar-close]');
 const backdrop = document.querySelector('[data-sidebar-backdrop]');
+const collapseButton = document.querySelector('[data-sidebar-collapse]');
+const collapseIcon = document.querySelector('[data-sidebar-collapse-icon]');
+const sidebarStorageKey = 'crm-sidebar-collapsed';
+const pipelineFilterOpen = document.querySelector('[data-pipeline-filter-open]');
+const pipelineFilterDrawer = document.querySelector(
+    '[data-pipeline-filter-drawer]',
+);
+const pipelineFilterBackdrop = document.querySelector(
+    '[data-pipeline-filter-backdrop]',
+);
+const pipelineFilterClose = document.querySelectorAll(
+    '[data-pipeline-filter-close]',
+);
 
-const openSidebar = () => {
-    body.classList.add('sidebar-open');
-    if (window.innerWidth < 1024) {
-        body.classList.add('overflow-hidden');
+const syncBodyScroll = () => {
+    const mobileSidebarOpen = body.classList.contains('sidebar-open')
+        && window.innerWidth < 1024;
+    const filterDrawerOpen = body.classList.contains('pipeline-filter-open');
+
+    body.classList.toggle(
+        'overflow-hidden',
+        mobileSidebarOpen || filterDrawerOpen,
+    );
+};
+
+const syncSidebarCollapseButton = () => {
+    const collapsed = document.documentElement.classList.contains(
+        'sidebar-collapsed',
+    );
+
+    collapseButton?.setAttribute('aria-expanded', String(!collapsed));
+    collapseButton?.setAttribute(
+        'aria-label',
+        collapsed ? 'Expandir menu' : 'Recolher menu',
+    );
+    collapseButton?.setAttribute(
+        'title',
+        collapsed ? 'Expandir menu' : 'Recolher menu',
+    );
+
+    if (collapseIcon) {
+        collapseIcon.textContent = collapsed ? '›' : '‹';
     }
 };
 
+const openSidebar = () => {
+    body.classList.add('sidebar-open');
+    syncBodyScroll();
+};
+
 const closeSidebar = () => {
-    body.classList.remove('sidebar-open', 'overflow-hidden');
+    body.classList.remove('sidebar-open');
+    syncBodyScroll();
+};
+
+const openPipelineFilters = () => {
+    body.classList.add('pipeline-filter-open');
+    pipelineFilterOpen?.setAttribute('aria-expanded', 'true');
+    pipelineFilterDrawer?.setAttribute('aria-hidden', 'false');
+    if (pipelineFilterDrawer) {
+        pipelineFilterDrawer.inert = false;
+    }
+    syncBodyScroll();
+    pipelineFilterDrawer?.querySelector('button')?.focus();
+};
+
+const closePipelineFilters = () => {
+    body.classList.remove('pipeline-filter-open');
+    pipelineFilterOpen?.setAttribute('aria-expanded', 'false');
+    pipelineFilterDrawer?.setAttribute('aria-hidden', 'true');
+    if (pipelineFilterDrawer) {
+        pipelineFilterDrawer.inert = true;
+    }
+    syncBodyScroll();
+    pipelineFilterOpen?.focus();
 };
 
 openButton?.addEventListener('click', openSidebar);
 closeButton?.addEventListener('click', closeSidebar);
 backdrop?.addEventListener('click', closeSidebar);
+pipelineFilterOpen?.addEventListener('click', openPipelineFilters);
+pipelineFilterBackdrop?.addEventListener('click', closePipelineFilters);
+pipelineFilterClose.forEach((button) => {
+    button.addEventListener('click', closePipelineFilters);
+});
+collapseButton?.addEventListener('click', () => {
+    const collapsed = document.documentElement.classList.toggle(
+        'sidebar-collapsed',
+    );
+
+    try {
+        localStorage.setItem(sidebarStorageKey, String(collapsed));
+    } catch (error) {
+        // A preferência permanece válida durante a navegação atual.
+    }
+
+    syncSidebarCollapseButton();
+});
+
+syncSidebarCollapseButton();
 
 document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
         closeSidebar();
+        closePipelineFilters();
     }
 });
 
@@ -41,6 +127,9 @@ const initPipelineKanban = () => {
 
     const cards = board.querySelectorAll('[data-kanban-card]');
     const stages = board.querySelectorAll('[data-kanban-stage]');
+    const stageVisibilityControls = document.querySelectorAll(
+        '[data-stage-visibility]',
+    );
 
     const lossModal = document.querySelector('#loss-reason-modal');
     const lossReason = document.querySelector('#kanban-loss-reason');
@@ -51,6 +140,16 @@ const initPipelineKanban = () => {
 
     let draggedCard = null;
     let pendingLostStageId = null;
+
+    stageVisibilityControls.forEach((control) => {
+        control.addEventListener('change', () => {
+            const stage = board.querySelector(
+                `[data-kanban-stage][data-stage-id="${control.value}"]`,
+            );
+
+            stage?.classList.toggle('hidden', !control.checked);
+        });
+    });
 
     const clearStageHighlight = () => {
         stages.forEach((stage) => {

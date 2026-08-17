@@ -15,6 +15,7 @@ class RoleSeeder extends Seeder
         'marketing' => ['Marketing', 'Campanhas e análise de aquisição.'],
         'analyst' => ['Analista', 'Análise e relatórios.'],
         'readonly' => ['Somente Leitura', 'Consulta sem alteração de dados.'],
+        'tester' => ['Usuário de Teste', 'Acesso aos módulos operacionais para testes do CRM.'],
     ];
 
     public function run(): void

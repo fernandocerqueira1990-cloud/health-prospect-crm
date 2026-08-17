@@ -16,8 +16,12 @@ use App\Policies\ImportPolicy;
 use App\Policies\PermissionPolicy;
 use App\Policies\RolePolicy;
 use App\Policies\UserPolicy;
+use App\Support\EmailNormalizer;
 use App\Support\Testing\TestingDatabaseGuard;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -39,6 +43,12 @@ class AppServiceProvider extends ServiceProvider
             app()->environment(),
             (string) config('database.connections.'.config('database.default').'.database'),
         );
+
+        RateLimiter::for('register', function (Request $request): Limit {
+            $email = EmailNormalizer::normalize((string) $request->input('email'));
+
+            return Limit::perMinute(5)->by($email.'|'.$request->ip());
+        });
 
         Gate::policy(User::class, UserPolicy::class);
         Gate::policy(Role::class, RolePolicy::class);
