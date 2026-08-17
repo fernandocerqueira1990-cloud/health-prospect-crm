@@ -9,6 +9,7 @@ use App\Models\DataImport;
 use App\Models\ImportRow;
 use App\Models\Lead;
 use App\Models\Opportunity;
+use App\Models\Permission;
 use App\Models\User;
 use App\Services\ImportDedupViewData;
 use Database\Seeders\PermissionSeeder;
@@ -332,7 +333,7 @@ class ImportDedupTest extends TestCase
     private function userWithImportViewAndUpdate(): User
     {
         $user = $this->userWithPermission('imports.update');
-        $permissionIds = \App\Models\Permission::whereIn('slug', ['imports.view', 'companies.view', 'contacts.view', 'leads.view'])->pluck('id');
+        $permissionIds = Permission::whereIn('slug', ['imports.view', 'companies.view', 'contacts.view', 'leads.view'])->pluck('id');
         $user->roles()->firstOrFail()->permissions()->attach($permissionIds);
 
         return $user;

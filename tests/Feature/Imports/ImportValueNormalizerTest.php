@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\Imports;
 
-use App\Services\ImportValueNormalizer;
 use App\Services\ImportPreviewValidator;
+use App\Services\ImportValueNormalizer;
 use Tests\TestCase;
 
 class ImportValueNormalizerTest extends TestCase
