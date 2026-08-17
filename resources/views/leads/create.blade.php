@@ -1,10 +1,10 @@
 <x-layouts.app title="Novo lead">
     <x-page-header
         title="Novo lead"
-        description="Cadastre um potencial cliente e registre sua origem comercial."
+        description="Cadastre uma nova oportunidade de prospecção comercial."
     />
 
-    <form class="card" method="POST" action="{{ route('leads.store') }}">
+    <form method="POST" action="{{ route('leads.store') }}">
         @csrf
 
         @include('leads._form', [

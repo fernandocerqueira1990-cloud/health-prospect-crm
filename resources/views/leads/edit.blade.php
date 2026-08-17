@@ -1,10 +1,10 @@
 <x-layouts.app title="Editar lead">
     <x-page-header
         title="Editar lead"
-        description="Atualize os dados comerciais de {{ $lead->name ?: 'Lead #'.$lead->id }}."
+        description="Atualize os dados e a qualificação comercial de {{ $lead->name ?: 'Lead #'.$lead->id }}."
     />
 
-    <form class="card" method="POST" action="{{ route('leads.update', $lead) }}">
+    <form method="POST" action="{{ route('leads.update', $lead) }}">
         @csrf
         @method('PUT')
 
