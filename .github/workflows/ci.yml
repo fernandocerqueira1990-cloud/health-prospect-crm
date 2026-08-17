@@ -34,6 +34,7 @@ jobs:
 
     env:
       APP_ENV: testing
+      APP_NAME: "Health Prospect CRM"
       APP_KEY: base64:MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDA=
       DB_CONNECTION: pgsql
       DB_HOST: 127.0.0.1
