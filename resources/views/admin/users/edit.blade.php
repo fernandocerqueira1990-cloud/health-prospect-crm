@@ -1,0 +1,1 @@
+<x-layouts.app title="Editar usuário"><x-page-header title="Editar usuário" description="Atualize os dados, roles ou estado da conta." /><form class="card" method="POST" action="{{ route('admin.users.update', $managedUser) }}">@csrf @method('PUT') @include('admin.users._form')</form></x-layouts.app>

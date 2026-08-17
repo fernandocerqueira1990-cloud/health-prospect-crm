@@ -1,0 +1,1 @@
+<x-layouts.app title="Editar role"><x-page-header title="Editar role" description="Atualize o perfil e sincronize suas permissões." /><form class="card" method="POST" action="{{ route('admin.roles.update', $role) }}">@csrf @method('PUT') @include('admin.roles._form')</form></x-layouts.app>

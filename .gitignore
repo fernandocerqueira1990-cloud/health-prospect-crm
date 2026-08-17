@@ -1,26 +1,30 @@
-# Node / frontend
-node_modules/
-dist/
-
-# Environment
+*.log
+*.tsbuildinfo
+.DS_Store
 .env
 .env.*
 !.env.example
-
-# Laravel / PHP
-vendor/
+.phpactor.json
 .phpunit.result.cache
-.tmp-laravel-scaffold/
-
-# Laravel runtime
-storage/logs/*
-storage/framework/cache/*
-storage/framework/sessions/*
-storage/framework/views/*
-
-# OS / IDE
-.DS_Store
+/.codex
+/.tmp-laravel-scaffold
+/.cursor/
+/.idea
+/.nova
+/.phpunit.cache
+/.vscode
+/.zed
+/auth.json
+/dist
+/node_modules
+/public/build
+/public/fonts-manifest.dev.json
+/public/hot
+/public/storage
+/storage/*.key
+/storage/pail
+/vendor
+_ide_helper.php
+Homestead.json
+Homestead.yaml
 Thumbs.db
-.vscode/
-.idea/
-*.tsbuildinfo
