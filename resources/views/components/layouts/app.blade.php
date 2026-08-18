@@ -100,11 +100,12 @@
                 </a>
             @endif
 
-            <a href="{{ route('roadmap.campaigns') }}" title="Campanhas" class="nav-link {{ request()->routeIs('roadmap.campaigns') ? 'nav-link-active' : '' }}">
-                <span class="nav-mark">M</span>
-                <span class="flex-1">Campanhas</span>
-                <span class="nav-badge-muted">Em breve</span>
-            </a>
+            @can('viewAny', App\Models\Campaign::class)
+                <a href="{{ route('campaigns.index') }}" title="Campanhas" class="nav-link {{ request()->routeIs('campaigns.*') ? 'nav-link-active' : '' }}">
+                    <span class="nav-mark">M</span>
+                    <span class="flex-1">Campanhas</span>
+                </a>
+            @endcan
 
             <p class="nav-section-title mt-6">Inteligência</p>
             @can('viewAny', App\Models\DataImport::class)

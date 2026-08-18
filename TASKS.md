@@ -168,13 +168,20 @@ Não misturar implementações antigas com o novo núcleo sem uma decisão expl�
 ## Sprint 8 — Campanhas
 
 - [x] TASK-090 Campaign foundation
+- [x] TASK-091 CRUD web completo de Campanhas
 
 ### Fundação da Sprint 8
 
 - Model, migration, factory, relacionamentos básicos e CampaignPolicy implementados.
 - Integridade estrutural de status, datas, orçamento, moeda e referências protegida no PostgreSQL.
 - Permissão `campaigns.delete` adicionada de forma idempotente para Administrador, Marketing e Usuário de Teste.
-- CRUD web, associação de público, métricas e tracking permanecem fora da TASK-090; `/campaigns` continua apontando para o placeholder existente.
+- CRUD web, associação de público, métricas e tracking permaneceram fora do escopo da TASK-090; naquele fechamento, `/campaigns` ainda apontava para o placeholder existente.
+
+### Validação da TASK-091
+
+- CRUD web de Campanhas concluído com RBAC por Policy, Form Requests, Actions transacionais, auditoria, paginação, soft delete e interface Blade responsiva integrada ao design system existente.
+- Canais e responsáveis inativos são bloqueados em novos vínculos e preservados na edição quando já associados; regras de status, datas, orçamento e moeda são validadas na aplicação.
+- Suíte focada aprovada com 29 testes e 100 assertions; Pint, PHPStan/Larastan, build Vite e `git diff --check` aprovados em 2026-08-18.
 
 ## Definition of Done
 

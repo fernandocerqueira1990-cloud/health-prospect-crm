@@ -88,7 +88,7 @@ class DashboardShellTest extends TestCase
             'roadmap.pipeline',
             'activities.index',
             'tasks.index',
-            'roadmap.campaigns',
+            'campaigns.index',
             'roadmap.reports',
         ] as $routeName) {
             $this->actingAs($admin)
