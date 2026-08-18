@@ -1,7 +1,7 @@
 <x-layouts.app title="Nova tarefa">
     <x-page-header
         title="Nova tarefa"
-        description="Crie uma pendência, compromisso ou próximo passo comercial."
+        description="Cadastre uma nova pendência ou compromisso."
     />
 
     <form
