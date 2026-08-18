@@ -9,7 +9,7 @@
     <section class="card mb-4 p-0" aria-labelledby="campaign-performance-title">
         <div class="border-b border-slate-200 px-4 py-3 sm:px-5">
             <h2 id="campaign-performance-title" class="text-base font-bold text-slate-950">Performance da campanha</h2>
-            <p class="mt-0.5 text-sm text-slate-500">Resultados atribuídos pelos touches registrados nos Leads.</p>
+            <p class="mt-0.5 text-sm text-slate-500">Resultados atribuídos pelas interações registradas nos Leads.</p>
         </div>
         <div class="grid gap-3 p-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7">
             <a href="#leads-da-campanha" class="block rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-600 focus:ring-offset-2">
@@ -42,10 +42,10 @@
         <x-form-section title="Planejamento"><dl class="detail-grid lg:grid-cols-3"><div class="detail-item"><dt class="detail-label">Início</dt><dd class="detail-value">{{ $campaign->start_date?->format('d/m/Y') ?? '—' }}</dd></div><div class="detail-item"><dt class="detail-label">Fim</dt><dd class="detail-value">{{ $campaign->end_date?->format('d/m/Y') ?? '—' }}</dd></div><div class="detail-item"><dt class="detail-label">Orçamento</dt><dd class="detail-value">{{ $campaign->budget !== null ? $campaign->currency.' '.number_format((float) $campaign->budget, 2, ',', '.') : '—' }}</dd></div></dl></x-form-section>
         <x-form-section title="Aquisição / UTMs"><dl class="detail-grid lg:grid-cols-3">@foreach(['utm_source' => 'UTM Source', 'utm_medium' => 'UTM Medium', 'utm_campaign' => 'UTM Campaign', 'utm_content' => 'UTM Content', 'utm_term' => 'UTM Term'] as $field => $label)<div class="detail-item"><dt class="detail-label">{{ $label }}</dt><dd class="detail-value break-words">{{ $campaign->{$field} ?? '—' }}</dd></div>@endforeach</dl></x-form-section>
         <x-form-section title="Observações"><p class="whitespace-pre-line break-words text-sm leading-6 text-slate-700">{{ $campaign->notes ?? 'Nenhuma observação registrada.' }}</p></x-form-section>
-        <div id="leads-da-campanha"><x-form-section title="Leads da campanha" description="Leads com ao menos um touch atribuído a esta campanha.">
+        <div id="leads-da-campanha"><x-form-section title="Leads da campanha" description="Leads com ao menos uma interação atribuída a esta campanha.">
             <div class="table-wrap">
                 <table class="table">
-                    <thead><tr><th>Lead</th><th>Status</th><th>Responsável</th><th>Data do vínculo/touch</th></tr></thead>
+                    <thead><tr><th>Lead</th><th>Status</th><th>Responsável</th><th>Data da interação</th></tr></thead>
                     <tbody>
                         @forelse($leads as $lead)
                             <tr>
@@ -88,6 +88,6 @@
                 @endif
             </x-form-section>
         @endif
-        @can('delete', $campaign)<section class="rounded-xl border border-red-200 bg-white p-4 shadow-sm"><h2 class="font-semibold text-red-900">Excluir campanha</h2><p class="mt-1 text-sm text-slate-600">A campanha será arquivada por soft delete.</p><form class="mt-3" method="POST" action="{{ route('campaigns.destroy', $campaign) }}" onsubmit="return confirm('Deseja excluir esta campanha?')">@csrf @method('DELETE')<button class="btn-danger" type="submit">Excluir</button></form></section>@endcan
+        @can('delete', $campaign)<section class="rounded-xl border border-red-200 bg-white p-4 shadow-sm"><h2 class="font-semibold text-red-900">Excluir campanha</h2><p class="mt-1 text-sm text-slate-600">A campanha será arquivada e deixará de aparecer nas consultas.</p><form class="mt-3" method="POST" action="{{ route('campaigns.destroy', $campaign) }}" onsubmit="return confirm('Deseja excluir esta campanha?')">@csrf @method('DELETE')<button class="btn-danger" type="submit">Excluir</button></form></section>@endcan
     </aside></div>
 </x-layouts.app>

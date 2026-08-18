@@ -165,13 +165,21 @@ Não misturar implementações antigas com o novo núcleo sem uma decisão expl�
 - Preview, confirmação de execução e relatório final ajustados responsivamente para nomes longos de arquivos, sem truncar o conteúdo.
 - Testes automatizados focados da Sprint 7 e suíte completa do projeto aprovados no fechamento técnico.
 
-## Sprint 8 — Campanhas
+## Sprint 8 — Campanhas — CONCLUÍDA
 
 - [x] TASK-090 Campaign foundation
 - [x] TASK-091 CRUD web completo de Campanhas
 - [x] TASK-092 Campaign → Lead attribution/tracking
 - [x] TASK-093 Campaign metrics
 - [x] TASK-094 Campaign filters and listing refinement
+- [x] TASK-095 Sprint 8 final validation
+
+### Validação final da Sprint 8 — TASK-095
+
+- Sprint 8 concluída com CRUD completo de Campanhas, atribuição Campaign → Lead via `LeadSourceEvent`, preservação de First/Last Touch, métricas comerciais e valores separados por moeda.
+- Busca, filtros e ordenação em whitelist, paginação com preservação de query strings, RBAC por Policy, auditoria e soft delete revisados no conjunto.
+- Revisão final sem pendências funcionais ou de segurança; textos técnicos remanescentes na interface foram traduzidos e o roadmap foi atualizado para remover a indicação antiga de Campanhas como pendente.
+- Suíte completa aprovada com 444 testes e 1.941 assertions; Pint, PHPStan/Larastan, build Vite, `git diff --check`, rotas de Campaign e ausência de placeholder de Campanhas validados em 2026-08-18.
 
 ### Decisão arquitetural da TASK-094
 
