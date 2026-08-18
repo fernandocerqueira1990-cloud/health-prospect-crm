@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 #[Fillable([
     'lead_id',
+    'campaign_id',
     'event_type',
     'source',
     'medium',
@@ -36,6 +37,12 @@ class LeadSourceEvent extends Model
     public function lead(): BelongsTo
     {
         return $this->belongsTo(Lead::class);
+    }
+
+    /** @return BelongsTo<Campaign, $this> */
+    public function campaign(): BelongsTo
+    {
+        return $this->belongsTo(Campaign::class);
     }
 
     /** @return array<string, string> */

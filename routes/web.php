@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\CampaignController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
@@ -103,12 +104,9 @@ Route::middleware(['auth', EnsureUserIsActive::class])->group(function (): void 
         [TimelineController::class, 'index'],
     )->name('timeline.index');
 
-    Route::view('/campaigns', 'modules.coming-soon', [
-        'module' => 'Campanhas',
-        'sprint' => 'Fase de Aquisição',
-        'description' => 'Organização de campanhas, canais, UTMs e atribuição de origem.',
-        'items' => ['Campanhas', 'UTM Source', 'UTM Medium', 'UTM Campaign', 'Canais', 'Conversão'],
-    ])->name('roadmap.campaigns');
+    Route::resource('campaigns', CampaignController::class);
+    Route::post('/campaigns/{campaign}/leads', [CampaignController::class, 'associateLead'])
+        ->name('campaigns.leads.store');
 
     Route::view('/reports', 'modules.coming-soon', [
         'module' => 'Relatórios',

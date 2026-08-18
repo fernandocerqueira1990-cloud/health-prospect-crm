@@ -165,6 +165,68 @@ Não misturar implementações antigas com o novo núcleo sem uma decisão expl�
 - Preview, confirmação de execução e relatório final ajustados responsivamente para nomes longos de arquivos, sem truncar o conteúdo.
 - Testes automatizados focados da Sprint 7 e suíte completa do projeto aprovados no fechamento técnico.
 
+## Sprint 8 — Campanhas — CONCLUÍDA
+
+- [x] TASK-090 Campaign foundation
+- [x] TASK-091 CRUD web completo de Campanhas
+- [x] TASK-092 Campaign → Lead attribution/tracking
+- [x] TASK-093 Campaign metrics
+- [x] TASK-094 Campaign filters and listing refinement
+- [x] TASK-095 Sprint 8 final validation
+
+### Validação final da Sprint 8 — TASK-095
+
+- Sprint 8 concluída com CRUD completo de Campanhas, atribuição Campaign → Lead via `LeadSourceEvent`, preservação de First/Last Touch, métricas comerciais e valores separados por moeda.
+- Busca, filtros e ordenação em whitelist, paginação com preservação de query strings, RBAC por Policy, auditoria e soft delete revisados no conjunto.
+- Revisão final sem pendências funcionais ou de segurança; textos técnicos remanescentes na interface foram traduzidos e o roadmap foi atualizado para remover a indicação antiga de Campanhas como pendente.
+- Suíte completa aprovada com 444 testes e 1.941 assertions; Pint, PHPStan/Larastan, build Vite, `git diff --check`, rotas de Campaign e ausência de placeholder de Campanhas validados em 2026-08-18.
+
+### Decisão arquitetural da TASK-094
+
+- A listagem de Campanhas usa `CampaignIndexRequest` para autorização e validação da query string e `CampaignIndexQuery` para busca PostgreSQL case-insensitive, filtros, ordenação em whitelist, eager loading e paginação com preservação dos parâmetros.
+- Os filtros mais frequentes permanecem na barra compacta; datas complementares e ordenação ficam na seção de filtros avançados, seguindo o padrão visual dos demais módulos.
+
+### Validação da TASK-094
+
+- Suíte focada de Campaign aprovada com 54 testes e 246 assertions, incluindo 11 testes novos da listagem.
+- Suíte completa aprovada com 444 testes e 1.941 assertions; Pint, PHPStan/Larastan, build Vite e `git diff --check` aprovados em 2026-08-18.
+
+### Decisão arquitetural da TASK-092
+
+- A atribuição Campaign → Lead usa `LeadSourceEvent` com snapshot de canal e UTMs, sem `campaign_id` em `leads` e sem relacionamento Eloquent que oculte Leads duplicados.
+- A associação manual é feita na Campaign Show, com busca server-side limitada. Campaign opcional na criação de Lead ficou fora desta task para preservar o único evento `lead_created` existente e evitar semântica ambígua entre criação e touch de campanha.
+
+### Validação da TASK-092
+
+- Atribuição Campaign → Lead concluída via `LeadSourceEvent`, com snapshot de canal/UTMs, atualização transacional de First/Last Touch, idempotência manual, auditoria e respeito a Policies e soft deletes.
+- Campaign Show concluída com busca server-side limitada, associação protegida, listagem deduplicada de Leads e paginação server-side.
+- Suítes focadas aprovadas com 39 testes e 144 assertions em Campaign e 8 testes e 43 assertions em Lead; Pint, PHPStan/Larastan, build Vite e `git diff --check` aprovados em 2026-08-18.
+
+### Decisão arquitetural da TASK-093
+
+- Lead atribuído é o Lead ativo distinto com ao menos um `LeadSourceEvent.campaign_id` da Campaign; touches repetidos não duplicam a contagem e Leads em soft delete são excluídos das métricas operacionais.
+- Opportunity atribuída é a Opportunity ativa cujo `lead_id` pertence aos Leads atribuídos; vínculos somente por Company ou Contact não atribuem a oportunidade, e Opportunities em soft delete são excluídas.
+- A situação comercial usa os timestamps do domínio: aberta sem `won_at` e `lost_at`, ganha com `won_at`, e perdida com `lost_at`.
+- Valores financeiros são agregados por `Opportunity.currency` e exibidos separadamente, sem soma entre moedas e sem conversão cambial.
+
+### Validação da TASK-093
+
+- Métricas de Campaign validadas com 43 testes e 176 assertions; a suíte de Opportunity existente em `tests/Feature/Pipeline` passou com 44 testes e 120 assertions (não existe o diretório `tests/Feature/Opportunity`).
+- Pint, PHPStan/Larastan, build Vite e `git diff --check` aprovados em 2026-08-18. A suíte completa foi tentada, mas o executor não produziu resultado verificável; por isso não foi registrada como aprovada.
+
+### Fundação da Sprint 8
+
+- Model, migration, factory, relacionamentos básicos e CampaignPolicy implementados.
+- Integridade estrutural de status, datas, orçamento, moeda e referências protegida no PostgreSQL.
+- Permissão `campaigns.delete` adicionada de forma idempotente para Administrador, Marketing e Usuário de Teste.
+- CRUD web, associação de público, métricas e tracking permaneceram fora do escopo da TASK-090; naquele fechamento, `/campaigns` ainda apontava para o placeholder existente.
+
+### Validação da TASK-091
+
+- CRUD web de Campanhas concluído com RBAC por Policy, Form Requests, Actions transacionais, auditoria, paginação, soft delete e interface Blade responsiva integrada ao design system existente.
+- Canais e responsáveis inativos são bloqueados em novos vínculos e preservados na edição quando já associados; regras de status, datas, orçamento e moeda são validadas na aplicação.
+- Suíte focada aprovada com 29 testes e 100 assertions; Pint, PHPStan/Larastan, build Vite e `git diff --check` aprovados em 2026-08-18.
+
 ## Definition of Done
 
 Uma tarefa só pode ser marcada como concluída quando:

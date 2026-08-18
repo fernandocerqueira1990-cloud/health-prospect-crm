@@ -57,11 +57,11 @@ Sprint 7 de importação concluída; merge permanece como evolução posterior e
 - [ ] integration logs
 
 ## Fase 6 — Marketing/Tracking
-- [ ] campaigns
+- [x] campaigns
 - [ ] tracking events
 - [ ] UTMs
-- [ ] first touch
-- [ ] last touch
+- [x] first touch
+- [x] last touch
 - [ ] Matomo
 
 ## Fase 7 — Analytics
