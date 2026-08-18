@@ -13,6 +13,7 @@ use App\Models\Campaign;
 use App\Models\Channel;
 use App\Models\Lead;
 use App\Models\User;
+use App\Queries\CampaignMetricsQuery;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -47,7 +48,7 @@ class CampaignController extends Controller
         return $this->authorizedRedirect($request->user(), 'campaigns.show', $campaign, __('Campanha criada com sucesso.'));
     }
 
-    public function show(Request $request, Campaign $campaign): View
+    public function show(Request $request, Campaign $campaign, CampaignMetricsQuery $metricsQuery): View
     {
         Gate::authorize('view', $campaign);
 
@@ -78,6 +79,7 @@ class CampaignController extends Controller
             'leads' => $leads,
             'leadOptions' => $leadOptions,
             'leadQuery' => $leadQuery,
+            'metrics' => $metricsQuery->get($campaign),
         ]);
     }
 

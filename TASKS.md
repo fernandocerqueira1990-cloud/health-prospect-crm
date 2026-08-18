@@ -170,6 +170,7 @@ Não misturar implementações antigas com o novo núcleo sem uma decisão expl�
 - [x] TASK-090 Campaign foundation
 - [x] TASK-091 CRUD web completo de Campanhas
 - [x] TASK-092 Campaign → Lead attribution/tracking
+- [x] TASK-093 Campaign metrics
 
 ### Decisão arquitetural da TASK-092
 
@@ -181,6 +182,18 @@ Não misturar implementações antigas com o novo núcleo sem uma decisão expl�
 - Atribuição Campaign → Lead concluída via `LeadSourceEvent`, com snapshot de canal/UTMs, atualização transacional de First/Last Touch, idempotência manual, auditoria e respeito a Policies e soft deletes.
 - Campaign Show concluída com busca server-side limitada, associação protegida, listagem deduplicada de Leads e paginação server-side.
 - Suítes focadas aprovadas com 39 testes e 144 assertions em Campaign e 8 testes e 43 assertions em Lead; Pint, PHPStan/Larastan, build Vite e `git diff --check` aprovados em 2026-08-18.
+
+### Decisão arquitetural da TASK-093
+
+- Lead atribuído é o Lead ativo distinto com ao menos um `LeadSourceEvent.campaign_id` da Campaign; touches repetidos não duplicam a contagem e Leads em soft delete são excluídos das métricas operacionais.
+- Opportunity atribuída é a Opportunity ativa cujo `lead_id` pertence aos Leads atribuídos; vínculos somente por Company ou Contact não atribuem a oportunidade, e Opportunities em soft delete são excluídas.
+- A situação comercial usa os timestamps do domínio: aberta sem `won_at` e `lost_at`, ganha com `won_at`, e perdida com `lost_at`.
+- Valores financeiros são agregados por `Opportunity.currency` e exibidos separadamente, sem soma entre moedas e sem conversão cambial.
+
+### Validação da TASK-093
+
+- Métricas de Campaign validadas com 43 testes e 176 assertions; a suíte de Opportunity existente em `tests/Feature/Pipeline` passou com 44 testes e 120 assertions (não existe o diretório `tests/Feature/Opportunity`).
+- Pint, PHPStan/Larastan, build Vite e `git diff --check` aprovados em 2026-08-18. A suíte completa foi tentada, mas o executor não produziu resultado verificável; por isso não foi registrada como aprovada.
 
 ### Fundação da Sprint 8
 
