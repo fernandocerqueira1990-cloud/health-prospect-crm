@@ -147,6 +147,35 @@
     .listing-summary { @apply mb-2 text-xs font-medium text-slate-500; }
     .listing-pagination { @apply mt-4; }
 
+    /* Compact chronological feed */
+    .timeline-list { @apply relative overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm; }
+    .timeline-event { @apply relative grid grid-cols-[2.25rem_minmax(0,1fr)] gap-3 border-b border-slate-100 px-3 py-3 last:border-b-0 hover:bg-slate-50/60 sm:grid-cols-[2.5rem_minmax(0,1fr)] sm:px-4; }
+    .timeline-event::before { content: ''; @apply absolute bottom-0 left-[1.65rem] top-0 w-px bg-slate-200 sm:left-[1.98rem]; }
+    .timeline-event:first-child::before { @apply top-5; }
+    .timeline-event:last-child::before { @apply bottom-auto h-5; }
+    .timeline-marker { @apply relative z-10 mt-0.5 flex h-7 w-7 items-center justify-center rounded-full border border-teal-200 bg-teal-50 text-[10px] font-bold text-teal-800; }
+    .timeline-event-body { @apply min-w-0; }
+    .timeline-event-heading { @apply flex min-w-0 items-start justify-between gap-3; }
+    .timeline-event-badges { @apply flex flex-wrap items-center gap-1.5; }
+    .timeline-priority { @apply text-xs font-medium text-slate-500; }
+    .timeline-event-title { @apply mt-1 text-sm font-semibold leading-5 text-slate-950; }
+    .timeline-event-title a { @apply hover:text-teal-800 hover:underline; }
+    .timeline-event-time { @apply flex shrink-0 flex-col text-right text-xs font-semibold leading-4 text-slate-700; }
+    .timeline-event-time span + span { @apply font-normal text-slate-500; }
+    .timeline-entities { @apply mt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-xs leading-4 text-slate-700; }
+    .timeline-entities strong { @apply mr-1 font-medium text-slate-500; }
+    .timeline-assignee { @apply mt-1 text-xs leading-4 text-slate-600; }
+    .timeline-assignee span { @apply mr-1 text-slate-500; }
+    .timeline-summary { @apply mt-1.5 break-words text-sm leading-5 text-slate-600; }
+    .timeline-outcome { @apply mt-1.5 break-words rounded-md bg-slate-50 px-2.5 py-1.5 text-sm leading-5 text-slate-700; }
+    .timeline-open-link { @apply mt-1.5 inline-flex rounded text-xs font-semibold text-teal-700 hover:text-teal-900 hover:underline focus-visible:outline-teal-600; }
+    .timeline-empty { @apply bg-white; }
+
+    @media (max-width: 639px) {
+        .timeline-event-heading { @apply flex-col gap-1; }
+        .timeline-event-time { @apply flex-row gap-1.5 text-left; }
+    }
+
     /* Semantic badges */
     .badge, .badge-neutral, .badge-info, .badge-success, .badge-warning, .badge-danger { @apply inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-semibold leading-4; }
     .badge-neutral { @apply border-slate-200 bg-slate-100 text-slate-700; }
