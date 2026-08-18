@@ -57,7 +57,7 @@ Sprint 7 de importação concluída; merge permanece como evolução posterior e
 - [ ] integration logs
 
 ## Fase 6 — Marketing/Tracking
-- [ ] campaigns
+- [ ] campaigns (fundação do domínio concluída na TASK-090; CRUD web pendente)
 - [ ] tracking events
 - [ ] UTMs
 - [ ] first touch

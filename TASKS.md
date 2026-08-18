@@ -165,6 +165,17 @@ Não misturar implementações antigas com o novo núcleo sem uma decisão expl�
 - Preview, confirmação de execução e relatório final ajustados responsivamente para nomes longos de arquivos, sem truncar o conteúdo.
 - Testes automatizados focados da Sprint 7 e suíte completa do projeto aprovados no fechamento técnico.
 
+## Sprint 8 — Campanhas
+
+- [x] TASK-090 Campaign foundation
+
+### Fundação da Sprint 8
+
+- Model, migration, factory, relacionamentos básicos e CampaignPolicy implementados.
+- Integridade estrutural de status, datas, orçamento, moeda e referências protegida no PostgreSQL.
+- Permissão `campaigns.delete` adicionada de forma idempotente para Administrador, Marketing e Usuário de Teste.
+- CRUD web, associação de público, métricas e tracking permanecem fora da TASK-090; `/campaigns` continua apontando para o placeholder existente.
+
 ## Definition of Done
 
 Uma tarefa só pode ser marcada como concluída quando:

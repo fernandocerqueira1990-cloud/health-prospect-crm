@@ -39,6 +39,12 @@ class User extends Authenticatable
         return $this->hasMany(Company::class, 'assigned_user_id');
     }
 
+    /** @return HasMany<Campaign, $this> */
+    public function ownedCampaigns(): HasMany
+    {
+        return $this->hasMany(Campaign::class, 'owner_user_id');
+    }
+
     /** @return HasMany<Opportunity, $this> */
     public function assignedOpportunities(): HasMany
     {

@@ -133,14 +133,30 @@ Regras implementadas na Sprint 3:
 ### campaigns
 - id
 - name
-- code
-- channel_id
-- starts_at
-- ends_at
-- budget
-- active
-- metadata JSONB
+- description nullable
+- status
+- channel_id nullable
+- owner_user_id nullable
+- start_date nullable
+- end_date nullable
+- budget nullable
+- currency, código ISO 4217 com default BRL
+- utm_source nullable
+- utm_medium nullable
+- utm_campaign nullable
+- utm_content nullable
+- utm_term nullable
+- notes nullable
 - timestamps
+- deleted_at
+
+Regras implementadas na TASK-090:
+- status aceita `draft`, `planned`, `active`, `paused`, `completed` e `cancelled`;
+- nome é obrigatório e não pode conter somente espaços;
+- `end_date` não pode ser anterior a `start_date` e orçamento não pode ser negativo;
+- moeda é armazenada em `char(3)`, limitada a três letras maiúsculas compatíveis com códigos ISO 4217, com `BRL` como default;
+- `channel_id` e `owner_user_id` usam FKs nullable com `ON DELETE SET NULL` para preservar a campanha;
+- Campaign usa soft delete; público, métricas, tracking e integrações externas permanecem fora desta fundação.
 
 ### leads
 - id
