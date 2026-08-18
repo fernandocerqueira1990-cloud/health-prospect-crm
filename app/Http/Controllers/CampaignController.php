@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Campaigns\AssociateLeadToCampaignAction;
 use App\Actions\Campaigns\CreateCampaignAction;
 use App\Actions\Campaigns\DeleteCampaignAction;
 use App\Actions\Campaigns\UpdateCampaignAction;
+use App\Http\Requests\Campaigns\AssociateLeadRequest;
 use App\Http\Requests\Campaigns\StoreCampaignRequest;
 use App\Http\Requests\Campaigns\UpdateCampaignRequest;
 use App\Models\Campaign;
 use App\Models\Channel;
+use App\Models\Lead;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
@@ -44,11 +47,49 @@ class CampaignController extends Controller
         return $this->authorizedRedirect($request->user(), 'campaigns.show', $campaign, __('Campanha criada com sucesso.'));
     }
 
-    public function show(Campaign $campaign): View
+    public function show(Request $request, Campaign $campaign): View
     {
         Gate::authorize('view', $campaign);
 
-        return view('campaigns.show', ['campaign' => $campaign->load(['channel:id,name,active', 'owner:id,name,active'])]);
+        $leads = Lead::query()
+            ->whereHas('sourceEvents', fn ($query) => $query->where('campaign_id', $campaign->id))
+            ->withMax(['sourceEvents as campaign_touched_at' => fn ($query) => $query->where('campaign_id', $campaign->id)], 'occurred_at')
+            ->with(['company:id,legal_name,trade_name', 'assignedUser:id,name'])
+            ->orderByDesc('campaign_touched_at')
+            ->orderByDesc('id')
+            ->paginate(15, ['*'], 'leads_page');
+
+        $leadOptions = collect();
+        $leadQuery = trim((string) $request->query('lead_q'));
+        if ($request->user()->can('update', $campaign) && $request->user()->can('viewAny', Lead::class) && mb_strlen($leadQuery) >= 2) {
+            $leadOptions = Lead::query()
+                ->where(function ($query) use ($leadQuery): void {
+                    $query->where('name', 'ilike', "%{$leadQuery}%")
+                        ->orWhere('company_name', 'ilike', "%{$leadQuery}%")
+                        ->orWhere('email', 'ilike', "%{$leadQuery}%");
+                })
+                ->orderBy('name')
+                ->limit(20)
+                ->get(['id', 'name', 'company_name']);
+        }
+
+        return view('campaigns.show', [
+            'campaign' => $campaign->load(['channel:id,name,slug,active', 'owner:id,name,active']),
+            'leads' => $leads,
+            'leadOptions' => $leadOptions,
+            'leadQuery' => $leadQuery,
+        ]);
+    }
+
+    public function associateLead(AssociateLeadRequest $request, Campaign $campaign, AssociateLeadToCampaignAction $action): RedirectResponse
+    {
+        $lead = Lead::query()->findOrFail($request->integer('lead_id'));
+        $event = $action->execute($campaign, $lead, $request->user());
+
+        return redirect()->route('campaigns.show', $campaign)->with(
+            'status',
+            $event->wasRecentlyCreated ? __('Lead associado à campanha com sucesso.') : __('Este lead já está associado manualmente à campanha.'),
+        );
     }
 
     public function edit(Campaign $campaign): View

@@ -105,6 +105,8 @@ Route::middleware(['auth', EnsureUserIsActive::class])->group(function (): void 
     )->name('timeline.index');
 
     Route::resource('campaigns', CampaignController::class);
+    Route::post('/campaigns/{campaign}/leads', [CampaignController::class, 'associateLead'])
+        ->name('campaigns.leads.store');
 
     Route::view('/reports', 'modules.coming-soon', [
         'module' => 'Relatórios',

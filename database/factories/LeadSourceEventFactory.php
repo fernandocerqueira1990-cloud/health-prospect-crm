@@ -17,6 +17,7 @@ class LeadSourceEventFactory extends Factory
     {
         return [
             'lead_id' => Lead::factory(),
+            'campaign_id' => null,
             'event_type' => 'touch',
             'source' => 'prospeccao-ativa',
             'medium' => 'social',

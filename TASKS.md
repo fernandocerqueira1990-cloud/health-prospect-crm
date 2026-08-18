@@ -169,6 +169,18 @@ Não misturar implementações antigas com o novo núcleo sem uma decisão expl�
 
 - [x] TASK-090 Campaign foundation
 - [x] TASK-091 CRUD web completo de Campanhas
+- [x] TASK-092 Campaign → Lead attribution/tracking
+
+### Decisão arquitetural da TASK-092
+
+- A atribuição Campaign → Lead usa `LeadSourceEvent` com snapshot de canal e UTMs, sem `campaign_id` em `leads` e sem relacionamento Eloquent que oculte Leads duplicados.
+- A associação manual é feita na Campaign Show, com busca server-side limitada. Campaign opcional na criação de Lead ficou fora desta task para preservar o único evento `lead_created` existente e evitar semântica ambígua entre criação e touch de campanha.
+
+### Validação da TASK-092
+
+- Atribuição Campaign → Lead concluída via `LeadSourceEvent`, com snapshot de canal/UTMs, atualização transacional de First/Last Touch, idempotência manual, auditoria e respeito a Policies e soft deletes.
+- Campaign Show concluída com busca server-side limitada, associação protegida, listagem deduplicada de Leads e paginação server-side.
+- Suítes focadas aprovadas com 39 testes e 144 assertions em Campaign e 8 testes e 43 assertions em Lead; Pint, PHPStan/Larastan, build Vite e `git diff --check` aprovados em 2026-08-18.
 
 ### Fundação da Sprint 8
 
