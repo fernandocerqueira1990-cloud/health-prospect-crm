@@ -171,6 +171,17 @@ Não misturar implementações antigas com o novo núcleo sem uma decisão expl�
 - [x] TASK-091 CRUD web completo de Campanhas
 - [x] TASK-092 Campaign → Lead attribution/tracking
 - [x] TASK-093 Campaign metrics
+- [x] TASK-094 Campaign filters and listing refinement
+
+### Decisão arquitetural da TASK-094
+
+- A listagem de Campanhas usa `CampaignIndexRequest` para autorização e validação da query string e `CampaignIndexQuery` para busca PostgreSQL case-insensitive, filtros, ordenação em whitelist, eager loading e paginação com preservação dos parâmetros.
+- Os filtros mais frequentes permanecem na barra compacta; datas complementares e ordenação ficam na seção de filtros avançados, seguindo o padrão visual dos demais módulos.
+
+### Validação da TASK-094
+
+- Suíte focada de Campaign aprovada com 54 testes e 246 assertions, incluindo 11 testes novos da listagem.
+- Suíte completa aprovada com 444 testes e 1.941 assertions; Pint, PHPStan/Larastan, build Vite e `git diff --check` aprovados em 2026-08-18.
 
 ### Decisão arquitetural da TASK-092
 

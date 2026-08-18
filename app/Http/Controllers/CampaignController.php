@@ -7,12 +7,14 @@ use App\Actions\Campaigns\CreateCampaignAction;
 use App\Actions\Campaigns\DeleteCampaignAction;
 use App\Actions\Campaigns\UpdateCampaignAction;
 use App\Http\Requests\Campaigns\AssociateLeadRequest;
+use App\Http\Requests\Campaigns\CampaignIndexRequest;
 use App\Http\Requests\Campaigns\StoreCampaignRequest;
 use App\Http\Requests\Campaigns\UpdateCampaignRequest;
 use App\Models\Campaign;
 use App\Models\Channel;
 use App\Models\Lead;
 use App\Models\User;
+use App\Queries\CampaignIndexQuery;
 use App\Queries\CampaignMetricsQuery;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
@@ -22,15 +24,12 @@ use Illuminate\View\View;
 
 class CampaignController extends Controller
 {
-    public function index(): View
+    public function index(CampaignIndexRequest $request, CampaignIndexQuery $query): View
     {
-        Gate::authorize('viewAny', Campaign::class);
-
         return view('campaigns.index', [
-            'campaigns' => Campaign::query()
-                ->with(['channel:id,name', 'owner:id,name'])
-                ->latest('id')
-                ->paginate(15),
+            'campaigns' => $query->paginate($request->validated()),
+            'channels' => $this->channels(),
+            'owners' => $this->owners(),
         ]);
     }
 
