@@ -17,7 +17,10 @@
     </script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="min-h-full bg-slate-100 text-slate-800 antialiased">
+<body @class([
+    'min-h-full bg-slate-100 text-slate-800 antialiased',
+    'pipeline-view' => request()->routeIs('roadmap.pipeline'),
+])>
     <div class="crm-sidebar-backdrop" data-sidebar-backdrop></div>
 
     <aside id="crm-sidebar" class="crm-sidebar" data-sidebar-panel aria-label="Navegação principal">
@@ -149,7 +152,7 @@
     </aside>
 
     <div class="crm-main min-h-screen">
-        <header class="sticky top-0 z-30 flex h-20 items-center justify-between border-b border-slate-200 bg-white/95 px-4 backdrop-blur sm:px-6 lg:px-8">
+        <header class="crm-topbar">
             <div class="flex min-w-0 items-center gap-3">
                 <button type="button" class="rounded-lg border border-slate-200 bg-white p-2.5 text-slate-700 shadow-sm hover:bg-slate-50 lg:hidden" data-sidebar-toggle aria-label="Abrir menu">☰</button>
                 <div class="min-w-0">
@@ -174,9 +177,9 @@
             </div>
         </header>
 
-        <main class="mx-auto w-full max-w-[1600px] p-4 sm:p-6 lg:p-8">
+        <main class="crm-content">
             @if(session('status'))
-                <div class="mb-5 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm font-medium text-emerald-800">{{ session('status') }}</div>
+                <div class="alert-success font-medium" role="status">{{ session('status') }}</div>
             @endif
             {{ $slot }}
         </main>

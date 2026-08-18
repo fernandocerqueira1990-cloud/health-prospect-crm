@@ -43,9 +43,12 @@ class DashboardShellTest extends TestCase
 
         $response->assertOk()
             ->assertSee('Central comercial')
+            ->assertSee('CRM operacional')
+            ->assertSee('Acesso rápido')
             ->assertSee('Hospital Horizonte')
             ->assertSee('Maria Decisora')
-            ->assertSee('Sprint 4 — Leads');
+            ->assertDontSee('Sprint 4 — Leads')
+            ->assertDontSee('Roadmap');
 
         $response->assertViewHas('stats', fn (array $stats): bool => $stats['companies'] === 2
             && $stats['high_priority_companies'] === 1

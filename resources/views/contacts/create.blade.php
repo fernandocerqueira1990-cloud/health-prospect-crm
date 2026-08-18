@@ -1,1 +1,1 @@
-<x-layouts.app title="Novo contato"><x-page-header title="Novo contato" description="Cadastre uma pessoa vinculada a uma empresa."/><form class="card" method="POST" action="{{ route('contacts.store') }}">@csrf @include('contacts._form',['contact'=>null])</form></x-layouts.app>
+<x-layouts.app title="Novo contato"><x-page-header title="Novo contato" description="Cadastre uma nova pessoa comercial."/><form method="POST" action="{{ route('contacts.store') }}">@csrf @include('contacts._form',['contact'=>null])</form></x-layouts.app>

@@ -1,7 +1,7 @@
 <x-layouts.app title="Nova atividade">
     <x-page-header
         title="Nova atividade"
-        description="Registre uma interação comercial com empresa, contato, lead ou oportunidade."
+        description="Registre uma nova interação ou ação comercial."
     />
 
     <form

@@ -1,1 +1,1 @@
-<x-layouts.app :title="'Editar '.$contact->name"><x-page-header :title="'Editar '.$contact->name" description="Atualize os dados e o relacionamento comercial."/><form class="card" method="POST" action="{{ route('contacts.update',$contact) }}">@csrf @method('PUT') @include('contacts._form')</form></x-layouts.app>
+<x-layouts.app title="Editar contato"><x-page-header title="Editar contato" description="Atualize os dados do contato."/><form method="POST" action="{{ route('contacts.update',$contact) }}">@csrf @method('PUT') @include('contacts._form')</form></x-layouts.app>
