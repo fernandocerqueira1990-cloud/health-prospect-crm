@@ -89,7 +89,7 @@ class DashboardShellTest extends TestCase
             'activities.index',
             'tasks.index',
             'campaigns.index',
-            'roadmap.reports',
+            'reports.index',
         ] as $routeName) {
             $this->actingAs($admin)
                 ->get(route($routeName))
