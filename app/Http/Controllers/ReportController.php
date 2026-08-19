@@ -7,6 +7,7 @@ use App\Queries\Reports\AcquisitionReportQuery;
 use App\Queries\Reports\CommercialSummaryQuery;
 use App\Queries\Reports\ExecutiveCommercialQuery;
 use App\Queries\Reports\FunnelReportQuery;
+use App\Queries\Reports\PipelineStageTimeQuery;
 use Illuminate\View\View;
 
 class ReportController extends Controller
@@ -17,6 +18,7 @@ class ReportController extends Controller
         ExecutiveCommercialQuery $executiveQuery,
         FunnelReportQuery $funnelQuery,
         AcquisitionReportQuery $acquisitionQuery,
+        PipelineStageTimeQuery $pipelineStageTimeQuery,
     ): View {
         $filters = $request->validated();
 
@@ -26,6 +28,7 @@ class ReportController extends Controller
             'executiveMetrics' => $executiveQuery->get($filters),
             'funnels' => $funnelQuery->get($filters),
             'acquisition' => $acquisitionQuery->get($filters),
+            'pipelineStageTimes' => $pipelineStageTimeQuery->get($filters),
         ]);
     }
 }

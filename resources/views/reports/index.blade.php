@@ -197,11 +197,90 @@
         @endforelse
     </section>
 
+
+    <section class="mt-5" aria-labelledby="stage-time-title">
+        <div class="mb-4">
+            <h2 id="stage-time-title" class="text-lg font-bold text-slate-950">Tempo por etapa</h2>
+            <p class="mt-0.5 text-sm text-slate-500">
+                Há quanto tempo as oportunidades abertas permanecem atualmente em cada etapa.
+            </p>
+            <p class="mt-1 text-xs text-slate-500">
+                O tempo considera a entrada mais recente na etapa atual; quando não há histórico de movimentação, utiliza a data de criação da oportunidade.
+            </p>
+        </div>
+
+        @forelse($pipelineStageTimes as $pipeline)
+            <article class="card mb-4">
+                <div class="flex flex-col gap-1 border-b border-slate-200 pb-4 sm:flex-row sm:items-center sm:justify-between">
+                    <h3 class="text-base font-bold text-slate-950">{{ $pipeline['pipeline_name'] }}</h3>
+                    <p class="text-sm font-medium text-slate-500">
+                        {{ $pipeline['total_open'] }}
+                        {{ $pipeline['total_open'] === 1 ? 'oportunidade aberta' : 'oportunidades abertas' }}
+                    </p>
+                </div>
+
+                <div class="mt-4 overflow-x-auto">
+                    <table class="min-w-full divide-y divide-slate-200 text-sm">
+                        <thead class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                            <tr>
+                                <th class="px-4 py-3">Etapa</th>
+                                <th class="px-4 py-3 text-right">Oportunidades</th>
+                                <th class="px-4 py-3 text-right">Tempo médio atual</th>
+                                <th class="px-4 py-3 text-right">Maior tempo atual</th>
+                            </tr>
+                        </thead>
+
+                        <tbody class="divide-y divide-slate-200 bg-white">
+                            @foreach($pipeline['stages'] as $stage)
+                                @php
+                                    $averageDays = $stage['average_hours'] / 24;
+                                    $maxDays = $stage['max_hours'] / 24;
+                                @endphp
+
+                                <tr>
+                                    <td class="px-4 py-3 font-semibold text-slate-900">
+                                        {{ $stage['stage_name'] }}
+                                    </td>
+
+                                    <td class="px-4 py-3 text-right font-medium text-slate-700">
+                                        {{ $stage['opportunities'] }}
+                                    </td>
+
+                                    <td class="px-4 py-3 text-right font-medium text-slate-700">
+                                        @if($stage['average_hours'] >= 24)
+                                            {{ number_format($averageDays, 1, ',', '.') }} dias
+                                        @else
+                                            {{ number_format($stage['average_hours'], 1, ',', '.') }} h
+                                        @endif
+                                    </td>
+
+                                    <td class="px-4 py-3 text-right font-semibold text-slate-900">
+                                        @if($stage['max_hours'] >= 24)
+                                            {{ number_format($maxDays, 1, ',', '.') }} dias
+                                        @else
+                                            {{ number_format($stage['max_hours'], 1, ',', '.') }} h
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+        @empty
+            <div class="card">
+                <p class="text-sm font-medium text-slate-600">
+                    Nenhuma oportunidade aberta encontrada no período selecionado.
+                </p>
+            </div>
+        @endforelse
+    </section>
+
     <section class="card mt-5" aria-labelledby="next-reports-title">
         <h2 id="next-reports-title" class="text-base font-bold text-slate-950">Próximas análises da Sprint</h2>
-        <p class="mt-1 text-sm text-slate-500">Esta área será ampliada com análises de pipeline e tempo por etapa.</p>
+        <p class="mt-1 text-sm text-slate-500">A próxima etapa será dedicada aos filtros e ao refinamento visual dos Relatórios.</p>
         <div class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            @foreach(['Pipeline e etapas'] as $block)
+            @foreach(['Filtros e refinamento visual'] as $block)
                 <div class="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700">{{ $block }}</div>
             @endforeach
         </div>

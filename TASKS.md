@@ -233,7 +233,7 @@ Não misturar implementações antigas com o novo núcleo sem uma decisão expl�
 - [x] TASK-101 Visão executiva comercial
 - [x] TASK-102 Funil e conversões
 - [x] TASK-103 Origem, canais e campanhas
-- [ ] TASK-104 Pipeline e tempo por etapa
+- [x] TASK-104 Pipeline e tempo por etapa
 - [ ] TASK-105 Filtros e refinamento visual
 - [ ] TASK-106 Sprint 9 final validation
 
