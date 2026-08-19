@@ -6,9 +6,16 @@
 @theme {
     --font-sans: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
-    --color-crm-navy: #102a43;
-    --color-crm-teal: #0f766e;
-    --color-crm-canvas: #f1f5f9;
+    /* Techsallus CRM brand */
+    --color-crm-navy: #12395d;
+    --color-crm-teal: #2f6fa5;
+    --color-crm-blue: #2f6fa5;
+    --color-crm-blue-dark: #245985;
+    --color-crm-blue-soft: #e8f2f9;
+    --color-crm-sky: #5ca6d6;
+    --color-crm-light: #dceef8;
+    --color-crm-ice: #f3f8fc;
+    --color-crm-canvas: #f4f7fa;
     --radius-crm-sm: 0.5rem;
     --radius-crm: 0.75rem;
     --radius-crm-lg: 1rem;
@@ -34,28 +41,27 @@
 }
 
 @layer base {
-    :focus-visible { @apply outline-2 outline-offset-2 outline-teal-600; }
+    :focus-visible { @apply outline-2 outline-offset-2 outline-crm-blue; }
     [disabled], [aria-disabled='true'] { @apply cursor-not-allowed; }
 }
 
 @layer components {
     /* Global shell */
     .crm-sidebar {
-        @apply fixed inset-y-0 left-0 z-50 flex w-72 -translate-x-full flex-col text-slate-200 shadow-2xl transition-all duration-200 ease-out lg:translate-x-0;
-        background-color: var(--color-crm-navy);
+        @apply fixed inset-y-0 left-0 z-50 flex w-72 -translate-x-full flex-col border-r border-crm-light bg-white text-slate-700 shadow-sm transition-all duration-200 ease-out lg:translate-x-0;
     }
     .crm-sidebar-backdrop { @apply fixed inset-0 z-40 hidden bg-slate-950/60 backdrop-blur-[1px] lg:hidden; }
     body.sidebar-open .crm-sidebar { @apply translate-x-0; }
     body.sidebar-open .crm-sidebar-backdrop { @apply block; }
-    .nav-section-title { @apply px-3 pb-2 text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500; }
-    .nav-link { @apply mb-1 flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-300 transition hover:bg-slate-900 hover:text-white focus-visible:outline-teal-300; }
-    .nav-link-active { @apply bg-teal-500 text-slate-950 shadow-sm hover:bg-teal-400 hover:text-slate-950; }
-    .nav-mark { @apply flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-slate-800 text-[11px] font-black text-slate-300; }
-    .nav-link-active .nav-mark { @apply bg-slate-950/10 text-slate-950; }
-    .nav-badge { @apply rounded-full bg-teal-950/60 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-teal-300; }
-    .nav-link-active .nav-badge { @apply bg-slate-950/10 text-slate-950; }
-    .nav-badge-muted { @apply rounded-full border border-slate-700 px-2 py-0.5 text-[10px] font-semibold text-slate-500; }
-    .nav-link-active .nav-badge-muted { @apply border-slate-950/10 text-slate-800; }
+    .nav-section-title { @apply px-3 pb-2 text-[11px] font-bold uppercase tracking-[0.16em] text-crm-blue; }
+    .nav-link { @apply mb-1 flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-300 transition hover:bg-slate-900 hover:text-white focus-visible:outline-crm-sky; }
+    .nav-link-active { @apply bg-crm-blue text-slate-950 shadow-sm hover:bg-crm-sky hover:text-slate-950; }
+    .nav-mark { @apply flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-crm-canvas text-[11px] font-black text-crm-blue; }
+    .nav-link-active .nav-mark { @apply bg-crm-blue text-white; }
+    .nav-badge { @apply rounded-full bg-crm-navy/60 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-crm-sky; }
+    .nav-link-active .nav-badge { @apply bg-crm-blue text-white; }
+    .nav-badge-muted { @apply rounded-full border border-crm-light px-2 py-0.5 text-[10px] font-semibold text-slate-500; }
+    .nav-link-active .nav-badge-muted { @apply border-crm-sky text-crm-blue; }
     .crm-main { @apply transition-[padding] duration-200 ease-out lg:pl-72; }
     .crm-topbar { @apply sticky top-0 z-30 flex h-20 items-center justify-between border-b border-slate-200 bg-white/95 px-4 backdrop-blur sm:px-6 lg:px-8; }
     .crm-content { @apply mx-auto w-full p-4 sm:p-6 lg:p-8; max-width: var(--crm-content-max); }
@@ -71,15 +77,15 @@
 
     /* Buttons */
     .btn, .btn-primary, .btn-secondary, .btn-ghost, .btn-danger { @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border px-4 py-2 text-sm font-semibold leading-5 shadow-sm transition focus-visible:outline-2 focus-visible:outline-offset-2 disabled:pointer-events-none disabled:opacity-50; }
-    .btn-primary { @apply border-teal-700 bg-teal-700 text-white hover:border-teal-800 hover:bg-teal-800 focus-visible:outline-teal-600; }
-    .btn-secondary { @apply border-slate-300 bg-white text-slate-700 hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-teal-600; }
-    .btn-ghost { @apply border-transparent bg-transparent text-slate-600 shadow-none hover:bg-slate-100 hover:text-slate-950 focus-visible:outline-teal-600; }
+    .btn-primary { @apply border-crm-blue bg-crm-blue text-white hover:border-crm-blue-dark hover:bg-crm-blue-dark focus-visible:outline-crm-blue; }
+    .btn-secondary { @apply border-slate-300 bg-white text-slate-700 hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-crm-blue; }
+    .btn-ghost { @apply border-transparent bg-transparent text-slate-600 shadow-none hover:bg-slate-100 hover:text-slate-950 focus-visible:outline-crm-blue; }
     .btn-danger { @apply border-red-700 bg-red-700 text-white hover:border-red-800 hover:bg-red-800 focus-visible:outline-red-600; }
     .btn-icon { @apply h-10 w-10 p-0; }
 
     /* Forms and filters */
     .label { @apply mb-1.5 block text-sm font-medium leading-5 text-slate-700; }
-    .input { @apply block min-h-10 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm leading-5 text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 hover:border-slate-400 focus:border-teal-600 focus:ring-2 focus:ring-teal-600/20 disabled:bg-slate-100 disabled:text-slate-500 disabled:opacity-100; }
+    .input { @apply block min-h-10 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm leading-5 text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 hover:border-slate-400 focus:border-crm-blue focus:ring-2 focus:ring-crm-blue/20 disabled:bg-slate-100 disabled:text-slate-500 disabled:opacity-100; }
     select.input { @apply py-2; }
     textarea.input { @apply min-h-24 resize-y; }
     .input[aria-invalid='true'], .input-error { @apply border-red-500 focus:border-red-600 focus:ring-red-600/20; }
@@ -94,13 +100,13 @@
     .filter-field-select { @apply min-w-0 sm:w-52; }
     .listing-filter-footer { @apply mt-2 flex items-start justify-between gap-3 border-t border-slate-100 pt-2; }
     .advanced-filters { @apply min-w-0 flex-1; }
-    .advanced-filters > summary { @apply inline-flex cursor-pointer list-none items-center gap-1.5 rounded-md px-1 py-1 text-sm font-semibold text-teal-700 hover:text-teal-900 focus-visible:outline-teal-600; }
+    .advanced-filters > summary { @apply inline-flex cursor-pointer list-none items-center gap-1.5 rounded-md px-1 py-1 text-sm font-semibold text-crm-blue hover:text-crm-navy focus-visible:outline-crm-blue; }
     .advanced-filters > summary::-webkit-details-marker { display: none; }
     .advanced-filters > summary::before { content: '+'; @apply text-base leading-none text-slate-500; }
     .advanced-filters[open] > summary::before { content: '−'; }
     .advanced-filter-grid { @apply mt-3 grid gap-3 border-t border-slate-100 pt-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4; }
     .advanced-filter-grid-contacts { @apply xl:grid-cols-3; }
-    .filter-clear { @apply shrink-0 rounded-md px-1 py-1 text-sm font-medium text-slate-500 hover:text-slate-900 focus-visible:outline-teal-600; }
+    .filter-clear { @apply shrink-0 rounded-md px-1 py-1 text-sm font-medium text-slate-500 hover:text-slate-900 focus-visible:outline-crm-blue; }
 
     /* Cards and sections */
     .card { @apply rounded-xl border border-slate-200 bg-white p-4 shadow-sm; }
@@ -117,7 +123,7 @@
     .form-grid-4 { @apply lg:grid-cols-4; }
     .form-actions { @apply flex flex-col-reverse gap-2 rounded-xl border border-slate-200 bg-white p-3 shadow-sm sm:flex-row sm:items-center sm:justify-end; }
     .choice-card { @apply flex min-h-16 cursor-pointer items-start gap-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-700 transition hover:border-slate-300 hover:bg-white; }
-    .choice-card input { @apply mt-1 h-4 w-4 shrink-0 rounded border-slate-300 text-teal-700 focus:ring-teal-600; }
+    .choice-card input { @apply mt-1 h-4 w-4 shrink-0 rounded border-slate-300 text-crm-blue focus:ring-crm-blue; }
     .choice-card strong { @apply block font-semibold text-slate-900; }
     .choice-card small { @apply mt-0.5 block text-xs leading-4 text-slate-500; }
     .detail-grid { @apply grid gap-x-5 gap-y-4 sm:grid-cols-2; }
@@ -141,9 +147,9 @@
     .listing-table { @apply min-w-[58rem]; }
     .listing-table th { @apply py-2 text-[11px]; }
     .listing-table td { @apply py-2 leading-5; }
-    .table-primary-link { @apply font-semibold text-teal-700 hover:text-teal-900 hover:underline; }
+    .table-primary-link { @apply font-semibold text-crm-blue hover:text-crm-navy hover:underline; }
     .table-secondary-line { @apply mt-0.5 block text-xs leading-4 text-slate-500; }
-    .table-action-link { @apply rounded-md px-2 py-1 text-xs font-semibold text-teal-700 hover:bg-teal-50 hover:text-teal-900 focus-visible:outline-teal-600; }
+    .table-action-link { @apply rounded-md px-2 py-1 text-xs font-semibold text-crm-blue hover:bg-crm-blue-soft hover:text-crm-navy focus-visible:outline-crm-blue; }
     .listing-summary { @apply mb-2 text-xs font-medium text-slate-500; }
     .listing-pagination { @apply mt-4; }
 
@@ -153,13 +159,13 @@
     .timeline-event::before { content: ''; @apply absolute bottom-0 left-[1.65rem] top-0 w-px bg-slate-200 sm:left-[1.98rem]; }
     .timeline-event:first-child::before { @apply top-5; }
     .timeline-event:last-child::before { @apply bottom-auto h-5; }
-    .timeline-marker { @apply relative z-10 mt-0.5 flex h-7 w-7 items-center justify-center rounded-full border border-teal-200 bg-teal-50 text-[10px] font-bold text-teal-800; }
+    .timeline-marker { @apply relative z-10 mt-0.5 flex h-7 w-7 items-center justify-center rounded-full border border-crm-light bg-crm-blue-soft text-[10px] font-bold text-crm-blue-dark; }
     .timeline-event-body { @apply min-w-0; }
     .timeline-event-heading { @apply flex min-w-0 items-start justify-between gap-3; }
     .timeline-event-badges { @apply flex flex-wrap items-center gap-1.5; }
     .timeline-priority { @apply text-xs font-medium text-slate-500; }
     .timeline-event-title { @apply mt-1 text-sm font-semibold leading-5 text-slate-950; }
-    .timeline-event-title a { @apply hover:text-teal-800 hover:underline; }
+    .timeline-event-title a { @apply hover:text-crm-blue-dark hover:underline; }
     .timeline-event-time { @apply flex shrink-0 flex-col text-right text-xs font-semibold leading-4 text-slate-700; }
     .timeline-event-time span + span { @apply font-normal text-slate-500; }
     .timeline-entities { @apply mt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-xs leading-4 text-slate-700; }
@@ -168,7 +174,7 @@
     .timeline-assignee span { @apply mr-1 text-slate-500; }
     .timeline-summary { @apply mt-1.5 break-words text-sm leading-5 text-slate-600; }
     .timeline-outcome { @apply mt-1.5 break-words rounded-md bg-slate-50 px-2.5 py-1.5 text-sm leading-5 text-slate-700; }
-    .timeline-open-link { @apply mt-1.5 inline-flex rounded text-xs font-semibold text-teal-700 hover:text-teal-900 hover:underline focus-visible:outline-teal-600; }
+    .timeline-open-link { @apply mt-1.5 inline-flex rounded text-xs font-semibold text-crm-blue hover:text-crm-navy hover:underline focus-visible:outline-crm-blue; }
     .timeline-empty { @apply bg-white; }
 
     @media (max-width: 639px) {
@@ -199,9 +205,9 @@
     .action-menu > summary { @apply list-none; }
     .action-menu > summary::-webkit-details-marker { display: none; }
     .action-menu-panel { @apply absolute right-0 z-20 mt-1 min-w-44 rounded-lg border border-slate-200 bg-white p-1 shadow-lg; }
-    .action-menu-item { @apply flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm text-slate-700 transition hover:bg-slate-100 hover:text-slate-950 focus-visible:outline-teal-600; }
+    .action-menu-item { @apply flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm text-slate-700 transition hover:bg-slate-100 hover:text-slate-950 focus-visible:outline-crm-blue; }
 
-    .quick-action { @apply flex min-h-16 items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 transition hover:-translate-y-0.5 hover:border-teal-300 hover:bg-teal-50 hover:shadow-sm; }
+    .quick-action { @apply flex min-h-16 items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 transition hover:-translate-y-0.5 hover:border-crm-sky hover:bg-crm-blue-soft hover:shadow-sm; }
     .quick-action-icon { @apply flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-950 text-sm font-black text-white; }
     .quick-action strong { @apply block text-sm font-bold text-slate-900; }
     .quick-action small { @apply mt-0.5 block text-xs leading-4 text-slate-500; }
@@ -214,9 +220,9 @@
         scrollbar-width: thin;
     }
     .pipeline-board::-webkit-scrollbar { height: 8px; }
-    .pipeline-board::-webkit-scrollbar-track { @apply rounded-full bg-teal-100; }
-    .pipeline-board::-webkit-scrollbar-thumb { @apply rounded-full bg-teal-600; }
-    .pipeline-board::-webkit-scrollbar-thumb:hover { @apply bg-teal-700; }
+    .pipeline-board::-webkit-scrollbar-track { @apply rounded-full bg-crm-light; }
+    .pipeline-board::-webkit-scrollbar-thumb { @apply rounded-full bg-crm-blue; }
+    .pipeline-board::-webkit-scrollbar-thumb:hover { @apply bg-crm-blue; }
     .kanban-column { max-height: calc(100vh - 15rem); overflow-y: auto; }
     .kanban-column-header { backdrop-filter: blur(8px); }
     .pipeline-filter-backdrop { @apply fixed inset-0 z-[55] hidden bg-slate-950/40 backdrop-blur-[1px]; }
@@ -242,4 +248,221 @@
         html.sidebar-collapsed nav { padding-left: 0.75rem; padding-right: 0.75rem; }
         html.sidebar-collapsed .nav-link { justify-content: center; gap: 0; padding-left: 0; padding-right: 0; }
     }
+}
+
+/* Techsallus CRM — sidebar branding */
+@media (min-width: 1024px) {
+    html.sidebar-collapsed .sidebar-brand-full {
+        display: none;
+    }
+
+    html.sidebar-collapsed .sidebar-brand-mark {
+        display: flex;
+    }
+
+    html:not(.sidebar-collapsed) .sidebar-brand-mark {
+        display: none;
+    }
+}
+
+
+/* Techsallus CRM — sidebar branca */
+.crm-sidebar .sidebar-brand-full {
+    @apply border border-crm-light bg-white shadow-sm;
+}
+
+.crm-sidebar .sidebar-brand-mark {
+    @apply bg-crm-blue text-white shadow-sm;
+}
+
+.crm-sidebar .sidebar-brand-copy > span:first-child {
+    @apply text-crm-blue;
+}
+
+.crm-sidebar .sidebar-brand-copy > span:last-child {
+    @apply text-slate-500;
+}
+
+
+/* TECHSALLUS UI TUNING - SIDEBAR/TOPBAR START */
+
+/* Sidebar */
+.crm-sidebar {
+    background: #ffffff !important;
+    border-right: 1px solid var(--color-crm-light);
+    color: var(--color-crm-blue);
+    box-shadow: 0 2px 18px rgba(18, 57, 93, 0.06);
+}
+
+.crm-sidebar .sidebar-brand-full {
+    justify-content: center !important;
+    gap: 0 !important;
+    padding: 0.75rem !important;
+    background: #ffffff !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.crm-sidebar .sidebar-brand-copy {
+    display: none !important;
+}
+
+.crm-sidebar .nav-section-title {
+    color: var(--color-crm-blue) !important;
+    opacity: 0.95;
+}
+
+.crm-sidebar .nav-link {
+    color: var(--color-crm-sky) !important;
+    background: transparent !important;
+    border: 1px solid transparent !important;
+    opacity: 1 !important;
+}
+
+.crm-sidebar .nav-link:hover {
+    color: var(--color-crm-blue) !important;
+    background: var(--color-crm-light) !important;
+    border-color: var(--color-crm-light) !important;
+}
+
+.crm-sidebar .nav-link span,
+.crm-sidebar .nav-link strong,
+.crm-sidebar .nav-link small {
+    color: inherit !important;
+}
+
+.crm-sidebar .nav-mark {
+    background: #eef5fb !important;
+    color: var(--color-crm-blue) !important;
+    border: 1px solid #d7e7f3;
+}
+
+.crm-sidebar .nav-link-active {
+    background: var(--color-crm-blue) !important;
+    color: #ffffff !important;
+    border: 1px solid var(--color-crm-blue) !important;
+    box-shadow: 0 8px 20px rgba(47, 111, 165, 0.18);
+}
+
+.crm-sidebar .nav-link-active:hover {
+    background: var(--color-crm-blue) !important;
+    color: #ffffff !important;
+}
+
+.crm-sidebar .nav-link-active span,
+.crm-sidebar .nav-link-active strong,
+.crm-sidebar .nav-link-active small {
+    color: #ffffff !important;
+}
+
+.crm-sidebar .nav-link-active .nav-mark {
+    background: rgba(255, 255, 255, 0.18) !important;
+    color: #ffffff !important;
+    border-color: rgba(255, 255, 255, 0.18) !important;
+}
+
+.crm-sidebar .nav-badge,
+.crm-sidebar .nav-badge-muted {
+    background: #eef5fb !important;
+    color: var(--color-crm-blue) !important;
+    border-color: #d7e7f3 !important;
+}
+
+.crm-sidebar .nav-link-active .nav-badge,
+.crm-sidebar .nav-link-active .nav-badge-muted {
+    background: rgba(255,255,255,0.18) !important;
+    color: #ffffff !important;
+    border-color: rgba(255,255,255,0.18) !important;
+}
+
+/* Topbar / cabeçalho superior interno */
+.crm-topbar {
+    background: linear-gradient(90deg, #dceef8 0%, #eef5fb 55%, #f8fbfd 100%) !important;
+    border-bottom: 1px solid #d7e7f3 !important;
+    box-shadow: 0 1px 0 rgba(18, 57, 93, 0.03);
+}
+
+.crm-topbar .page-title {
+    color: var(--color-crm-navy) !important;
+    font-weight: 700 !important;
+}
+
+.crm-topbar .page-subtitle {
+    color: var(--color-crm-blue) !important;
+}
+
+/* Nome do usuário no topo */
+.crm-topbar .text-slate-950,
+.crm-topbar .text-slate-900 {
+    color: var(--color-crm-navy) !important;
+}
+
+.crm-topbar .text-slate-500,
+.crm-topbar .text-slate-600 {
+    color: var(--color-crm-blue) !important;
+}
+
+/* Avatar e botão sair harmonizados */
+.crm-topbar .rounded-full {
+    background-color: var(--color-crm-blue);
+    color: #ffffff;
+}
+
+.crm-topbar .btn-secondary,
+.crm-topbar a[href*="logout"],
+.crm-topbar button {
+    border-color: #d7e7f3;
+}
+
+/* TECHSALLUS UI TUNING - SIDEBAR/TOPBAR END */
+
+
+/* TECHSALLUS CRM — Dashboard */
+.metric-card {
+    border-color: var(--color-crm-light) !important;
+    background: #ffffff !important;
+}
+
+.metric-label {
+    color: var(--color-crm-blue) !important;
+}
+
+.metric-value {
+    color: var(--color-crm-navy) !important;
+}
+
+.metric-help {
+    color: #64748b !important;
+}
+
+.quick-action {
+    border-color: var(--color-crm-light) !important;
+    background: #ffffff !important;
+}
+
+.quick-action:hover {
+    border-color: var(--color-crm-sky) !important;
+    background: var(--color-crm-ice) !important;
+}
+
+.quick-action-icon {
+    background: var(--color-crm-blue) !important;
+    color: #ffffff !important;
+}
+
+.quick-action strong {
+    color: var(--color-crm-navy) !important;
+}
+
+.quick-action small {
+    color: #64748b !important;
+}
+
+.card {
+    border-color: var(--color-crm-light) !important;
+}
+
+.card-title,
+.section-title {
+    color: var(--color-crm-navy) !important;
 }
