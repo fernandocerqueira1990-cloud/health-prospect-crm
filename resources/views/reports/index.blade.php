@@ -25,6 +25,84 @@
         </form>
     </section>
 
+    <section class="mt-5" aria-labelledby="acquisition-title">
+        <div class="mb-4">
+            <h2 id="acquisition-title" class="text-lg font-bold text-slate-950">Origem e aquisição</h2>
+            <p class="mt-0.5 text-sm text-slate-500">Como os Leads criados no período chegaram ao CRM.</p>
+            <p class="mt-1 text-xs text-slate-500">Origem e canal consideram o First Touch de cada Lead, com fallback para o cadastro do Lead.</p>
+        </div>
+
+        <div class="grid gap-4 lg:grid-cols-2">
+            @foreach([
+                ['title' => 'Origem dos Leads', 'items' => $acquisition['sources'], 'empty' => 'Nenhuma origem registrada no período.'],
+                ['title' => 'Canais', 'items' => $acquisition['channels'], 'empty' => 'Nenhum canal registrado no período.'],
+            ] as $distribution)
+                <article class="card">
+                    <h3 class="text-base font-bold text-slate-950">{{ $distribution['title'] }}</h3>
+                    <div class="mt-4 space-y-4">
+                        @forelse($distribution['items'] as $item)
+                            <div>
+                                <div class="mb-1.5 flex items-baseline justify-between gap-4 text-sm">
+                                    <p class="font-semibold text-slate-800">{{ $item['name'] }}</p>
+                                    <p class="shrink-0 text-slate-600">{{ $item['count'] }} · <span class="font-semibold text-slate-800">{{ number_format($item['percentage'], 1, ',', '.') }}%</span></p>
+                                </div>
+                                <div class="h-2 overflow-hidden rounded-full bg-slate-100" role="progressbar" aria-label="{{ $item['name'] }}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ $item['percentage'] }}">
+                                    <div class="h-full rounded-full bg-blue-600" style="width: {{ $item['percentage'] }}%"></div>
+                                </div>
+                            </div>
+                        @empty
+                            <p class="text-sm font-medium text-slate-600">{{ $distribution['empty'] }}</p>
+                        @endforelse
+                    </div>
+                </article>
+            @endforeach
+        </div>
+    </section>
+
+    <section class="mt-5" aria-labelledby="campaign-performance-title">
+        <div class="mb-4">
+            <h2 id="campaign-performance-title" class="text-lg font-bold text-slate-950">Performance por campanha</h2>
+            <p class="mt-0.5 text-sm text-slate-500">Resultados das campanhas atribuídas aos Leads criados no período.</p>
+            <p class="mt-1 text-xs text-slate-500">Um Lead pode aparecer em campanhas diferentes; os totais das campanhas não representam atribuição exclusiva.</p>
+        </div>
+
+        <div class="card overflow-hidden p-0">
+            @if($acquisition['campaigns'] === [])
+                <p class="p-5 text-sm font-medium text-slate-600">Nenhuma campanha com Leads atribuídos no período.</p>
+            @else
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-slate-200 text-sm">
+                        <thead class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                            <tr>
+                                <th class="px-4 py-3">Campanha</th>
+                                <th class="px-4 py-3 text-right">Leads</th>
+                                <th class="px-4 py-3 text-right">Oportunidades</th>
+                                <th class="px-4 py-3 text-right">Ganhas</th>
+                                <th class="px-4 py-3 text-right">Lead → Oportunidade</th>
+                                <th class="px-4 py-3 text-right">Oportunidade → Ganho</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200 bg-white">
+                            @foreach($acquisition['campaigns'] as $campaign)
+                                <tr>
+                                    <td class="px-4 py-3">
+                                        <p class="font-semibold text-slate-900">{{ $campaign['name'] }}</p>
+                                        @if($campaign['channel'])<p class="text-xs text-slate-500">{{ $campaign['channel'] }}</p>@endif
+                                    </td>
+                                    <td class="px-4 py-3 text-right font-medium text-slate-700">{{ $campaign['attributed_leads'] }}</td>
+                                    <td class="px-4 py-3 text-right font-medium text-slate-700">{{ $campaign['opportunities'] }}</td>
+                                    <td class="px-4 py-3 text-right font-medium text-slate-700">{{ $campaign['won_opportunities'] }}</td>
+                                    <td class="px-4 py-3 text-right font-semibold text-slate-900">{{ number_format($campaign['lead_to_opportunity_conversion'], 1, ',', '.') }}%</td>
+                                    <td class="px-4 py-3 text-right font-semibold text-slate-900">{{ number_format($campaign['opportunity_to_won_conversion'], 1, ',', '.') }}%</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @endif
+        </div>
+    </section>
+
     <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <x-metric-card label="Leads criados" :value="$metrics['leads']" help="Leads cadastrados no período" />
         <x-metric-card label="Oportunidades" :value="$metrics['opportunities']" help="Oportunidades criadas no período" />
@@ -121,9 +199,9 @@
 
     <section class="card mt-5" aria-labelledby="next-reports-title">
         <h2 id="next-reports-title" class="text-base font-bold text-slate-950">Próximas análises da Sprint</h2>
-        <p class="mt-1 text-sm text-slate-500">Esta área será ampliada com análises de origens, campanhas, pipeline e tempo por etapa.</p>
+        <p class="mt-1 text-sm text-slate-500">Esta área será ampliada com análises de pipeline e tempo por etapa.</p>
         <div class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            @foreach(['Origens e campanhas', 'Pipeline e etapas'] as $block)
+            @foreach(['Pipeline e etapas'] as $block)
                 <div class="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700">{{ $block }}</div>
             @endforeach
         </div>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Reports\ReportIndexRequest;
+use App\Queries\Reports\AcquisitionReportQuery;
 use App\Queries\Reports\CommercialSummaryQuery;
 use App\Queries\Reports\ExecutiveCommercialQuery;
 use App\Queries\Reports\FunnelReportQuery;
@@ -15,6 +16,7 @@ class ReportController extends Controller
         CommercialSummaryQuery $summaryQuery,
         ExecutiveCommercialQuery $executiveQuery,
         FunnelReportQuery $funnelQuery,
+        AcquisitionReportQuery $acquisitionQuery,
     ): View {
         $filters = $request->validated();
 
@@ -23,6 +25,7 @@ class ReportController extends Controller
             'metrics' => $summaryQuery->get($filters),
             'executiveMetrics' => $executiveQuery->get($filters),
             'funnels' => $funnelQuery->get($filters),
+            'acquisition' => $acquisitionQuery->get($filters),
         ]);
     }
 }

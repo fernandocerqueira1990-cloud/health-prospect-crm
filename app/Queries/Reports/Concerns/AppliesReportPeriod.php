@@ -14,14 +14,14 @@ trait AppliesReportPeriod
      * @param  array{date_from?: string|null, date_to?: string|null}  $filters
      * @return Builder<TModel>
      */
-    private function applyPeriod(Builder $query, array $filters): Builder
+    private function applyPeriod(Builder $query, array $filters, string $column = 'created_at'): Builder
     {
         if (! empty($filters['date_from'])) {
-            $query->where('created_at', '>=', CarbonImmutable::createFromFormat('Y-m-d', $filters['date_from'])->startOfDay());
+            $query->where($column, '>=', CarbonImmutable::createFromFormat('Y-m-d', $filters['date_from'])->startOfDay());
         }
 
         if (! empty($filters['date_to'])) {
-            $query->where('created_at', '<', CarbonImmutable::createFromFormat('Y-m-d', $filters['date_to'])->addDay()->startOfDay());
+            $query->where($column, '<', CarbonImmutable::createFromFormat('Y-m-d', $filters['date_to'])->addDay()->startOfDay());
         }
 
         return $query;
