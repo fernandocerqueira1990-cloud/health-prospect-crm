@@ -396,3 +396,50 @@ const initPipelineKanban = () => {
 };
 
 document.addEventListener('DOMContentLoaded', initPipelineKanban);
+
+/* Techsallus CRM — preserve sidebar scroll position */
+const initSidebarScrollPersistence = () => {
+    const sidebarNav = document.querySelector('[data-sidebar-nav]');
+
+    if (!sidebarNav) {
+        return;
+    }
+
+    const storageKey = 'techsallus-crm-sidebar-scroll-top';
+
+    try {
+        const storedPosition = sessionStorage.getItem(storageKey);
+
+        if (storedPosition !== null) {
+            sidebarNav.scrollTop = Number(storedPosition);
+        }
+    } catch {
+        // Mantém o comportamento normal caso sessionStorage não esteja disponível.
+    }
+
+    const saveScrollPosition = () => {
+        try {
+            sessionStorage.setItem(
+                storageKey,
+                String(sidebarNav.scrollTop),
+            );
+        } catch {
+            // A navegação continua funcionando normalmente.
+        }
+    };
+
+    sidebarNav.addEventListener('scroll', saveScrollPosition, {
+        passive: true,
+    });
+
+    sidebarNav.querySelectorAll('a[href]').forEach((link) => {
+        link.addEventListener('click', saveScrollPosition);
+    });
+
+    window.addEventListener('pagehide', saveScrollPosition);
+};
+
+document.addEventListener(
+    'DOMContentLoaded',
+    initSidebarScrollPersistence,
+);

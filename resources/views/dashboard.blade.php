@@ -1,20 +1,20 @@
 <x-layouts.app title="Dashboard">
-    <section class="mb-5 overflow-hidden rounded-xl bg-slate-950 shadow-sm" aria-labelledby="dashboard-title">
+    <section class="mb-5 overflow-hidden rounded-2xl border border-crm-light bg-white shadow-sm" aria-labelledby="dashboard-title">
         <div class="grid gap-4 px-5 py-5 sm:px-6 lg:grid-cols-[1.45fr_.55fr] lg:items-center lg:py-6">
             <div class="min-w-0">
-                <p class="text-xs font-bold uppercase tracking-[0.18em] text-teal-400">Central comercial</p>
-                <h1 id="dashboard-title" class="mt-1.5 text-2xl font-bold tracking-tight text-white sm:text-3xl">
+                <p class="text-xs font-bold uppercase tracking-[0.18em] text-crm-blue">Central comercial</p>
+                <h1 id="dashboard-title" class="mt-1.5 text-2xl font-bold tracking-tight text-crm-navy sm:text-3xl">
                     Olá, {{ str(auth()->user()->name)->before(' ') }}.
                 </h1>
-                <p class="mt-1.5 max-w-2xl text-sm leading-5 text-slate-300">Acompanhe os principais indicadores e acesse rapidamente sua operação comercial.</p>
+                <p class="mt-1.5 max-w-2xl text-sm leading-5 text-slate-600">Acompanhe os principais indicadores e acesse rapidamente sua operação comercial.</p>
             </div>
 
-            <div class="rounded-xl border border-slate-800 bg-slate-900/80 px-4 py-3">
+            <div class="rounded-xl border border-crm-light bg-crm-ice px-4 py-3">
                 <div class="flex items-center gap-3">
-                    <span class="status-dot" aria-hidden="true"></span>
+                    <span class="h-3 w-3 shrink-0 rounded-full bg-crm-sky shadow-[0_0_0_4px_rgba(92,166,214,0.14)]" aria-hidden="true"></span>
                     <div class="min-w-0">
-                        <p class="text-xs font-bold uppercase tracking-wider text-teal-400">CRM operacional</p>
-                        <p class="mt-0.5 text-sm leading-5 text-slate-300">Empresas, contatos, leads e pipeline em um só ambiente.</p>
+                        <p class="text-xs font-bold uppercase tracking-wider text-crm-blue">CRM operacional</p>
+                        <p class="mt-0.5 text-sm leading-5 text-slate-600">Empresas, contatos, leads e pipeline em um só ambiente.</p>
                     </div>
                 </div>
             </div>
@@ -85,7 +85,7 @@
                         <h2 id="recent-companies-title" class="text-base font-bold text-slate-950">Empresas recentes</h2>
                         <p class="text-sm text-slate-500">Últimos cadastros realizados.</p>
                     </div>
-                    <a href="{{ route('companies.index') }}" class="shrink-0 text-sm font-bold text-teal-700 hover:text-teal-900">Ver todas</a>
+                    <a href="{{ route('companies.index') }}" class="shrink-0 text-sm font-bold text-crm-blue hover:text-crm-blue-dark">Ver todas</a>
                 </div>
                 <div class="divide-y divide-slate-100">
                     @forelse($recentCompanies as $company)
@@ -110,7 +110,7 @@
                         <h2 id="recent-contacts-title" class="text-base font-bold text-slate-950">Contatos recentes</h2>
                         <p class="text-sm text-slate-500">Pessoas adicionadas mais recentemente.</p>
                     </div>
-                    <a href="{{ route('contacts.index') }}" class="shrink-0 text-sm font-bold text-teal-700 hover:text-teal-900">Ver todos</a>
+                    <a href="{{ route('contacts.index') }}" class="shrink-0 text-sm font-bold text-crm-blue hover:text-crm-blue-dark">Ver todos</a>
                 </div>
                 <div class="divide-y divide-slate-100">
                     @forelse($recentContacts as $contact)
