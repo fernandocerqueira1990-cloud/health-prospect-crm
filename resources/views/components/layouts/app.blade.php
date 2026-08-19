@@ -113,11 +113,12 @@
                     <span class="nav-mark">I</span><span class="flex-1">Importações</span>
                 </a>
             @endcan
-            <a href="{{ route('roadmap.reports') }}" title="Relatórios" class="nav-link {{ request()->routeIs('roadmap.reports') ? 'nav-link-active' : '' }}">
-                <span class="nav-mark">R</span>
-                <span class="flex-1">Relatórios</span>
-                <span class="nav-badge-muted">Em breve</span>
-            </a>
+            @can('reports.view')
+                <a href="{{ route('reports.index') }}" title="Relatórios" class="nav-link {{ request()->routeIs('reports.*') ? 'nav-link-active' : '' }}">
+                    <span class="nav-mark">R</span>
+                    <span class="flex-1">Relatórios</span>
+                </a>
+            @endcan
 
             @if(auth()->user()->can('viewAny', App\Models\User::class) || auth()->user()->can('viewAny', App\Models\Role::class) || auth()->user()->can('viewAny', App\Models\Permission::class) || auth()->user()->can('viewAny', App\Models\AuditLog::class))
                 <p class="nav-section-title mt-6">Administração</p>

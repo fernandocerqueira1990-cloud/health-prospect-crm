@@ -19,6 +19,7 @@ use App\Http\Controllers\ImportPreviewController;
 use App\Http\Controllers\ImportReportController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\OpportunityController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TimelineController;
 use App\Http\Middleware\EnsureUserIsActive;
@@ -108,12 +109,7 @@ Route::middleware(['auth', EnsureUserIsActive::class])->group(function (): void 
     Route::post('/campaigns/{campaign}/leads', [CampaignController::class, 'associateLead'])
         ->name('campaigns.leads.store');
 
-    Route::view('/reports', 'modules.coming-soon', [
-        'module' => 'Relatórios',
-        'sprint' => 'Fase Analytics',
-        'description' => 'Indicadores comerciais e futura integração com Grafana.',
-        'items' => ['Funil', 'Conversão', 'Origem dos Leads', 'Performance Comercial', 'Tempo por Etapa', 'Grafana'],
-    ])->name('roadmap.reports');
+    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
 
     Route::get('/companies/operation-complete', [CompanyController::class, 'mutationComplete'])->name('companies.mutation-complete');
     Route::resource('companies', CompanyController::class);

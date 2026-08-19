@@ -227,6 +227,16 @@ Não misturar implementações antigas com o novo núcleo sem uma decisão expl�
 - Canais e responsáveis inativos são bloqueados em novos vínculos e preservados na edição quando já associados; regras de status, datas, orçamento e moeda são validadas na aplicação.
 - Suíte focada aprovada com 29 testes e 100 assertions; Pint, PHPStan/Larastan, build Vite e `git diff --check` aprovados em 2026-08-18.
 
+## Sprint 9 — Relatórios
+
+- [x] TASK-100 Reports foundation
+- [ ] TASK-101 Visão executiva comercial
+- [ ] TASK-102 Funil e conversões
+- [ ] TASK-103 Origem, canais e campanhas
+- [ ] TASK-104 Pipeline e tempo por etapa
+- [ ] TASK-105 Filtros e refinamento visual
+- [ ] TASK-106 Sprint 9 final validation
+
 ## Definition of Done
 
 Uma tarefa só pode ser marcada como concluída quando:
