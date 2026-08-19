@@ -62,11 +62,68 @@
         </div>
     </section>
 
+    <section class="mt-5" aria-labelledby="commercial-funnel-title">
+        <div class="mb-4">
+            <h2 id="commercial-funnel-title" class="text-lg font-bold text-slate-950">Funil comercial</h2>
+            <p class="mt-0.5 text-sm text-slate-500">Distribuição atual das oportunidades criadas no período pelas etapas do pipeline.</p>
+            <p class="mt-1 text-xs text-slate-500">Esta é uma fotografia das etapas atuais, não uma reconstrução histórica do período.</p>
+        </div>
+
+        @forelse($funnels as $funnel)
+            <article class="card mb-4">
+                <div class="flex flex-col gap-1 border-b border-slate-200 pb-4 sm:flex-row sm:items-center sm:justify-between">
+                    <h3 class="text-base font-bold text-slate-950">{{ $funnel['name'] }}</h3>
+                    <p class="text-sm font-medium text-slate-500">{{ $funnel['total'] }} {{ $funnel['total'] === 1 ? 'oportunidade' : 'oportunidades' }}</p>
+                </div>
+
+                <div class="mt-4 space-y-4">
+                    @foreach($funnel['stages'] as $stage)
+                        <div>
+                            <div class="mb-1.5 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 text-sm">
+                                <p class="font-semibold text-slate-800">
+                                    {{ $stage['name'] }}
+                                    @if($stage['active'] === false)
+                                        <span class="font-normal text-slate-500">(inativa)</span>
+                                    @endif
+                                </p>
+                                <p class="text-slate-600">
+                                    {{ $stage['count'] }} {{ $stage['count'] === 1 ? 'oportunidade' : 'oportunidades' }} ·
+                                    <span class="font-semibold text-slate-800">{{ number_format($stage['percentage'], 1, ',', '.') }}%</span>
+                                </p>
+                            </div>
+                            <div class="h-2 overflow-hidden rounded-full bg-slate-100" role="progressbar" aria-label="{{ $stage['name'] }}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ $stage['percentage'] }}">
+                                <div class="h-full rounded-full bg-blue-600" style="width: {{ $stage['percentage'] }}%"></div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+
+                <div class="mt-5 grid gap-3 border-t border-slate-200 pt-4 sm:grid-cols-3">
+                    @foreach([
+                        ['label' => 'Taxa em aberto', 'count' => $funnel['open'], 'rate' => $funnel['open_rate']],
+                        ['label' => 'Taxa de ganho', 'count' => $funnel['won'], 'rate' => $funnel['win_rate']],
+                        ['label' => 'Taxa de perda', 'count' => $funnel['lost'], 'rate' => $funnel['loss_rate']],
+                    ] as $conversion)
+                        <div class="rounded-lg bg-slate-50 px-4 py-3">
+                            <p class="text-sm font-semibold text-slate-500">{{ $conversion['label'] }}</p>
+                            <p class="mt-1 text-xl font-bold text-slate-950">{{ number_format($conversion['rate'], 1, ',', '.') }}%</p>
+                            <p class="text-xs text-slate-500">{{ $conversion['count'] }} de {{ $funnel['total'] }}</p>
+                        </div>
+                    @endforeach
+                </div>
+            </article>
+        @empty
+            <div class="card">
+                <p class="text-sm font-medium text-slate-600">Nenhuma oportunidade encontrada no período selecionado.</p>
+            </div>
+        @endforelse
+    </section>
+
     <section class="card mt-5" aria-labelledby="next-reports-title">
         <h2 id="next-reports-title" class="text-base font-bold text-slate-950">Próximas análises da Sprint</h2>
-        <p class="mt-1 text-sm text-slate-500">Esta área será ampliada com análises de funil, origens, campanhas, pipeline e tempo por etapa.</p>
+        <p class="mt-1 text-sm text-slate-500">Esta área será ampliada com análises de origens, campanhas, pipeline e tempo por etapa.</p>
         <div class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            @foreach(['Funil e conversões', 'Origens e campanhas', 'Pipeline e etapas'] as $block)
+            @foreach(['Origens e campanhas', 'Pipeline e etapas'] as $block)
                 <div class="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700">{{ $block }}</div>
             @endforeach
         </div>
