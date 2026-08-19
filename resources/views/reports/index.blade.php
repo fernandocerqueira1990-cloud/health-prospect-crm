@@ -35,11 +35,38 @@
         <x-metric-card label="Oportunidade → Ganho" :value="number_format($metrics['opportunity_to_won_conversion'], 1, ',', '.').'%'" help="Oportunidades com ganho registrado" />
     </div>
 
+    <section class="mt-5" aria-labelledby="executive-view-title">
+        <div class="mb-4">
+            <h2 id="executive-view-title" class="text-lg font-bold text-slate-950">Visão executiva</h2>
+            <p class="mt-0.5 text-sm text-slate-500">Valores comerciais das oportunidades criadas no período.</p>
+        </div>
+
+        <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            @foreach([
+                'open_pipeline' => 'Pipeline aberto',
+                'won_value' => 'Valor ganho',
+                'lost_value' => 'Valor perdido',
+                'average_won_ticket' => 'Ticket médio ganho',
+            ] as $metric => $label)
+                <section class="metric-card">
+                    <h3 class="text-sm font-semibold text-slate-500">{{ $label }}</h3>
+                    @forelse($executiveMetrics[$metric] as $value)
+                        <p class="mt-2 text-xl font-bold tracking-tight text-slate-950">
+                            {{ $value['currency'] }} {{ number_format((float) $value['amount'], 2, ',', '.') }}
+                        </p>
+                    @empty
+                        <p class="mt-2 text-sm font-medium text-slate-500">Sem valores no período</p>
+                    @endforelse
+                </section>
+            @endforeach
+        </div>
+    </section>
+
     <section class="card mt-5" aria-labelledby="next-reports-title">
         <h2 id="next-reports-title" class="text-base font-bold text-slate-950">Próximas análises da Sprint</h2>
-        <p class="mt-1 text-sm text-slate-500">Esta fundação será ampliada com visões executivas, funil, origens, campanhas, pipeline e tempo por etapa.</p>
+        <p class="mt-1 text-sm text-slate-500">Esta área será ampliada com análises de funil, origens, campanhas, pipeline e tempo por etapa.</p>
         <div class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            @foreach(['Visão executiva', 'Funil e conversões', 'Origens e campanhas', 'Pipeline e etapas'] as $block)
+            @foreach(['Funil e conversões', 'Origens e campanhas', 'Pipeline e etapas'] as $block)
                 <div class="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700">{{ $block }}</div>
             @endforeach
         </div>

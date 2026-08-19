@@ -4,11 +4,12 @@ namespace App\Queries\Reports;
 
 use App\Models\Lead;
 use App\Models\Opportunity;
-use Carbon\CarbonImmutable;
-use Illuminate\Database\Eloquent\Builder;
+use App\Queries\Reports\Concerns\AppliesReportPeriod;
 
 class CommercialSummaryQuery
 {
+    use AppliesReportPeriod;
+
     /**
      * @param  array{date_from?: string|null, date_to?: string|null}  $filters
      * @return array{
@@ -51,26 +52,6 @@ class CommercialSummaryQuery
             'lead_to_opportunity_conversion' => $this->percentage($leadsWithOpportunity, $leadCount),
             'opportunity_to_won_conversion' => $this->percentage($wonCount, $opportunityCount),
         ];
-    }
-
-    /**
-     * @template TModel of \Illuminate\Database\Eloquent\Model
-     *
-     * @param  Builder<TModel>  $query
-     * @param  array{date_from?: string|null, date_to?: string|null}  $filters
-     * @return Builder<TModel>
-     */
-    private function applyPeriod(Builder $query, array $filters): Builder
-    {
-        if (! empty($filters['date_from'])) {
-            $query->where('created_at', '>=', CarbonImmutable::createFromFormat('Y-m-d', $filters['date_from'])->startOfDay());
-        }
-
-        if (! empty($filters['date_to'])) {
-            $query->where('created_at', '<', CarbonImmutable::createFromFormat('Y-m-d', $filters['date_to'])->addDay()->startOfDay());
-        }
-
-        return $query;
     }
 
     private function percentage(int $part, int $total): float
