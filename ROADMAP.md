@@ -29,7 +29,7 @@
 - [ ] tags
 
 ## Fase 3 — Comercial
-- [ ] pipelines
+- [x] pipelines
 - [ ] stages
 - [ ] opportunities
 - [ ] Kanban
@@ -69,10 +69,10 @@ Sprint 7 de importação concluída; merge permanece como evolução posterior e
 - [ ] views
 - [ ] grafana_reader
 - [ ] Grafana
-- [ ] dashboard executivo
-- [ ] dashboard por origem
-- [ ] funil
-- [ ] pipeline
+- [x] dashboard executivo
+- [x] dashboard por origem
+- [x] funil
+- [x] pipeline
 
 ## Fase 8 — Automação
 - [ ] n8n

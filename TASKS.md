@@ -235,7 +235,20 @@ Não misturar implementações antigas com o novo núcleo sem uma decisão expl�
 - [x] TASK-103 Origem, canais e campanhas
 - [x] TASK-104 Pipeline e tempo por etapa
 - [x] TASK-105 Filtros e refinamento visual
-- [ ] TASK-106 Sprint 9 final validation
+- [x] TASK-106 Sprint 9 final validation
+
+### Validação final da Sprint 9 — TASK-106
+
+- Módulo de Relatórios substituiu integralmente o placeholder anterior por uma implementação real protegida por `reports.view`.
+- Filtro de período implementado com validação server-side e atalhos de 7, 30 e 90 dias e mês atual.
+- Visão comercial implementada com Leads, oportunidades abertas, ganhas e perdidas e taxas de conversão.
+- Visão executiva implementada com pipeline aberto, valores ganhos/perdidos e ticket médio, mantendo moedas separadas e sem conversão cambial.
+- Funil comercial implementado por Pipeline e Stage atual, com distribuição percentual e taxas de aberto, ganho e perda.
+- Origem e canais usam First Touch com fallback seguro para dados legados.
+- Performance por Campaign usa `LeadSourceEvent.campaign_id`, preservando atribuição deduplicada por Lead.
+- Tempo por etapa implementado para oportunidades abertas usando a entrada mais recente na Stage atual, com fallback para `created_at`.
+- Soft deletes, divisão por zero, múltiplos Pipelines, múltiplas moedas, dados legados e RBAC foram cobertos por testes automatizados.
+- Interface de Relatórios foi refinada e reorganizada para leitura executiva: KPIs → visão executiva → funil → aquisição → campanhas → tempo por etapa.
 
 ## Definition of Done
 
