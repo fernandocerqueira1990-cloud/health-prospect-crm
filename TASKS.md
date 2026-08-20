@@ -250,6 +250,26 @@ Não misturar implementações antigas com o novo núcleo sem uma decisão expl�
 - Soft deletes, divisão por zero, múltiplos Pipelines, múltiplas moedas, dados legados e RBAC foram cobertos por testes automatizados.
 - Interface de Relatórios foi refinada e reorganizada para leitura executiva: KPIs → visão executiva → funil → aquisição → campanhas → tempo por etapa.
 
+## Sprint 10 — Security & Production Hardening
+
+- [x] TASK-110 Security/environment baseline
+- [ ] TASK-111 Public registration and tester hardening
+- [ ] TASK-112 HTTPS, sessions, proxies and security headers
+- [ ] TASK-113 Authentication, rate limiting, RBAC and audit hardening
+- [ ] TASK-114 Upload/import and data security
+- [ ] TASK-115 Secrets, logs and dependency security
+- [ ] TASK-116 Security regression and final validation
+
+### TASK-110 — Security/environment baseline
+
+- Feature flag `PUBLIC_REGISTRATION_ENABLED` adicionada.
+- Cadastro público preparado para ser configurável por ambiente.
+- Default seguro definido como desabilitado quando a variável não existir.
+- `.env.example` documenta diferenças entre desenvolvimento/homologação e produção.
+- Produção prevista com `APP_ENV=production`, `APP_DEBUG=false` e `SESSION_SECURE_COOKIE=true`.
+- Nenhuma credencial, secret ou `.env` real deve ser versionado.
+- Aplicação efetiva da flag ao `/register` permanece para a TASK-111.
+
 ## Definition of Done
 
 Uma tarefa só pode ser marcada como concluída quando:
