@@ -253,7 +253,7 @@ Não misturar implementações antigas com o novo núcleo sem uma decisão expl�
 ## Sprint 10 — Security & Production Hardening
 
 - [x] TASK-110 Security/environment baseline
-- [ ] TASK-111 Public registration and tester hardening
+- [x] TASK-111 Public registration and tester hardening
 - [ ] TASK-112 HTTPS, sessions, proxies and security headers
 - [ ] TASK-113 Authentication, rate limiting, RBAC and audit hardening
 - [ ] TASK-114 Upload/import and data security
@@ -269,6 +269,19 @@ Não misturar implementações antigas com o novo núcleo sem uma decisão expl�
 - Produção prevista com `APP_ENV=production`, `APP_DEBUG=false` e `SESSION_SECURE_COOKIE=true`.
 - Nenhuma credencial, secret ou `.env` real deve ser versionado.
 - Aplicação efetiva da flag ao `/register` permanece para a TASK-111.
+
+### TASK-111 — Public registration and tester hardening
+
+- Cadastro público controlado por `PUBLIC_REGISTRATION_ENABLED`.
+- `/register` retorna 404 quando o cadastro público está desabilitado.
+- Link de criação de conta é ocultado no login quando o cadastro está desabilitado.
+- Acesso de usuários com papel `tester` controlado por `TESTER_ACCESS_ENABLED`.
+- Testers existentes não conseguem autenticar quando o acesso de teste está desabilitado.
+- Sessões já autenticadas de testers são invalidadas quando o acesso de teste é desabilitado.
+- Usuários inativos continuam sendo bloqueados independentemente do papel.
+- Homologação mantém cadastro e testers habilitados.
+- Produção deverá utilizar `PUBLIC_REGISTRATION_ENABLED=false` e `TESTER_ACCESS_ENABLED=false`.
+- Rate limiting, CSRF, RBAC e auditoria existentes foram preservados.
 
 ## Definition of Done
 

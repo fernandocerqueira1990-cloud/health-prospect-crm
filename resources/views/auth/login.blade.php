@@ -177,7 +177,7 @@
                             Entrar
                         </button>
                     </form>
-
+@if (config('features.public_registration'))
                     <div class="my-7 flex items-center gap-4">
                         <div class="h-px flex-1 bg-slate-200"></div>
                         <span class="text-xs text-slate-400">ou</span>
@@ -197,7 +197,7 @@
                             <span aria-hidden="true">→</span>
                         </a>
                     </div>
-
+@endif
                     <p class="mt-8 text-center text-[11px] text-slate-400">
                         Techsallus CRM · Gestão comercial, prospecção e relacionamento
                     </p>

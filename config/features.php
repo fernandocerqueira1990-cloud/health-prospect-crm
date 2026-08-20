@@ -12,4 +12,6 @@ return [
     */
 
     'public_registration' => env('PUBLIC_REGISTRATION_ENABLED', false),
+
+    'tester_access' => env('TESTER_ACCESS_ENABLED', false),
 ];

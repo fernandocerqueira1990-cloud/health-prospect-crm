@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Models\Role;
 use App\Models\User;
 use App\Services\AuditService;
 use App\Support\EmailNormalizer;
@@ -56,6 +57,26 @@ class LoginRequest extends FormRequest
 
         /** @var User $user */
         $user = Auth::user();
+
+        if (
+            $user->hasRole(Role::TESTER_SLUG)
+            && ! (bool) config('features.tester_access')
+        ) {
+            Auth::guard('web')->logout();
+
+            $this->session()->invalidate();
+            $this->session()->regenerateToken();
+
+            $audit->record(
+                'login_failed',
+                user: $user,
+                request: $this,
+            );
+
+            throw ValidationException::withMessages([
+                'email' => __('As credenciais informadas são inválidas ou o usuário está inativo.'),
+            ]);
+        }
 
         return $user;
     }
