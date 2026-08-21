@@ -13,4 +13,5 @@ return [
     */
 
     'lead_inactivity_days' => (int) env('LEAD_INACTIVITY_DAYS', 7),
+    'opportunity_stagnation_days' => (int) env('OPPORTUNITY_STAGNATION_DAYS', 14),
 ];
