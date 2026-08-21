@@ -23,7 +23,7 @@ As capturas reais da aplicação estão em [`assets/screenshots`](../../assets/s
 
 O diagrama principal está em:
 
-[`assets/diagrams/architecture-overview.png`](../../assets/diagrams/architecture-overview.png)
+[`assets/diagrams/architecture-overview.svg`](../../assets/diagrams/architecture-overview.svg)
 
 ## O que este case demonstra
 
