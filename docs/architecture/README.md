@@ -11,6 +11,6 @@ Documentação técnica da arquitetura do **Health Prospect CRM**.
 
 ## Visão visual
 
-O diagrama de alto nível da solução está disponível em [`assets/diagrams/architecture-overview.png`](../../assets/diagrams/architecture-overview.png).
+O diagrama de alto nível da solução está disponível em [`assets/diagrams/architecture-overview.svg`](../../assets/diagrams/architecture-overview.svg).
 
 [← Voltar para a documentação](../README.md)
