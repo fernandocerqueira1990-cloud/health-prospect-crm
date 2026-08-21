@@ -24,6 +24,7 @@ class LeadIndexRequest extends FormRequest
             'channel_id' => ['nullable', 'integer', 'exists:channels,id'],
             'assigned_user_id' => ['nullable', 'integer', 'exists:users,id'],
             'company_id' => ['nullable', 'integer', 'exists:companies,id'],
+            'inactive' => ['nullable', 'boolean'],
             'per_page' => ['nullable', 'integer', 'min:10', 'max:100'],
         ];
     }
