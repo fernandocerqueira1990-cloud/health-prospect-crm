@@ -14,8 +14,8 @@ A Sprint 11 deve aproveitar os módulos já existentes de Leads, Opportunities, 
 | TASK-121 | Central de pendências | Implementada — validação consolidada na TASK-127 |
 | TASK-122 | Leads sem interação | Implementada — validação consolidada na TASK-127 |
 | TASK-123 | Opportunities estagnadas | Implementada — validação consolidada na TASK-127 |
-| TASK-124 | Notificações internas | Próxima |
-| TASK-125 | Scheduler / Queue / Redis | Pendente |
+| TASK-124 | Notificações internas | Implementada — geração automática entra na TASK-125 |
+| TASK-125 | Scheduler / Queue / Redis | Próxima |
 | TASK-126 | Dashboard operacional | Em evolução contínua |
 | TASK-127 | Validação final | Pendente |
 
@@ -84,17 +84,17 @@ Implementação:
 
 Objetivo: oferecer alertas internos para eventos comerciais relevantes sem depender inicialmente de e-mail, WhatsApp ou serviços externos.
 
-Eventos candidatos:
-- tarefa vencida;
-- follow-up para hoje;
-- Lead sem interação;
-- Opportunity estagnada.
+Implementação:
+- uso do canal `database` nativo do Laravel;
+- nova tabela `notifications`, associada ao usuário via `Notifiable`;
+- payload padronizado com `key`, `type`, `title`, `message`, `severity`, `url`, `subject_type` e `subject_id`;
+- geração de alertas para tarefa vencida, follow-up do dia, Lead sem interação e Opportunity estagnada;
+- chaves estáveis para impedir duplicidade do mesmo alerta;
+- tela `/notifications` com leitura individual, marcação de todas como lidas e acesso ao item de origem;
+- consulta sempre limitada às notificações do usuário autenticado;
+- testes focados cobrem escopo por responsável, idempotência e geração de alerta de Lead inativo.
 
-Entregáveis:
-- definir mecanismo interno de notificação;
-- evitar notificações duplicadas;
-- marcação como lida quando aplicável;
-- autorização e escopo por usuário.
+A execução recorrente do gerador ficará na TASK-125, evitando efeitos colaterais em requisições GET e mantendo separação entre apresentação e processamento automático.
 
 ### TASK-125 — Scheduler / Queue / Redis
 
