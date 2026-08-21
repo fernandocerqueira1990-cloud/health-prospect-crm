@@ -124,7 +124,7 @@ class CommercialNotificationService
     private function sendOnce(User $user, array $payload): int
     {
         $alreadyExists = $user->notifications()
-            ->where('data->key', $payload['key'])
+            ->whereRaw("data::jsonb ->> 'key' = ?", [(string) $payload['key']])
             ->exists();
 
         if ($alreadyExists) {
