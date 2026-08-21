@@ -8,7 +8,6 @@ use App\Models\Task;
 use App\Models\User;
 use App\Notifications\CommercialAlertNotification;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Notification;
 
 class CommercialNotificationService
@@ -76,9 +75,9 @@ class CommercialNotificationService
             })
             ->get();
 
-        return $leads->map(function (Lead $lead) use ($cutoff): array {
+        return $leads->map(function (Lead $lead): array {
             return [
-                'key' => 'lead_inactive:'.$lead->id.':'.$cutoff->format('Y-m-d'),
+                'key' => 'lead_inactive:'.$lead->id,
                 'type' => 'lead_inactive',
                 'title' => 'Lead sem interação',
                 'message' => $lead->name ?: $lead->company_name ?: 'Lead #'.$lead->id,
@@ -107,9 +106,9 @@ class CommercialNotificationService
             )
             ->get();
 
-        return $opportunities->map(function (Opportunity $opportunity) use ($cutoff): array {
+        return $opportunities->map(function (Opportunity $opportunity): array {
             return [
-                'key' => 'opportunity_stagnant:'.$opportunity->id.':'.$cutoff->format('Y-m-d'),
+                'key' => 'opportunity_stagnant:'.$opportunity->id,
                 'type' => 'opportunity_stagnant',
                 'title' => 'Oportunidade parada no pipeline',
                 'message' => $opportunity->title,
