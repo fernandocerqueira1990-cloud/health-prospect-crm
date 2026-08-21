@@ -6,7 +6,7 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-blue?logo=postgresql)
 ![Redis](https://img.shields.io/badge/Redis-Cache-red?logo=redis)
 ![Debian](https://img.shields.io/badge/Debian-Linux-A81D33?logo=debian)
-![CI](https://img.shields.io/badge/CI-GitHub%20Actions-2088FF?logo=githubactions)
+![CI](https://github.com/fernandocerqueira1990-cloud/health-prospect-crm/actions/workflows/ci.yml/badge.svg)
 ![Status](https://img.shields.io/badge/status-em%20desenvolvimento-yellow)
 
 ## Sobre o projeto
@@ -121,6 +121,9 @@ A Sprint 10 consolidou o trabalho de **Security & Production Hardening**, inclui
 
 > Nenhuma credencial real deve ser armazenada no repositório. PostgreSQL e Redis não devem ser expostos publicamente.
 
+- [Política pública de segurança](.github/SECURITY.md)
+- [Documentação técnica de segurança](docs/architecture/SECURITY.md)
+
 ## Qualidade e testes
 
 O projeto utiliza testes automatizados e validações de qualidade como parte do fluxo de desenvolvimento.
@@ -154,11 +157,13 @@ assets/
 
 ### Navegação
 
+- [Documentação geral](docs/README.md)
 - [Arquitetura](docs/architecture/README.md)
 - [Evolução do projeto](docs/evolution/README.md)
 - [Documentação de desenvolvimento](docs/development/README.md)
 - [Visão de portfólio](docs/portfolio/README.md)
 - [Roadmap](docs/portfolio/ROADMAP.md)
+- [Como contribuir](CONTRIBUTING.md)
 
 ## Evolução do projeto
 
