@@ -1,142 +1,172 @@
-# SECURITY — Health Prospect CRM
+# Segurança — Health Prospect CRM
 
 ## Objetivo
 
-Aplicar segurança por padrão.
+Aplicar **segurança por padrão** em todas as camadas da aplicação, preservando confidencialidade, integridade, auditabilidade e disponibilidade.
 
-## Autenticação
+## Estado atual
 
-- Laravel authentication;
-- passwords com algoritmo seguro suportado pelo Laravel;
-- proteção contra brute force;
-- rate limiting;
-- sessão segura;
-- logout;
-- possibilidade futura de MFA.
+A Sprint 10 consolidou o trabalho de **Security & Production Hardening** com validações de autenticação, autorização, sessões, proxies, HTTPS, headers, imports, logs, dependências e CI.
+
+Os controles descritos abaixo representam o estado atual da arquitetura, com itens de produção dependentes da configuração real do ambiente.
+
+## Autenticação e sessão
+
+- autenticação Laravel;
+- senhas com algoritmo seguro suportado pelo framework;
+- mensagens uniformes de falha de login;
+- rate limiting por identidade normalizada e IP confiável;
+- renovação de sessão após autenticação;
+- invalidação de sessão e CSRF no logout;
+- bloqueio de usuários inativos;
+- controle de acesso de usuários de teste por feature flag;
+- sessões criptografadas, HttpOnly e SameSite `lax`;
+- cookie `Secure` recomendado/obrigatório em produção HTTPS.
 
 ## Autorização
 
-RBAC.
+O sistema utiliza **RBAC + Policies/Gates no backend**.
 
-Papéis iniciais:
+Papéis e permissões são tratados de forma explícita e a interface não é considerada mecanismo de segurança. A autorização é aplicada nas rotas e ações do domínio.
 
-- Administrador
-- Gestor Comercial
-- Supervisor
-- Vendedor
-- Marketing
-- Analista
-- Somente Leitura
+Controles adicionais incluem:
 
-Toda autorização deve ocorrer no backend por Policies/Gates.
+- proteção contra IDOR;
+- restrições de privilege escalation;
+- proteção do último administrador ativo;
+- prevenção de self-lockout administrativo crítico;
+- bloqueio de atribuições administrativas indevidas.
 
-Nunca confiar somente em esconder botões no frontend.
+## Dados e banco
 
-## Dados
+- PostgreSQL deve permanecer em rede privada/local;
+- Redis deve permanecer privado/local;
+- Eloquent/Query Builder e prepared statements são preferidos;
+- entrada do usuário nunca deve ser concatenada em SQL;
+- constraints e integridade são aplicadas também no banco;
+- princípio de least privilege para usuários de banco;
+- backups devem ser protegidos e testados por restore antes de produção definitiva.
 
-- PostgreSQL em rede privada/local;
-- Redis privado/local;
-- backups protegidos;
-- secrets em `.env`/secret manager;
-- `.env` nunca no Git;
-- criptografar valores sensíveis quando apropriado.
+## Web e transporte
 
-## Web
+- HTTPS é obrigatório em produção;
+- proxies confiáveis são configurados explicitamente;
+- forwarded headers só são aceitos de proxies confiáveis;
+- HSTS é configurável e somente emitido sobre HTTPS reconhecido;
+- headers de segurança incluem `nosniff`, `SAMEORIGIN`, Referrer Policy e Permissions Policy;
+- CSP conservadora aplicada no middleware web;
+- CSRF ativo;
+- validação de input e escaping de output;
+- sessões e cookies configurados conforme o ambiente.
 
-- HTTPS obrigatório;
-- HTTP -> HTTPS;
-- Secure cookies;
-- HttpOnly cookies;
-- SameSite adequado;
-- CSRF;
-- CSP a ser definida;
-- validação de input;
-- escaping de output;
-- upload validado.
+## Uploads e importações
 
-## API
+O fluxo CSV/XLSX possui validações específicas para reduzir riscos de arquivos maliciosos e corrupção de dados:
 
-- autenticação;
-- rate limit;
-- tokens revogáveis;
-- escopos quando necessário;
-- validação;
-- logs sem segredos;
-- idempotency keys em endpoints críticos quando necessário.
+- whitelist de formatos suportados;
+- validação de extensão, MIME e tamanho;
+- rejeição de extensões duplas perigosas;
+- armazenamento privado com nomes internos UUID;
+- limites de linhas, colunas, entradas e descompressão;
+- proteção contra ZIP bomb e archive traversal;
+- bloqueio de macros, conteúdo ativo e links externos no XLSX;
+- XML sem DTD/entidades externas;
+- fórmulas não são avaliadas;
+- estado de execução assinado e revalidado;
+- idempotência e proteção contra replay/concorrência;
+- payloads comerciais não são gravados integralmente em logs/auditoria.
 
-## SQL
+## Logs, auditoria e secrets
 
-- Eloquent/Query Builder;
-- prepared statements;
-- nunca concatenar entrada de usuário em SQL;
-- least privilege.
+Nunca versionar ou registrar:
 
-## Auditoria
+- senhas;
+- tokens;
+- Authorization headers;
+- cookies e sessions;
+- chaves privadas;
+- `.env` real;
+- credenciais de banco ou serviços externos;
+- payloads integrais de importação.
 
-Registrar:
-- criação;
-- atualização;
-- exclusão;
-- mudanças de estágio;
-- mudanças de permissão;
-- operações administrativas;
-- importações;
-- integrações críticas.
+A sanitização centralizada remove ou redige valores sensíveis em logs e auditoria e neutraliza caracteres de controle utilizados em log injection.
+
+Em produção, a recomendação é:
+
+```text
+APP_ENV=production
+APP_DEBUG=false
+LOG_STACK=daily
+LOG_LEVEL=warning
+```
+
+A retenção deve ser definida conforme a política operacional.
+
+## Dependências e CI
+
+- `composer.lock` e `pnpm-lock.yaml` são versionados;
+- Composer e pnpm devem ser auditados periodicamente;
+- GitHub Actions utiliza permissões restritas de `GITHUB_TOKEN`;
+- Actions críticas são fixadas em commits imutáveis;
+- execução de CI possui timeout;
+- testes, análise estática e build fazem parte do fluxo de qualidade.
 
 ## Infraestrutura
 
-Expor:
-- 80;
-- 443;
+Exposição pública deve ser mínima.
+
+Permitido conforme arquitetura de deploy:
+
+- 80 somente para redirect quando necessário;
+- 443 para HTTPS;
 - SSH somente com política restritiva.
 
-Bloquear acesso público:
+Não expor publicamente:
+
 - PostgreSQL;
 - Redis;
 - Prometheus;
 - Loki;
-- exporters.
+- exporters;
+- interfaces administrativas internas.
 
-Utilizar:
+Controles recomendados:
+
 - firewall;
-- Fail2ban quando adequado;
-- atualizações;
 - usuário não-root;
 - chaves SSH;
-- backups offsite.
+- atualizações regulares;
+- backups offsite;
+- monitoramento e alertas;
+- Fail2ban quando adequado ao cenário de acesso.
 
-## LGPD
+## API e integrações
 
-Preparar:
-- origem do dado;
-- finalidade;
-- consentimento quando aplicável;
+A superfície pública da API ainda está em evolução. Quando exposta, deve incluir:
+
+- autenticação explícita;
+- tokens revogáveis ou mecanismo equivalente;
+- scopes/permissions quando necessário;
+- rate limiting dedicado;
+- validação de payload;
+- logs sem secrets;
+- idempotency keys em endpoints críticos quando aplicável;
+- webhooks autenticados e validados.
+
+## LGPD e privacidade
+
+A evolução do produto deve considerar:
+
+- origem e finalidade dos dados;
+- base legal/consentimento quando aplicável;
 - retenção;
 - anonimização;
 - exclusão;
 - exportação;
 - controle de acesso;
-- trilha de auditoria.
+- trilha de auditoria;
+- minimização de dados.
 
-## Logs
+## Configuração de produção
 
-Nunca registrar:
-- senha;
-- token completo;
-- secret;
-- session cookie;
-- dados excessivamente sensíveis.
-
-Produção:
-- `APP_DEBUG=false`;
-- stack traces não devem ser retornados ao cliente.
-- `LOG_STACK=daily` e `LOG_LEVEL=warning`;
-- retenção configurada por `LOG_DAILY_DAYS` conforme a política operacional.
-
-## Dependências
-
-Executar periodicamente:
-- composer audit;
-- pnpm audit;
-- análise de dependências;
-- atualização planejada.
+O hardening de código não substitui configuração segura de infraestrutura. Antes de um deploy definitivo, validar obrigatoriamente HTTPS real, cookies Secure, HSTS, proxies confiáveis, firewall, backups, restore, workers, scheduler, logs e observabilidade.
