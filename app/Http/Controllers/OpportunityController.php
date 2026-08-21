@@ -29,9 +29,8 @@ use Illuminate\View\View;
 
 class OpportunityController extends Controller
 {
-    public function kanban(
-        OpportunityIndexRequest $request,
-    ): View {
+    public function kanban(OpportunityIndexRequest $request): View
+    {
         $filters = $request->validated();
 
         $pipelineId = isset($filters['pipeline_id'])
@@ -58,6 +57,7 @@ class OpportunityController extends Controller
                 'stage:id,pipeline_id,name,slug,position,probability,type',
                 'lossReason:id,name,slug',
             ])
+            ->withMax('stageHistories as last_stage_changed_at', 'changed_at')
             ->where('pipeline_id', $pipeline->id);
 
         $search = trim((string) ($filters['q'] ?? ''));
@@ -65,35 +65,32 @@ class OpportunityController extends Controller
         if ($search !== '') {
             $opportunityQuery->where(function ($query) use ($search): void {
                 $query->where('title', 'ilike', '%'.$search.'%');
-
-                $query->orWhereHas(
-                    'company',
-                    function ($company) use ($search): void {
-                        $company
-                            ->where('legal_name', 'ilike', '%'.$search.'%')
-                            ->orWhere('trade_name', 'ilike', '%'.$search.'%');
-                    },
-                );
-
-                $query->orWhereHas(
-                    'lead',
-                    function ($lead) use ($search): void {
-                        $lead
-                            ->where('name', 'ilike', '%'.$search.'%')
-                            ->orWhere('company_name', 'ilike', '%'.$search.'%');
-                    },
-                );
+                $query->orWhereHas('company', function ($company) use ($search): void {
+                    $company->where('legal_name', 'ilike', '%'.$search.'%')
+                        ->orWhere('trade_name', 'ilike', '%'.$search.'%');
+                });
+                $query->orWhereHas('lead', function ($lead) use ($search): void {
+                    $lead->where('name', 'ilike', '%'.$search.'%')
+                        ->orWhere('company_name', 'ilike', '%'.$search.'%');
+                });
             });
         }
 
-        if (
-            isset($filters['assigned_user_id'])
-            && $filters['assigned_user_id'] !== ''
-        ) {
-            $opportunityQuery->where(
-                'assigned_user_id',
-                $filters['assigned_user_id'],
+        if (isset($filters['assigned_user_id']) && $filters['assigned_user_id'] !== '') {
+            $opportunityQuery->where('assigned_user_id', $filters['assigned_user_id']);
+        }
+
+        if (! empty($filters['stagnant'])) {
+            $cutoff = now()->subDays(
+                max(1, (int) config('commercial.opportunity_stagnation_days', 14)),
             );
+
+            $opportunityQuery
+                ->whereHas('stage', fn ($stage) => $stage->where('type', 'open'))
+                ->where('created_at', '<=', $cutoff)
+                ->whereDoesntHave('stageHistories', function ($history) use ($cutoff): void {
+                    $history->where('changed_at', '>', $cutoff);
+                });
         }
 
         $opportunitiesByStage = $opportunityQuery
@@ -112,10 +109,8 @@ class OpportunityController extends Controller
         ]);
     }
 
-    public function index(
-        OpportunityIndexRequest $request,
-        OpportunityIndexQuery $query,
-    ): View {
+    public function index(OpportunityIndexRequest $request, OpportunityIndexQuery $query): View
+    {
         return view('opportunities.index', [
             'opportunities' => $query->paginate($request->validated()),
             'pipelines' => $this->pipelines(),
@@ -139,14 +134,9 @@ class OpportunityController extends Controller
         ]);
     }
 
-    public function store(
-        StoreOpportunityRequest $request,
-        CreateOpportunityAction $action,
-    ): RedirectResponse {
-        $opportunity = $action->execute(
-            $request->validated(),
-            $request->user(),
-        );
+    public function store(StoreOpportunityRequest $request, CreateOpportunityAction $action): RedirectResponse
+    {
+        $opportunity = $action->execute($request->validated(), $request->user());
 
         return $this->authorizedRedirect(
             $request->user(),
@@ -185,9 +175,7 @@ class OpportunityController extends Controller
             'opportunity' => $opportunity,
             'histories' => $histories,
             'stages' => $this->stages($opportunity->pipeline_id),
-            'lossReasons' => $this->lossReasons(
-                $opportunity->loss_reason_id,
-            ),
+            'lossReasons' => $this->lossReasons($opportunity->loss_reason_id),
         ]);
     }
 
@@ -208,21 +196,13 @@ class OpportunityController extends Controller
             'leads' => $this->leads($opportunity->lead_id),
             'companies' => $this->companies($opportunity->company_id),
             'contacts' => $this->contacts($opportunity->contact_id),
-            'assignedUsers' => $this->users(
-                $opportunity->assigned_user_id,
-            ),
+            'assignedUsers' => $this->users($opportunity->assigned_user_id),
         ]);
     }
 
-    public function update(
-        UpdateOpportunityRequest $request,
-        Opportunity $opportunity,
-        UpdateOpportunityAction $action,
-    ): RedirectResponse {
-        $opportunity = $action->execute(
-            $opportunity,
-            $request->validated(),
-        );
+    public function update(UpdateOpportunityRequest $request, Opportunity $opportunity, UpdateOpportunityAction $action): RedirectResponse
+    {
+        $opportunity = $action->execute($opportunity, $request->validated());
 
         return $this->authorizedRedirect(
             $request->user(),
@@ -232,13 +212,9 @@ class OpportunityController extends Controller
         );
     }
 
-    public function destroy(
-        Request $request,
-        Opportunity $opportunity,
-        DeleteOpportunityAction $action,
-    ): RedirectResponse {
+    public function destroy(Request $request, Opportunity $opportunity, DeleteOpportunityAction $action): RedirectResponse
+    {
         Gate::authorize('delete', $opportunity);
-
         $action->execute($opportunity);
 
         return $this->authorizedRedirect(
@@ -255,9 +231,7 @@ class OpportunityController extends Controller
         MoveOpportunityStageAction $action,
     ): RedirectResponse|JsonResponse {
         $data = $request->validated();
-
         $stage = Stage::query()->findOrFail($data['stage_id']);
-
         $lossReason = isset($data['loss_reason_id'])
             ? LossReason::query()->findOrFail($data['loss_reason_id'])
             : null;
@@ -278,12 +252,8 @@ class OpportunityController extends Controller
                     'stage_id' => $opportunity->stage_id,
                     'probability' => $opportunity->probability,
                     'loss_reason_id' => $opportunity->loss_reason_id,
-                    'won_at' => $opportunity->won_at !== null
-                        ? Carbon::parse($opportunity->won_at)->toISOString()
-                        : null,
-                    'lost_at' => $opportunity->lost_at !== null
-                        ? Carbon::parse($opportunity->lost_at)->toISOString()
-                        : null,
+                    'won_at' => $opportunity->won_at !== null ? Carbon::parse($opportunity->won_at)->toISOString() : null,
+                    'lost_at' => $opportunity->lost_at !== null ? Carbon::parse($opportunity->lost_at)->toISOString() : null,
                 ],
             ]);
         }
@@ -316,10 +286,7 @@ class OpportunityController extends Controller
     {
         return Stage::query()
             ->where('active', true)
-            ->when(
-                $pipelineId !== null,
-                fn ($query) => $query->where('pipeline_id', $pipelineId),
-            )
+            ->when($pipelineId !== null, fn ($query) => $query->where('pipeline_id', $pipelineId))
             ->orderBy('pipeline_id')
             ->orderBy('position')
             ->get();
@@ -331,7 +298,6 @@ class OpportunityController extends Controller
         return LossReason::query()
             ->where(function ($query) use ($includeId): void {
                 $query->where('active', true);
-
                 if ($includeId !== null) {
                     $query->orWhere('id', $includeId);
                 }
@@ -346,7 +312,6 @@ class OpportunityController extends Controller
         return User::query()
             ->where(function ($query) use ($includeId): void {
                 $query->where('active', true);
-
                 if ($includeId !== null) {
                     $query->orWhere('id', $includeId);
                 }
@@ -361,20 +326,12 @@ class OpportunityController extends Controller
         return Lead::withTrashed()
             ->where(function ($query) use ($includeId): void {
                 $query->whereNull('deleted_at');
-
                 if ($includeId !== null) {
                     $query->orWhere('id', $includeId);
                 }
             })
             ->orderBy('name')
-            ->get([
-                'id',
-                'name',
-                'company_name',
-                'company_id',
-                'contact_id',
-                'deleted_at',
-            ]);
+            ->get(['id', 'name', 'company_name', 'company_id', 'contact_id', 'deleted_at']);
     }
 
     /** @return Collection<int, Company> */
@@ -383,18 +340,12 @@ class OpportunityController extends Controller
         return Company::withTrashed()
             ->where(function ($query) use ($includeId): void {
                 $query->whereNull('deleted_at');
-
                 if ($includeId !== null) {
                     $query->orWhere('id', $includeId);
                 }
             })
             ->orderBy('legal_name')
-            ->get([
-                'id',
-                'legal_name',
-                'trade_name',
-                'deleted_at',
-            ]);
+            ->get(['id', 'legal_name', 'trade_name', 'deleted_at']);
     }
 
     /** @return Collection<int, Contact> */
@@ -403,19 +354,12 @@ class OpportunityController extends Controller
         return Contact::withTrashed()
             ->where(function ($query) use ($includeId): void {
                 $query->whereNull('deleted_at');
-
                 if ($includeId !== null) {
                     $query->orWhere('id', $includeId);
                 }
             })
             ->orderBy('name')
-            ->get([
-                'id',
-                'company_id',
-                'name',
-                'job_title',
-                'deleted_at',
-            ]);
+            ->get(['id', 'company_id', 'name', 'job_title', 'deleted_at']);
     }
 
     private function authorizedRedirect(
@@ -425,11 +369,7 @@ class OpportunityController extends Controller
         string $message,
     ): RedirectResponse {
         return $user->can('viewAny', Opportunity::class)
-            ? redirect()
-                ->route($route, $opportunity ?? [])
-                ->with('status', $message)
-            : redirect()
-                ->route('opportunities.mutation-complete')
-                ->with('status', $message);
+            ? redirect()->route($route, $opportunity ?? [])->with('status', $message)
+            : redirect()->route('opportunities.mutation-complete')->with('status', $message);
     }
 }
