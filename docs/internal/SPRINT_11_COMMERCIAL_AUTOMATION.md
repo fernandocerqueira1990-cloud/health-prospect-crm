@@ -14,9 +14,9 @@ A Sprint 11 deve aproveitar os módulos já existentes de Leads, Opportunities, 
 | TASK-121 | Central de pendências | Implementada — validação consolidada na TASK-127 |
 | TASK-122 | Leads sem interação | Implementada — validação consolidada na TASK-127 |
 | TASK-123 | Opportunities estagnadas | Implementada — validação consolidada na TASK-127 |
-| TASK-124 | Notificações internas | Implementada — geração automática entra na TASK-125 |
-| TASK-125 | Scheduler / Queue / Redis | Próxima |
-| TASK-126 | Dashboard operacional | Em evolução contínua |
+| TASK-124 | Notificações internas | Implementada — validação consolidada na TASK-127 |
+| TASK-125 | Scheduler / Queue / Redis | Implementada — validação consolidada na TASK-127 |
+| TASK-126 | Dashboard operacional | Próxima |
 | TASK-127 | Validação final | Pendente |
 
 ## Princípios
@@ -94,18 +94,26 @@ Implementação:
 - consulta sempre limitada às notificações do usuário autenticado;
 - testes focados cobrem escopo por responsável, idempotência e geração de alerta de Lead inativo.
 
-A execução recorrente do gerador ficará na TASK-125, evitando efeitos colaterais em requisições GET e mantendo separação entre apresentação e processamento automático.
-
 ### TASK-125 — Scheduler / Queue / Redis
 
 Objetivo: estruturar processamento recorrente e assíncrono para as regras da Sprint 11.
 
-Entregáveis:
-- jobs/commands idempotentes;
-- agendamento via Laravel Scheduler;
-- execução em Queue/Redis apenas quando agregar valor;
-- logs técnicos adequados sem exposição de dados sensíveis;
-- estratégia segura para desenvolvimento e produção.
+Implementação:
+- comando `commercial:notifications` percorre somente usuários ativos em lotes;
+- por padrão o comando despacha um job por usuário para a fila `commercial`;
+- opção `--sync` permite execução determinística em desenvolvimento e troubleshooting;
+- job `GenerateCommercialNotificationsForUser` implementa `ShouldQueue` e `ShouldBeUnique`, com chave única por usuário, três tentativas e timeout controlado;
+- o job revalida se o usuário continua ativo antes de processar;
+- Laravel Scheduler executa `commercial:notifications` a cada hora;
+- `withoutOverlapping`, `onOneServer` e unicidade do job reduzem processamento duplicado em ambientes escalados;
+- saída do Scheduler é registrada em `storage/logs/commercial-scheduler.log` sem payloads sensíveis;
+- Redis permanece como backend de queue/cache conforme configuração da aplicação;
+- testes focados cobrem despacho apenas para usuários ativos e chave estável de unicidade.
+
+Operação esperada em produção:
+- manter `php artisan schedule:run` acionado pelo cron a cada minuto ou utilizar `php artisan schedule:work` sob supervisor;
+- manter worker da fila `commercial` supervisionado, por exemplo `php artisan queue:work redis --queue=commercial,default`;
+- monitorar falhas pela tabela/infraestrutura padrão de jobs e pelos logs da aplicação.
 
 ### TASK-126 — Dashboard operacional
 
