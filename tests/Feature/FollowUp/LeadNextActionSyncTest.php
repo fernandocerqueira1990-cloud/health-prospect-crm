@@ -6,7 +6,6 @@ use App\Actions\Tasks\CreateTaskAction;
 use App\Actions\Tasks\DeleteTaskAction;
 use App\Actions\Tasks\UpdateTaskAction;
 use App\Models\Lead;
-use App\Models\Task;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -18,6 +17,8 @@ class LeadNextActionSyncTest extends TestCase
     public function test_creating_tasks_keeps_earliest_open_due_date_as_lead_next_action(): void
     {
         $user = User::factory()->create();
+        $this->actingAs($user);
+
         $lead = Lead::factory()->create([
             'next_action_at' => null,
         ]);
@@ -42,6 +43,8 @@ class LeadNextActionSyncTest extends TestCase
     public function test_completing_current_next_task_advances_lead_to_next_open_task(): void
     {
         $user = User::factory()->create();
+        $this->actingAs($user);
+
         $lead = Lead::factory()->create([
             'next_action_at' => null,
         ]);
@@ -72,6 +75,8 @@ class LeadNextActionSyncTest extends TestCase
     public function test_moving_task_between_leads_resynchronizes_both_leads(): void
     {
         $user = User::factory()->create();
+        $this->actingAs($user);
+
         $sourceLead = Lead::factory()->create([
             'next_action_at' => null,
         ]);
@@ -101,6 +106,8 @@ class LeadNextActionSyncTest extends TestCase
     public function test_deleting_current_next_task_recalculates_lead_next_action(): void
     {
         $user = User::factory()->create();
+        $this->actingAs($user);
+
         $lead = Lead::factory()->create([
             'next_action_at' => null,
         ]);
