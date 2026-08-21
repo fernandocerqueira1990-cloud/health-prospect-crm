@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+### Sprint 10 — TASK-113 Authentication, rate limiting, RBAC and audit hardening
+
+- Autenticação reforçada com rotação/invalidação de sessão, mensagens uniformes, bloqueio contínuo de contas inativas/tester e auditoria de sucessos, falhas, bloqueios e logout.
+- Rate limiting centralizado por identidade normalizada e IP confiável para login e cadastro habilitado, usando chaves opacas, limites configuráveis e resposta 429 com `Retry-After`.
+- RBAC administrativo endurecido contra atribuição da role admin, edição indevida de administradores, concessão delegada de permissions administrativas, acesso direto e self-lockout crítico, preservando a proteção transacional do último admin ativo.
+- Sanitização recursiva de auditoria ampliada para senhas, cookies, sessions, CSRF, Authorization, API/access/refresh tokens e secrets, sem registrar payloads sensíveis de autenticação.
+- Recuperação de senha permanece sem endpoints públicos nesta versão e foi validada como superfície não exposta; nenhuma funcionalidade das TASK-114, TASK-115 ou TASK-116 foi antecipada.
+
 ### Sprint 10 — TASK-112 HTTPS, sessions, proxies and security headers
 
 - Proxies confiáveis passaram a ser configurados explicitamente, com default restrito a loopback e reconhecimento seguro de HTTPS encaminhado pelo Cloudflare Tunnel local.

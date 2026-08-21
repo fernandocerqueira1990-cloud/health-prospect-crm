@@ -28,6 +28,12 @@ class Permission extends Model
         'reports.view', 'imports.view', 'imports.create', 'imports.update', 'imports.delete', 'settings.view', 'settings.manage', 'audit.view',
     ];
 
+    public const ADMINISTRATIVE_SLUGS = [
+        'users.view', 'users.create', 'users.update', 'users.manage_roles',
+        'roles.view', 'roles.create', 'roles.update', 'roles.manage_permissions',
+        'settings.view', 'settings.manage', 'audit.view',
+    ];
+
     /** @return BelongsToMany<Role, $this> */
     public function roles(): BelongsToMany
     {

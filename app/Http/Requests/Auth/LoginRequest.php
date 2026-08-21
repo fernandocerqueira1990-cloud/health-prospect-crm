@@ -5,12 +5,12 @@ namespace App\Http\Requests\Auth;
 use App\Models\Role;
 use App\Models\User;
 use App\Services\AuditService;
+use App\Services\AuthenticationRateLimiter;
 use App\Support\EmailNormalizer;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\RateLimiter;
-use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 class LoginRequest extends FormRequest
@@ -37,23 +37,23 @@ class LoginRequest extends FormRequest
         ];
     }
 
-    public function authenticate(AuditService $audit): User
+    public function authenticate(AuditService $audit, AuthenticationRateLimiter $limiter): User
     {
-        $this->ensureIsNotRateLimited();
+        $this->ensureIsNotRateLimited($audit, $limiter);
         $email = EmailNormalizer::normalize($this->string('email')->toString());
         $credentials = ['email' => $email, 'password' => $this->string('password')->toString(), 'active' => true];
 
         if (! Auth::attempt($credentials, $this->boolean('remember'))) {
-            RateLimiter::hit($this->throttleKey(), 60);
-            $candidate = User::where('email', $email)->first();
-            $audit->record('login_failed', user: $candidate?->active ? $candidate : null, request: $this);
+            $limiter->hitLogin($this);
+            $candidate = User::query()->where('email', $email)->where('active', true)->first();
+            $audit->record('login_failed', user: $candidate, request: $this);
 
             throw ValidationException::withMessages([
                 'email' => __('As credenciais informadas são inválidas ou o usuário está inativo.'),
             ]);
         }
 
-        RateLimiter::clear($this->throttleKey());
+        $limiter->clearLoginIdentity($this);
 
         /** @var User $user */
         $user = Auth::user();
@@ -81,22 +81,20 @@ class LoginRequest extends FormRequest
         return $user;
     }
 
-    public function ensureIsNotRateLimited(): void
+    public function ensureIsNotRateLimited(AuditService $audit, AuthenticationRateLimiter $limiter): void
     {
-        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
+        if (! $limiter->tooManyLoginAttempts($this)) {
             return;
         }
 
         event(new Lockout($this));
-        $seconds = RateLimiter::availableIn($this->throttleKey());
+        $seconds = $limiter->loginAvailableIn($this);
+        $audit->record('login_blocked', after: ['retry_after_seconds' => $seconds], request: $this);
 
-        throw ValidationException::withMessages([
-            'email' => __('Muitas tentativas. Tente novamente em :seconds segundos.', ['seconds' => $seconds]),
-        ]);
-    }
-
-    public function throttleKey(): string
-    {
-        return Str::transliterate(EmailNormalizer::normalize($this->string('email')->toString()).'|'.$this->ip());
+        throw new HttpResponseException(response(
+            __('Muitas tentativas. Tente novamente em :seconds segundos.', ['seconds' => $seconds]),
+            429,
+            ['Retry-After' => (string) $seconds],
+        ));
     }
 }

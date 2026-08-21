@@ -46,10 +46,15 @@ class AppServiceProvider extends ServiceProvider
             (string) config('database.connections.'.config('database.default').'.database'),
         );
 
-        RateLimiter::for('register', function (Request $request): Limit {
+        RateLimiter::for('register', function (Request $request): array {
             $email = EmailNormalizer::normalize((string) $request->input('email'));
 
-            return Limit::perMinute(5)->by($email.'|'.$request->ip());
+            return [
+                Limit::perMinute((int) config('security.rate_limits.register.identity_attempts'))
+                    ->by('register:identity:'.hash('sha256', $email)),
+                Limit::perMinute((int) config('security.rate_limits.register.ip_attempts'))
+                    ->by('register:ip:'.hash('sha256', (string) $request->ip())),
+            ];
         });
 
         Gate::policy(User::class, UserPolicy::class);
@@ -62,6 +67,11 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(DataImport::class, ImportPolicy::class);
 
         Gate::before(function (User $user): ?bool {
+            if (! $user->active
+                || ($user->hasRole(Role::TESTER_SLUG) && ! (bool) config('features.tester_access'))) {
+                return false;
+            }
+
             return $user->hasRole('admin') ? true : null;
         });
 

@@ -14,6 +14,18 @@ $contentSecurityPolicy = "default-src 'self'; base-uri 'self'; form-action 'self
 return [
     'trusted_proxies' => $trustedProxies,
 
+    'rate_limits' => [
+        'login' => [
+            'identity_attempts' => (int) env('LOGIN_IDENTITY_RATE_LIMIT', 5),
+            'ip_attempts' => (int) env('LOGIN_IP_RATE_LIMIT', 30),
+            'decay_seconds' => (int) env('LOGIN_RATE_LIMIT_DECAY_SECONDS', 60),
+        ],
+        'register' => [
+            'identity_attempts' => (int) env('REGISTER_IDENTITY_RATE_LIMIT', 3),
+            'ip_attempts' => (int) env('REGISTER_IP_RATE_LIMIT', 10),
+        ],
+    ],
+
     'headers' => [
         'content_security_policy' => env(
             'SECURITY_CONTENT_SECURITY_POLICY',

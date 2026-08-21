@@ -7,6 +7,7 @@ use App\Actions\Roles\UpdateRoleAction;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Validation\ValidationException;
 use Tests\Concerns\InteractsWithRbac;
@@ -63,6 +64,80 @@ class RoleManagementTest extends TestCase
     public function test_user_without_permission_cannot_manage_roles(): void
     {
         $this->actingAs(User::factory()->create())->get(route('admin.roles.index'))->assertForbidden();
+    }
+
+    public function test_delegated_manager_cannot_edit_a_role_with_administrative_permissions(): void
+    {
+        $manager = $this->roleManager();
+        $role = Role::factory()->create();
+        $role->permissions()->attach(Permission::where('slug', 'audit.view')->firstOrFail());
+
+        $this->actingAs($manager)->put(route('admin.roles.update', $role), [
+            'name' => 'Manipulada', 'slug' => 'manipulada', 'description' => null,
+            'active' => false, 'permission_ids' => [],
+        ])->assertForbidden();
+
+        $role->refresh();
+        $this->assertNotSame('Manipulada', $role->name);
+        $this->assertTrue($role->active);
+        $this->assertTrue($role->permissions()->where('slug', 'audit.view')->exists());
+    }
+
+    public function test_delegated_manager_cannot_remove_administrative_permission_through_direct_sync(): void
+    {
+        $manager = $this->roleManager();
+        $role = Role::factory()->create();
+        $administrative = Permission::where('slug', 'users.manage_roles')->firstOrFail();
+        $role->permissions()->attach($administrative);
+        $this->actingAs($manager);
+
+        try {
+            app(SyncRolePermissionsAction::class)->execute($role, []);
+            $this->fail('A sincronização administrativa deveria ter sido bloqueada.');
+        } catch (AuthorizationException) {
+            $this->assertTrue($role->permissions()->whereKey($administrative->id)->exists());
+        }
+    }
+
+    public function test_delegated_manager_cannot_add_administrative_permission_through_direct_sync(): void
+    {
+        $manager = $this->roleManager();
+        $role = Role::factory()->create();
+        $administrative = Permission::where('slug', 'roles.manage_permissions')->firstOrFail();
+        $this->actingAs($manager);
+
+        $this->expectException(AuthorizationException::class);
+        app(SyncRolePermissionsAction::class)->execute($role, [$administrative->id]);
+    }
+
+    public function test_legitimate_administrator_can_update_an_administrative_role(): void
+    {
+        $administrator = $this->admin();
+        $role = Role::factory()->create();
+        $administrative = Permission::where('slug', 'audit.view')->firstOrFail();
+        $role->permissions()->attach($administrative);
+
+        $this->actingAs($administrator)->put(route('admin.roles.update', $role), [
+            'name' => 'Administrativa Atualizada', 'slug' => $role->slug,
+            'description' => null, 'active' => true, 'permission_ids' => [$administrative->id],
+        ])->assertRedirect(route('admin.roles.index'));
+
+        $this->assertSame('Administrativa Atualizada', $role->refresh()->name);
+    }
+
+    public function test_delegated_manager_can_update_a_common_role(): void
+    {
+        $manager = $this->roleManager();
+        $role = Role::factory()->create();
+        $operational = Permission::where('slug', 'companies.view')->firstOrFail();
+
+        $this->actingAs($manager)->put(route('admin.roles.update', $role), [
+            'name' => 'Operacional Atualizada', 'slug' => $role->slug,
+            'description' => null, 'active' => true, 'permission_ids' => [$operational->id],
+        ])->assertRedirect(route('admin.roles.index'));
+
+        $this->assertSame('Operacional Atualizada', $role->refresh()->name);
+        $this->assertTrue($role->permissions()->whereKey($operational->id)->exists());
     }
 
     public function test_administrator_can_remove_the_roles_last_permission_from_the_form(): void
@@ -181,5 +256,17 @@ class RoleManagementTest extends TestCase
             'slug' => 'manipulated',
             'active' => false,
         ]);
+    }
+
+    private function roleManager(): User
+    {
+        $role = Role::factory()->create();
+        $role->permissions()->sync(Permission::whereIn('slug', [
+            'roles.update', 'roles.manage_permissions',
+        ])->pluck('id'));
+        $manager = User::factory()->create();
+        $manager->roles()->attach($role);
+
+        return $manager;
     }
 }

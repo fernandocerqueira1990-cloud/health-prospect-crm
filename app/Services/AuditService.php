@@ -12,7 +12,8 @@ class AuditService
     /** @var list<string> */
     private const SENSITIVE_KEYS = [
         'password', 'password_confirmation', 'current_password', 'remember_token',
-        'token', 'secret', 'cookie', 'authorization',
+        'token', 'api_token', 'access_token', 'refresh_token', 'csrf_token', '_token',
+        'secret', 'client_secret', 'cookie', 'cookies', 'authorization', 'session_id',
     ];
 
     public function record(
@@ -45,7 +46,9 @@ class AuditService
         }
 
         foreach ($data as $key => $value) {
-            if (in_array(strtolower((string) $key), self::SENSITIVE_KEYS, true)) {
+            $normalizedKey = strtolower(str_replace(['-', ' '], '_', (string) $key));
+
+            if ($this->isSensitiveKey($normalizedKey)) {
                 unset($data[$key]);
 
                 continue;
@@ -57,5 +60,16 @@ class AuditService
         }
 
         return $data;
+    }
+
+    private function isSensitiveKey(string $key): bool
+    {
+        if (in_array($key, self::SENSITIVE_KEYS, true)) {
+            return true;
+        }
+
+        return str_ends_with($key, '_password')
+            || str_ends_with($key, '_token')
+            || str_ends_with($key, '_secret');
     }
 }

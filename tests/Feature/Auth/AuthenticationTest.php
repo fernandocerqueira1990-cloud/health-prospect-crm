@@ -85,7 +85,8 @@ class AuthenticationTest extends TestCase
         }
 
         $this->post('/login', ['email' => $user->email, 'password' => 'invalid'])
-            ->assertSessionHasErrors('email');
+            ->assertStatus(429)
+            ->assertHeader('Retry-After');
     }
 
     public function test_login_normalizes_email_case_and_surrounding_spaces(): void

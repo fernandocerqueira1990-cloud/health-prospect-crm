@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Roles;
 
+use App\Models\Permission;
 use App\Models\Role;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -25,7 +26,8 @@ class UpdateRoleRequest extends FormRequest
         $user = $this->user();
 
         return $user->can('update', $this->route('role'))
-            && (! $this->has('permission_ids') || $user->can('roles.manage_permissions'));
+            && (! $this->has('permission_ids') || $user->can('roles.manage_permissions'))
+            && ! $this->grantsAdministrativePermissionsWithoutBeingAdministrator();
     }
 
     public function rules(): array
@@ -48,5 +50,14 @@ class UpdateRoleRequest extends FormRequest
             'permission_ids' => ['sometimes', 'array'],
             'permission_ids.*' => ['integer', 'distinct', 'exists:permissions,id'],
         ];
+    }
+
+    private function grantsAdministrativePermissionsWithoutBeingAdministrator(): bool
+    {
+        return ! $this->user()->hasRole(Role::ADMIN_SLUG)
+            && Permission::query()
+                ->whereIn('slug', Permission::ADMINISTRATIVE_SLUGS)
+                ->whereKey((array) $this->input('permission_ids', []))
+                ->exists();
     }
 }

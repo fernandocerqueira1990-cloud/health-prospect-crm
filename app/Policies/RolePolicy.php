@@ -19,6 +19,7 @@ class RolePolicy
 
     public function update(User $user, Role $role): bool
     {
-        return $user->hasPermission('roles.update');
+        return $user->hasPermission('roles.update')
+            && (! $role->isAdministrative() || $user->hasRole(Role::ADMIN_SLUG));
     }
 }

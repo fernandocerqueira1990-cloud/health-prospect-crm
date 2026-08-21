@@ -255,7 +255,7 @@ Não misturar implementações antigas com o novo núcleo sem uma decisão expl�
 - [x] TASK-110 Security/environment baseline
 - [x] TASK-111 Public registration and tester hardening
 - [x] TASK-112 HTTPS, sessions, proxies and security headers
-- [ ] TASK-113 Authentication, rate limiting, RBAC and audit hardening
+- [x] TASK-113 Authentication, rate limiting, RBAC and audit hardening
 - [ ] TASK-114 Upload/import and data security
 - [ ] TASK-115 Secrets, logs and dependency security
 - [ ] TASK-116 Security regression and final validation
@@ -282,6 +282,16 @@ Não misturar implementações antigas com o novo núcleo sem uma decisão expl�
 - Homologação mantém cadastro e testers habilitados.
 - Produção deverá utilizar `PUBLIC_REGISTRATION_ENABLED=false` e `TESTER_ACCESS_ENABLED=false`.
 - Rate limiting, CSRF, RBAC e auditoria existentes foram preservados.
+
+### TASK-113 — Authentication, rate limiting, RBAC and audit hardening
+
+- Login preserva normalização de e-mail, remember me e mensagem genérica, regenera a sessão após sucesso e invalida sessão/CSRF no logout ou bloqueio posterior da conta.
+- Falhas de login são limitadas simultaneamente por identidade normalizada e por IP confiável, com chaves opacas, janela configurável, resposta HTTP 429 com `Retry-After` e auditoria de bloqueio; cadastro público usa limites independentes equivalentes.
+- Contas inativas e testers desabilitados perdem sessões existentes com mensagem uniforme e não recebem autorização por Gates, inclusive quando acumulam roles indevidas.
+- Delegação administrativa não permite atribuir a role reservada `admin`, editar administradores nem conceder permissions administrativas; a role admin e o último administrador ativo permanecem protegidos, incluindo self-lockout da sessão atual.
+- Auditoria cobre login, falha, bloqueio, logout e mudanças administrativas sem payload de credenciais; sanitização recursiva remove senhas, cookies, sessions, headers de autorização, CSRF, tokens e secrets por nomes canônicos e sufixos sensíveis.
+- Recuperação de senha continua sem rotas públicas nesta versão; portanto não existe endpoint de envio/reset para enumerar ou abusar, e essa superfície é coberta explicitamente por teste.
+- Testes focados cobrem rotação/invalidação de sessão, enumeração, contas bloqueadas, limites por identidade/IP e janela, acesso direto, privilege escalation, admin/último admin e sanitização recursiva.
 
 ### TASK-112 — HTTPS, sessions, proxies and security headers
 

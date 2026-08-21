@@ -47,6 +47,14 @@ class Role extends Model
         return $this->belongsToMany(Permission::class);
     }
 
+    public function isAdministrative(): bool
+    {
+        return $this->slug === self::ADMIN_SLUG
+            || $this->permissions()
+                ->whereIn('permissions.slug', Permission::ADMINISTRATIVE_SLUGS)
+                ->exists();
+    }
+
     protected function casts(): array
     {
         return ['active' => 'boolean'];
