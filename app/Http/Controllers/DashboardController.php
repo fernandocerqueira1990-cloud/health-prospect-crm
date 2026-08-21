@@ -8,6 +8,7 @@ use App\Models\Lead;
 use App\Models\Opportunity;
 use App\Models\Task;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
@@ -89,7 +90,7 @@ class DashboardController extends Controller
                 ->where('assigned_user_id', $user->id)
                 ->whereNotIn('status', ['converted', 'disqualified'])
                 ->where('created_at', '<=', $leadCutoff)
-                ->where(function ($query) use ($leadCutoff): void {
+                ->where(function (Builder $query) use ($leadCutoff): void {
                     $query->whereNull('last_interaction_at')
                         ->orWhere('last_interaction_at', '<=', $leadCutoff);
                 })
@@ -104,8 +105,8 @@ class DashboardController extends Controller
             ? Opportunity::query()
                 ->where('assigned_user_id', $user->id)
                 ->where('created_at', '<=', $opportunityCutoff)
-                ->whereHas('stage', fn ($stage) => $stage->where('type', 'open'))
-                ->whereDoesntHave('stageHistories', function ($history) use ($opportunityCutoff): void {
+                ->whereHas('stage', fn (Builder $stage) => $stage->where('type', 'open'))
+                ->whereDoesntHave('stageHistories', function (Builder $history) use ($opportunityCutoff): void {
                     $history->where('changed_at', '>', $opportunityCutoff);
                 })
                 ->count()
