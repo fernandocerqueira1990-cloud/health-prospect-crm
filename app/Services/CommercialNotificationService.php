@@ -8,6 +8,7 @@ use App\Models\Task;
 use App\Models\User;
 use App\Notifications\CommercialAlertNotification;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Notification;
 
 class CommercialNotificationService
@@ -42,11 +43,12 @@ class CommercialNotificationService
             ->get();
 
         return $tasks->map(function (Task $task): array {
-            $isOverdue = $task->due_at->isBefore(now()->startOfDay());
+            $dueAt = Carbon::parse((string) $task->due_at);
+            $isOverdue = $dueAt->isBefore(now()->startOfDay());
             $type = $isOverdue ? 'task_overdue' : 'follow_up_today';
 
             return [
-                'key' => $type.':'.$task->id.':'.$task->due_at->format('Y-m-d'),
+                'key' => $type.':'.$task->id.':'.$dueAt->format('Y-m-d'),
                 'type' => $type,
                 'title' => $isOverdue ? 'Tarefa comercial atrasada' : 'Follow-up para hoje',
                 'message' => $task->title,
