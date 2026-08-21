@@ -44,6 +44,62 @@
         />
     </div>
 
+    @if($canViewTasks && $commercialQueue)
+        <section class="card mt-5 p-0" aria-labelledby="commercial-queue-title">
+            <div class="flex items-center justify-between gap-4 border-b border-slate-200 px-4 py-3 sm:px-5">
+                <div class="min-w-0">
+                    <h2 id="commercial-queue-title" class="text-base font-bold text-slate-950">Minhas pendências comerciais</h2>
+                    <p class="mt-0.5 text-sm text-slate-500">Priorize as próximas ações e acompanhe tarefas com prazo.</p>
+                </div>
+                <a href="{{ route('tasks.index', ['assigned_user_id' => auth()->id()]) }}" class="shrink-0 text-sm font-bold text-crm-blue hover:text-crm-blue-dark">Ver tarefas</a>
+            </div>
+
+            <div class="grid gap-3 border-b border-slate-200 p-4 sm:grid-cols-3 sm:p-5">
+                <x-metric-card
+                    label="Atrasadas"
+                    :value="$commercialQueue['overdue']"
+                    help="Pendências anteriores a hoje"
+                />
+                <x-metric-card
+                    label="Para hoje"
+                    :value="$commercialQueue['today']"
+                    help="Ações com vencimento hoje"
+                />
+                <x-metric-card
+                    label="Próximas"
+                    :value="$commercialQueue['upcoming']"
+                    help="Ações agendadas após hoje"
+                />
+            </div>
+
+            <div class="divide-y divide-slate-100">
+                @forelse($commercialQueue['next_tasks'] as $task)
+                    <a href="{{ route('tasks.show', $task) }}" class="flex items-center justify-between gap-4 px-4 py-3 transition hover:bg-slate-50 sm:px-5">
+                        <div class="min-w-0">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <p class="truncate text-sm font-semibold text-slate-900">{{ $task->title }}</p>
+                                @if($task->is_follow_up)
+                                    <span class="rounded-full bg-crm-ice px-2 py-0.5 text-[11px] font-bold text-crm-blue">Follow-up</span>
+                                @endif
+                            </div>
+                            <p class="mt-0.5 truncate text-xs text-slate-500">
+                                {{ $task->lead?->name ?: $task->lead?->company_name ?: $task->opportunity?->title ?: 'Tarefa comercial' }}
+                            </p>
+                        </div>
+                        <div class="shrink-0 text-right">
+                            <p class="text-xs font-bold {{ $task->due_at->isPast() ? 'text-rose-600' : ($task->due_at->isToday() ? 'text-amber-600' : 'text-slate-500') }}">
+                                {{ $task->due_at->format('d/m H:i') }}
+                            </p>
+                            <p class="mt-0.5 text-[11px] text-slate-400">{{ $task->status === 'in_progress' ? 'Em andamento' : 'Pendente' }}</p>
+                        </div>
+                    </a>
+                @empty
+                    <x-empty-state title="Nenhuma pendência comercial com prazo." class="py-6" />
+                @endforelse
+            </div>
+        </section>
+    @endif
+
     <section class="card mt-5 p-0" aria-labelledby="quick-access-title">
         <div class="border-b border-slate-200 px-4 py-3 sm:px-5">
             <h2 id="quick-access-title" class="text-base font-bold text-slate-950">Acesso rápido</h2>
