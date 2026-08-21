@@ -1,71 +1,51 @@
-# 📚 Documentação — Health Prospect CRM
+# Documentação — Health Prospect CRM
 
-Esta área reúne a documentação da evolução técnica do **Health Prospect CRM**, projeto desenvolvido para estruturar e automatizar a prospecção comercial B2B no setor de saúde.
+Esta área reúne a documentação pública e técnica do **Health Prospect CRM**, organizada para facilitar a navegação por arquitetura, desenvolvimento, evolução do produto e roadmap.
 
-O desenvolvimento está sendo documentado por etapas, acompanhando a evolução da arquitetura, aplicação, dados, pipeline comercial e automações.
+## Navegação
 
----
+### Arquitetura
+Documentação da solução, banco de dados, API e segurança.
 
-## 🗺️ Evolução do projeto
+➡️ [Acessar arquitetura](architecture/README.md)
 
-### 01 — Visão e Arquitetura
+### Desenvolvimento
+Setup local, banco de testes, qualidade, CI e convenções de desenvolvimento.
 
-Definição do problema, objetivo do projeto e arquitetura inicial da solução.
+➡️ [Acessar desenvolvimento](development/README.md)
 
-➡️ [Ver documentação](./01-visao-e-arquitetura.md)
+### Evolução do projeto
+Histórico narrativo da construção do CRM, da arquitetura inicial até leads, pipeline, dados e automações.
 
----
+➡️ [Acessar evolução](evolution/README.md)
 
-### 02 — Da Arquitetura à Construção
+### Portfólio e roadmap
+Visão pública do projeto e estado das próximas evoluções.
 
-Transformação da arquitetura planejada em uma aplicação funcional, estruturando frontend, autenticação, banco de dados e infraestrutura.
+➡️ [Acessar portfólio](portfolio/README.md)  
+➡️ [Ver roadmap](portfolio/ROADMAP.md)
 
-➡️ [Ver documentação](./02-da-arquitetura-a-construcao.md)
+### Documentação interna
+Planejamento detalhado, tarefas, decisões de processo e materiais preservados para rastreabilidade.
 
----
+➡️ [Acessar documentação interna](internal/README.md)
 
-### 03 — Leads, Pipeline e Dados
+## Stack atual
 
-Estruturação da gestão de leads, empresas, contatos e oportunidades comerciais, conectando os dados ao fluxo de prospecção.
-
-➡️ [Ver documentação](./03-leads-pipeline-e-dados.md)
-
----
-
-### 04 — Automações e Integrações
-
-Evolução do CRM através de automações, integrações e redução de atividades comerciais manuais.
-
-➡️ [Ver documentação](./04-automacoes-e-integracoes.md)
-
----
-
-### 05 — Evolução do CRM
-
-Consolidação das etapas anteriores e evolução da aplicação para uma plataforma comercial mais estruturada, rastreável e orientada por dados.
-
-➡️ [Ver documentação](./05-evolucao-do-crm.md)
-
----
-
-## 🛠️ Stack principal
-
-- React
-- TypeScript
-- Vite
-- Supabase
+- PHP 8.4+ / Laravel
 - PostgreSQL
-- Git
-- GitHub
-- Linux
-- APIs REST
+- Redis
+- Apache / Debian Linux
+- Blade + Tailwind CSS
+- Git / GitHub Actions
+- PHPUnit
+- Pint
+- PHPStan / Larastan
 
----
+A POC original em **React + TypeScript + Vite + Supabase** foi preservada em `legacy/react-supabase`, mas não representa a arquitetura oficial atual.
 
-## 🎯 Objetivo
+## Objetivo da documentação
 
-Mais do que desenvolver uma aplicação, este projeto busca documentar todo o processo de construção de uma solução real:
+Registrar não apenas o resultado final, mas também decisões de arquitetura, modelagem de dados, segurança, testes, CI, troubleshooting e evolução incremental de uma aplicação real.
 
-**problema → arquitetura → desenvolvimento → dados → automação → evolução**
-
-Cada etapa representa uma evolução técnica do projeto e será documentada neste repositório.
+[← Voltar ao README principal](../README.md)

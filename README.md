@@ -1,92 +1,219 @@
 # Health Prospect CRM
 
-CRM B2B self-hosted para gestão comercial, prospecção, captação e análise de leads.
+> CRM B2B self-hosted para transformar prospecção comercial em um processo estruturado, rastreável e orientado por dados.
 
-## Arquitetura alvo
+![Laravel](https://img.shields.io/badge/Laravel-13-red?logo=laravel)
+![PHP](https://img.shields.io/badge/PHP-8.4-777BB4?logo=php&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-blue?logo=postgresql)
+![Redis](https://img.shields.io/badge/Redis-Cache-red?logo=redis)
+![Debian](https://img.shields.io/badge/Debian-Linux-A81D33?logo=debian)
+[![CI](https://github.com/fernandocerqueira1990-cloud/health-prospect-crm/actions/workflows/ci.yml/badge.svg)](https://github.com/fernandocerqueira1990-cloud/health-prospect-crm/actions/workflows/ci.yml)
+![Status](https://img.shields.io/badge/status-em%20desenvolvimento-yellow)
 
-- Debian Linux
-- Apache 2
-- PHP-FPM
-- Laravel
-- PostgreSQL
-- Redis
-- Blade + Tailwind + Alpine/Livewire
-- Grafana
-- Prometheus
-- Loki + Alloy
-- n8n opcional
-- Matomo opcional
+## Sobre o projeto
 
-## Documentação obrigatória
+O **Health Prospect CRM** nasceu de uma necessidade prática: substituir planilhas e controles dispersos por uma aplicação própria para gestão da prospecção comercial B2B.
 
-Antes de contribuir:
+O foco inicial são empresas privadas do setor de saúde — clínicas, hospitais, laboratórios, centros médicos e diagnóstico — mas a arquitetura foi desenhada para não limitar o produto a esse segmento.
 
-1. `MASTER.md`
-2. `ARCHITECTURE.md`
-3. `DATABASE.md`
-4. `SECURITY.md`
-5. `API.md`
-6. `ROADMAP.md`
-7. `TASKS.md`
-8. `PROMPT_MESTRE_V2.md`
+O projeto cobre a jornada comercial desde a organização de empresas e contatos até leads, qualificação, oportunidades, pipeline, atividades, importação de bases e indicadores.
 
-A evolução técnica e o histórico arquitetural do projeto também estão documentados
-em [`docs/`](docs/README.md), incluindo a transição da POC React/Supabase para o
-núcleo Laravel atual.
+## Interface da aplicação
 
-## Estado
+### Dashboard
+Visão central da operação comercial, com indicadores, acessos rápidos e acompanhamento de empresas e contatos.
 
-Projeto em fase de migração da prova de conceito React/Supabase para o núcleo Laravel self-hosted.
+![Dashboard do Health Prospect CRM](assets/screenshots/dashboard.png)
+
+### Pipeline comercial
+Funil comercial em Kanban, com etapas, probabilidades, filtros, responsáveis e visão de valor das oportunidades.
+
+![Pipeline comercial do Health Prospect CRM](assets/screenshots/pipeline.png)
+
+### Gestão de leads
+Tela de captação e acompanhamento de leads, com origem/canal, status, temperatura, score, responsável e próxima ação.
+
+![Gestão de leads do Health Prospect CRM](assets/screenshots/leads.png)
+
+### Campanhas
+Gestão de campanhas, canais, responsáveis, período, orçamento e parâmetros de aquisição.
+
+![Campanhas do Health Prospect CRM](assets/screenshots/campaigns.png)
+
+### Relatórios
+Indicadores comerciais e análise de desempenho, incluindo conversões de lead para oportunidade e de oportunidade para ganho.
+
+![Relatórios do Health Prospect CRM](assets/screenshots/reports.png)
+
+## O problema que o projeto resolve
+
+Processos comerciais baseados apenas em planilhas dificultam o acompanhamento histórico, a identificação de responsáveis, o controle das próximas ações e a análise do pipeline.
+
+O CRM centraliza essas informações em uma estrutura relacional e auditável, permitindo acompanhar a evolução de cada relacionamento comercial e preparar a operação para automações e analytics.
+
+## Principais capacidades
+
+- gestão de empresas, contatos e leads;
+- qualificação e conversão em oportunidades;
+- pipeline comercial configurável em Kanban;
+- histórico de movimentações e interações;
+- atividades, tarefas e follow-ups;
+- origens, canais, campanhas e atribuição de leads;
+- importação estruturada de CSV/XLSX;
+- pesquisa e filtros avançados;
+- dashboard e relatórios comerciais;
+- autenticação, RBAC, auditoria e hardening de segurança;
+- base preparada para integrações, observabilidade e automação.
+
+## Arquitetura da solução
+
+A solução foi estruturada em camadas, separando acesso, aplicação, dados, integrações, observabilidade, segurança e ciclo de desenvolvimento.
+
+![Arquitetura do Health Prospect CRM](assets/diagrams/architecture-overview.svg)
+
+A documentação técnica detalhada está disponível em [docs/architecture](docs/architecture/README.md).
+
+### Stack principal
+
+| Camada | Tecnologias |
+|---|---|
+| Sistema operacional | Debian Linux |
+| Web server | Apache 2 + PHP-FPM |
+| Backend | PHP 8.4+ / Laravel 13 |
+| Frontend | Blade, Tailwind CSS, Alpine.js / Livewire quando necessário |
+| Banco de dados | PostgreSQL |
+| Cache / filas | Redis / Laravel Queue |
+| Observabilidade | Health check implementado; Grafana, Prometheus, Loki, Alloy e Node Exporter planejados |
+| Automação | n8n Community opcional / planejado |
+| Analytics | Matomo self-hosted opcional / planejado |
+| Qualidade | PHPUnit, Laravel Pint, PHPStan/Larastan |
+| CI/CD | GitHub Actions |
+
+## Fluxo comercial
+
+```text
+Captação
+   ↓
+Lead
+   ↓
+Qualificação
+   ↓
+Oportunidade
+   ↓
+Pipeline
+   ↓
+Reunião
+   ↓
+Proposta
+   ↓
+Negociação
+   ↓
+Ganho / Perdido
+```
+
+Cada mudança relevante deve manter histórico para que o CRM não armazene apenas o estado atual do processo.
+
+## Segurança
+
+Segurança é uma prioridade arquitetural do projeto. O núcleo atual contempla controles como autorização no backend, RBAC, proteção contra IDOR, sessões e CSRF, rate limiting, headers de segurança, tratamento de proxies/HTTPS, auditoria, sanitização de logs e proteção do fluxo de importação.
+
+A Sprint 10 consolidou o trabalho de **Security & Production Hardening**, incluindo testes de regressão e validação da superfície de segurança antes da evolução das próximas funcionalidades.
+
+> Nenhuma credencial real deve ser armazenada no repositório. PostgreSQL e Redis não devem ser expostos publicamente.
+
+- [Política pública de segurança](.github/SECURITY.md)
+- [Documentação técnica de segurança](docs/architecture/SECURITY.md)
+
+## Qualidade e testes
+
+O projeto utiliza testes automatizados e validações de qualidade como parte do fluxo de desenvolvimento.
+
+```bash
+php artisan test
+./vendor/bin/pint --test
+./vendor/bin/phpstan analyse
+pnpm run build
+```
+
+O ambiente de testes utiliza um banco PostgreSQL dedicado terminado em `_test`, evitando execução acidental contra o banco principal da aplicação.
+
+## Estrutura da documentação
+
+A documentação foi organizada para separar arquitetura, evolução histórica, desenvolvimento e materiais internos.
+
+```text
+docs/
+├── architecture/   # arquitetura, banco, API e segurança
+├── evolution/      # evolução técnica documentada por etapas
+├── development/    # setup, testes e qualidade
+├── portfolio/      # visão pública e roadmap
+└── internal/       # documentação operacional e histórica
+
+assets/
+├── screenshots/    # capturas da aplicação
+├── diagrams/       # diagramas técnicos
+└── branding/       # identidade visual
+```
+
+### Navegação
+
+- [Documentação geral](docs/README.md)
+- [Arquitetura](docs/architecture/README.md)
+- [Evolução do projeto](docs/evolution/README.md)
+- [Documentação de desenvolvimento](docs/development/README.md)
+- [Visão de portfólio](docs/portfolio/README.md)
+- [Roadmap](docs/portfolio/ROADMAP.md)
+- [Como contribuir](CONTRIBUTING.md)
+
+## Evolução do projeto
+
+O desenvolvimento é incremental e mantém o histórico técnico no Git.
+
+A documentação pública acompanha a construção em etapas:
+
+1. [Visão e Arquitetura](docs/evolution/01-visao-e-arquitetura.md)
+2. [Da Arquitetura à Construção](docs/evolution/02-da-arquitetura-a-construcao.md)
+3. [Leads, Pipeline e Dados](docs/evolution/03-leads-pipeline-e-dados.md)
+4. [Automações e Integrações](docs/evolution/04-automacoes-e-integracoes.md)
+5. [Evolução do CRM](docs/evolution/05-evolucao-do-crm.md)
+
+A prova de conceito original em **React + TypeScript + Vite + Supabase** foi preservada em `legacy/react-supabase`. A arquitetura oficial atual utiliza o núcleo Laravel self-hosted.
 
 ## Desenvolvimento local
 
-Requisitos: PHP 8.4.1+, Composer, Node.js 22+, PostgreSQL e Redis.
+### Requisitos
+
+- PHP 8.4.1+
+- Composer
+- Node.js 22+
+- pnpm
+- PostgreSQL
+- Redis
+
+### Preparação
 
 ```bash
 composer install
 cp .env.example .env
 php artisan key:generate
 php artisan migrate
-npm install
-npm run build
-./vendor/bin/pint --test
-./vendor/bin/phpstan analyse
+pnpm install
+pnpm run build
 ```
 
-### Banco PostgreSQL exclusivo para testes
-
-Os testes nunca devem utilizar `health_prospect_crm`. Crie uma vez o banco dedicado com um usuário PostgreSQL autorizado:
+Para executar os testes, configure um banco PostgreSQL dedicado, por exemplo:
 
 ```bash
 createdb -O health_prospect_crm health_prospect_crm_test
-```
-
-O `phpunit.xml` força `APP_ENV=testing`, `DB_CONNECTION=pgsql` e
-`DB_DATABASE=health_prospect_crm_test`. Host, porta, usuário e senha continuam
-vindos do ambiente local; nenhuma senha de teste é versionada. Caso sejam
-diferentes do `.env`, crie um `.env.testing` local e não versionado com esses
-valores.
-
-```bash
 php artisan test
 ```
 
-A aplicação interrompe a inicialização em `testing` se o banco configurado não
-terminar com `_test`. A CI mantém suas próprias credenciais temporárias para o
-mesmo banco dedicado.
+## Objetivo técnico
 
-A POC React/Supabase está preservada em `legacy/react-supabase` e no histórico
-Git. Ela não integra o núcleo Laravel.
+Além de construir um CRM funcional, este repositório documenta decisões de arquitetura, modelagem de dados, segurança, troubleshooting, testes, CI e evolução incremental de uma aplicação real.
 
-## Estratégia
+O projeto funciona também como demonstração prática de competências em **sistemas, infraestrutura, banco de dados, desenvolvimento backend, segurança e operações de TI**.
 
-O desenvolvimento será incremental e orientado por tarefas.
+---
 
-Cada módulo deve possuir:
-
-- modelagem;
-- migrations;
-- autorização;
-- validação;
-- testes;
-- documentação.
+**Health Prospect CRM** — projeto em desenvolvimento contínuo.
