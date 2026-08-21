@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Company;
 use App\Models\Contact;
+use App\Models\Lead;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Support\Facades\Gate;
@@ -20,6 +21,7 @@ class DashboardController extends Controller
 
         $canViewCompanies = $user->can('viewAny', Company::class);
         $canViewContacts = $user->can('viewAny', Contact::class);
+        $canViewLeads = $user->can('viewAny', Lead::class);
         $canViewTasks = $user->can('viewAny', Task::class);
 
         $stats = [
@@ -44,8 +46,8 @@ class DashboardController extends Controller
             ? Contact::query()->with('company')->latest()->limit(5)->get()
             : collect();
 
-        $commercialQueue = $canViewTasks
-            ? $this->commercialQueue($user)
+        $commercialQueue = ($canViewTasks || $canViewLeads)
+            ? $this->commercialQueue($user, $canViewTasks, $canViewLeads)
             : null;
 
         return view('dashboard', compact(
@@ -55,20 +57,50 @@ class DashboardController extends Controller
             'commercialQueue',
             'canViewCompanies',
             'canViewContacts',
+            'canViewLeads',
             'canViewTasks',
         ));
     }
 
-    /** @return array{overdue: int, today: int, upcoming: int, next_tasks: \Illuminate\Database\Eloquent\Collection<int, Task>} */
-    private function commercialQueue(User $user): array
-    {
+    /** @return array{overdue: int|null, today: int|null, upcoming: int|null, inactive_leads: int|null, next_tasks: \Illuminate\Database\Eloquent\Collection<int, Task>} */
+    private function commercialQueue(
+        User $user,
+        bool $canViewTasks,
+        bool $canViewLeads,
+    ): array {
+        $todayStart = now()->startOfDay();
+        $todayEnd = now()->endOfDay();
+
         $baseQuery = Task::query()
             ->where('assigned_user_id', $user->id)
             ->whereIn('status', ['pending', 'in_progress'])
             ->whereNotNull('due_at');
 
-        $todayStart = now()->startOfDay();
-        $todayEnd = now()->endOfDay();
+        $cutoff = now()->subDays(
+            max(1, (int) config('commercial.lead_inactivity_days', 7)),
+        );
+
+        $inactiveLeads = $canViewLeads
+            ? Lead::query()
+                ->where('assigned_user_id', $user->id)
+                ->whereNotIn('status', ['converted', 'disqualified'])
+                ->where('created_at', '<=', $cutoff)
+                ->where(function ($query) use ($cutoff): void {
+                    $query->whereNull('last_interaction_at')
+                        ->orWhere('last_interaction_at', '<=', $cutoff);
+                })
+                ->count()
+            : null;
+
+        if (! $canViewTasks) {
+            return [
+                'overdue' => null,
+                'today' => null,
+                'upcoming' => null,
+                'inactive_leads' => $inactiveLeads,
+                'next_tasks' => Task::query()->whereRaw('1 = 0')->get(),
+            ];
+        }
 
         return [
             'overdue' => (clone $baseQuery)
@@ -80,6 +112,7 @@ class DashboardController extends Controller
             'upcoming' => (clone $baseQuery)
                 ->where('due_at', '>', $todayEnd)
                 ->count(),
+            'inactive_leads' => $inactiveLeads,
             'next_tasks' => (clone $baseQuery)
                 ->with([
                     'lead:id,name,company_name',
