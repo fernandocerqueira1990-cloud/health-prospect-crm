@@ -9,9 +9,10 @@ O Health Prospect CRM é desenvolvido de forma incremental, com foco em qualidad
 Leia:
 
 1. [`README.md`](README.md)
-2. [`docs/architecture/`](docs/architecture/README.md)
-3. [`docs/development/`](docs/development/README.md)
-4. [`docs/portfolio/ROADMAP.md`](docs/portfolio/ROADMAP.md)
+2. [`docs/README.md`](docs/README.md)
+3. [`docs/architecture/`](docs/architecture/README.md)
+4. [`docs/development/`](docs/development/README.md)
+5. [`docs/portfolio/ROADMAP.md`](docs/portfolio/ROADMAP.md)
 
 ## Fluxo recomendado
 
@@ -54,7 +55,7 @@ Nunca inclua no repositório:
 - credenciais de serviços externos;
 - dados comerciais ou pessoais reais usados apenas para testes.
 
-Consulte também [`SECURITY.md`](SECURITY.md).
+Consulte a [política pública de segurança](.github/SECURITY.md) e a [documentação técnica de segurança](docs/architecture/SECURITY.md).
 
 ## Commits
 
