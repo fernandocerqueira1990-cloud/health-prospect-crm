@@ -1,8 +1,16 @@
 # Arquitetura
 
-Documentação técnica da arquitetura do Health Prospect CRM.
+Documentação técnica da arquitetura do **Health Prospect CRM**.
 
-- `ARCHITECTURE.md` — arquitetura geral e infraestrutura
-- `DATABASE.md` — modelo de dados e regras de persistência
-- `API.md` — contrato e endpoints de integração
-- `SECURITY.md` — princípios e controles de segurança
+## Conteúdo
+
+- [Arquitetura geral](ARCHITECTURE.md) — visão da solução, infraestrutura e decisões arquiteturais.
+- [Banco de dados](DATABASE.md) — modelo relacional, integridade e regras de persistência.
+- [API e integrações](API.md) — contratos, endpoints e diretrizes de integração.
+- [Segurança](SECURITY.md) — princípios, controles e hardening da aplicação.
+
+## Visão visual
+
+O diagrama de alto nível da solução está disponível em [`assets/diagrams/architecture-overview.png`](../../assets/diagrams/architecture-overview.png).
+
+[← Voltar para a documentação](../README.md)
