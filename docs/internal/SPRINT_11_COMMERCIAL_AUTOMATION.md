@@ -6,6 +6,19 @@ Evoluir o Health Prospect CRM de um sistema orientado a registro e acompanhament
 
 A Sprint 11 deve aproveitar os módulos já existentes de Leads, Opportunities, Activities, Tasks, Timeline, Dashboard, Redis e Laravel Queue/Scheduler sem duplicar conceitos de domínio.
 
+## Status
+
+| Task | Entrega | Status |
+|---|---|---|
+| TASK-120 | Próxima ação comercial | Implementada — validação consolidada na TASK-127 |
+| TASK-121 | Central de pendências | Implementada — validação consolidada na TASK-127 |
+| TASK-122 | Leads sem interação | Próxima |
+| TASK-123 | Opportunities estagnadas | Pendente |
+| TASK-124 | Notificações internas | Pendente |
+| TASK-125 | Scheduler / Queue / Redis | Pendente |
+| TASK-126 | Dashboard operacional | Pendente |
+| TASK-127 | Validação final | Pendente |
+
 ## Princípios
 
 1. Reutilizar entidades existentes antes de criar novas tabelas.
@@ -35,6 +48,13 @@ Critérios de aceite:
 - registros concluídos não podem aparecer como próxima ação;
 - timezone e datas devem seguir a configuração da aplicação.
 
+Implementação:
+- `tasks` permanece como fonte de verdade;
+- `leads.next_action_at` é sincronizado com o menor `due_at` entre tarefas abertas (`pending`/`in_progress`) vinculadas ao Lead;
+- criação, atualização, conclusão, cancelamento, troca de Lead e exclusão de Task recalculam a próxima ação;
+- a sincronização ocorre dentro das transações já utilizadas pelos Actions de Task;
+- testes focados cobrem criação, avanço para a próxima tarefa, transferência entre Leads e exclusão.
+
 ### TASK-121 — Central de pendências
 
 Objetivo: criar uma visão operacional consolidada das ações que exigem atenção.
@@ -51,6 +71,15 @@ Entregáveis:
 - contadores resumidos;
 - listagem paginada/limitada com links para o registro de origem;
 - filtros por responsável quando aplicável.
+
+Implementação inicial:
+- seção `Minhas pendências comerciais` adicionada ao Dashboard;
+- contadores de tarefas atrasadas, para hoje e próximas;
+- escopo restrito ao usuário autenticado e às permissões de `tasks.view`;
+- listagem das próximas cinco tarefas abertas com prazo e links para o registro;
+- testes focados cobrem agrupamento por prazo, isolamento por responsável e ocultação sem permissão.
+
+Leads sem próxima ação e Opportunities sem próxima ação serão incorporados após as regras das TASK-122 e TASK-123 para evitar lógica duplicada.
 
 ### TASK-122 — Leads sem interação
 
