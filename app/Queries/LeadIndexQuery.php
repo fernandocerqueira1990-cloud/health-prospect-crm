@@ -70,6 +70,18 @@ class LeadIndexQuery
             }
         }
 
+        if (! empty($filters['inactive'])) {
+            $cutoff = now()->subDays(max(1, (int) config('commercial.lead_inactivity_days', 7)));
+
+            $query
+                ->whereNotIn('status', ['converted', 'disqualified'])
+                ->where('created_at', '<=', $cutoff)
+                ->where(function (Builder $query) use ($cutoff): void {
+                    $query->whereNull('last_interaction_at')
+                        ->orWhere('last_interaction_at', '<=', $cutoff);
+                });
+        }
+
         $perPage = isset($filters['per_page'])
             ? (int) $filters['per_page']
             : 15;
