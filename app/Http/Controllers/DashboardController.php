@@ -9,6 +9,7 @@ use App\Models\Opportunity;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
@@ -66,7 +67,7 @@ class DashboardController extends Controller
         ));
     }
 
-    /** @return array{overdue: int|null, today: int|null, upcoming: int|null, inactive_leads: int|null, stagnant_opportunities: int|null, next_tasks: \Illuminate\Database\Eloquent\Collection<int, Task>} */
+    /** @return array{overdue: int|null, today: int|null, upcoming: int|null, inactive_leads: int|null, stagnant_opportunities: int|null, next_tasks: Collection<int, Task>} */
     private function commercialQueue(
         User $user,
         bool $canViewTasks,
