@@ -36,6 +36,8 @@ class LeadNextActionSyncService
         collect($leadIds)
             ->filter(static fn (?int $leadId): bool => $leadId !== null)
             ->unique()
-            ->each(fn (int $leadId): mixed => $this->sync($leadId));
+            ->each(function (int $leadId): void {
+                $this->sync($leadId);
+            });
     }
 }
