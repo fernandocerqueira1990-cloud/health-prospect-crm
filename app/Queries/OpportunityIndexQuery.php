@@ -22,7 +22,7 @@ class OpportunityIndexQuery
             'pipeline:id,name,slug',
             'stage:id,pipeline_id,name,slug,position,probability,type',
             'lossReason:id,name,slug',
-        ]);
+        ])->withMax('stageHistories as last_stage_changed_at', 'changed_at');
 
         $search = trim((string) ($filters['q'] ?? ''));
 
@@ -78,6 +78,20 @@ class OpportunityIndexQuery
                     $filters['state'],
                 ),
             );
+        }
+
+        if (! empty($filters['stagnant'])) {
+            $cutoff = now()->subDays(
+                max(1, (int) config('commercial.opportunity_stagnation_days', 14)),
+            );
+
+            $query
+                ->whereHas('stage', fn (Builder $stage) => $stage->where('type', 'open'))
+                ->where('created_at', '<=', $cutoff)
+                ->whereDoesntHave(
+                    'stageHistories',
+                    fn (Builder $history) => $history->where('changed_at', '>', $cutoff),
+                );
         }
 
         $perPage = isset($filters['per_page'])
