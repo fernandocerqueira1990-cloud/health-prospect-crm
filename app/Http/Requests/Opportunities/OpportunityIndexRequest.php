@@ -54,6 +54,8 @@ class OpportunityIndexRequest extends FormRequest
                 'exists:leads,id',
             ],
 
+            'stagnant' => ['nullable', 'boolean'],
+
             'per_page' => [
                 'nullable',
                 'integer',

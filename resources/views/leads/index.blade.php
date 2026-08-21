@@ -18,9 +18,11 @@
     $temperatureLabels = ['cold' => 'Frio', 'warm' => 'Morno', 'hot' => 'Quente'];
     $temperatureVariants = ['cold' => 'neutral', 'warm' => 'warning', 'hot' => 'danger'];
     $priorityLabels = ['low' => 'Baixa', 'medium' => 'Média', 'high' => 'Alta', 'critical' => 'Crítica'];
-    $advancedFilters = ['source_id', 'channel_id', 'priority', 'temperature', 'per_page'];
+    $advancedFilters = ['source_id', 'channel_id', 'priority', 'temperature', 'inactive', 'per_page'];
     $hasAdvancedFilters = collect($advancedFilters)->contains(fn ($filter) => request()->filled($filter));
     $hasFilters = request()->except('page') !== [];
+    $inactivityDays = max(1, (int) config('commercial.lead_inactivity_days', 7));
+    $inactivityCutoff = now()->subDays($inactivityDays);
 @endphp
 
 <x-layouts.app title="Leads">
@@ -105,6 +107,13 @@
                         </select>
                     </div>
                     <div>
+                        <label class="label" for="inactive">Interação</label>
+                        <select class="input" id="inactive" name="inactive">
+                            <option value="">Todos</option>
+                            <option value="1" @selected(request('inactive') === '1')>Sem interação há {{ $inactivityDays }} dias</option>
+                        </select>
+                    </div>
+                    <div>
                         <label class="label" for="per_page">Por página</label>
                         <select class="input" id="per_page" name="per_page">
                             @foreach([10, 15, 25, 50, 100] as $value)
@@ -145,6 +154,11 @@
             </thead>
             <tbody>
                 @forelse($leads as $lead)
+                    @php
+                        $isInactive = ! in_array($lead->status, ['converted', 'disqualified'], true)
+                            && $lead->created_at->lte($inactivityCutoff)
+                            && ($lead->last_interaction_at === null || $lead->last_interaction_at->lte($inactivityCutoff));
+                    @endphp
                     <tr>
                         <td>
                             <a class="table-primary-link" href="{{ route('leads.show', $lead) }}">{{ $lead->name ?: 'Lead #'.$lead->id }}</a>
@@ -159,6 +173,9 @@
                             </span>
                             @if($lead->job_title)
                                 <span class="table-secondary-line text-slate-400">{{ $lead->job_title }}</span>
+                            @endif
+                            @if($isInactive)
+                                <span class="mt-1 inline-flex rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-bold text-amber-700">Sem interação há {{ $inactivityDays }}+ dias</span>
                             @endif
                         </td>
                         <td>
@@ -183,7 +200,7 @@
                         </td>
                         <td class="whitespace-nowrap">
                             @if($lead->next_action_at)
-                                {{ $lead->next_action_at->format('d/m/Y H:i') }}
+                                <span class="{{ $lead->next_action_at->isPast() ? 'font-semibold text-rose-600' : '' }}">{{ $lead->next_action_at->format('d/m/Y H:i') }}</span>
                             @else
                                 <span class="text-slate-400">—</span>
                             @endif

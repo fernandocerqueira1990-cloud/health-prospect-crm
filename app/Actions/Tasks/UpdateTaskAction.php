@@ -4,12 +4,14 @@ namespace App\Actions\Tasks;
 
 use App\Models\Task;
 use App\Services\AuditService;
+use App\Services\LeadNextActionSyncService;
 use Illuminate\Support\Facades\DB;
 
 class UpdateTaskAction
 {
     public function __construct(
         private readonly AuditService $audit,
+        private readonly LeadNextActionSyncService $leadNextActionSync,
     ) {}
 
     /** @param array<string, mixed> $data */
@@ -17,11 +19,17 @@ class UpdateTaskAction
     {
         return DB::transaction(function () use ($task, $data): Task {
             $before = $task->attributesToArray();
+            $previousLeadId = $task->lead_id;
 
             $this->applyStateDates($task, $data);
 
             $task->update($data);
             $task->refresh();
+
+            $this->leadNextActionSync->syncMany(
+                $previousLeadId,
+                $task->lead_id,
+            );
 
             $this->audit->record(
                 'task_updated',
