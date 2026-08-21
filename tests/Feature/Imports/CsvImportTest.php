@@ -159,11 +159,11 @@ class CsvImportTest extends TestCase
         $this->assertDatabaseCount('imports', 0);
     }
 
-    public function test_csv_formula_cells_are_neutralized_as_data(): void
+    public function test_csv_formula_like_cells_are_preserved_as_inert_domain_data(): void
     {
         $dataImport = $this->upload("Nome,Observação\nAna,=1+1\n", 'formula.csv');
 
-        $this->assertSame("'=1+1", $dataImport->rows()->sole()->original_data['Observação']);
+        $this->assertSame('=1+1', $dataImport->rows()->sole()->original_data['Observação']);
     }
 
     public function test_oversized_csv_record_fails_without_partial_rows(): void

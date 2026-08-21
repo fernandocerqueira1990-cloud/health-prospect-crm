@@ -53,7 +53,7 @@ class XlsxImportTest extends TestCase
         $this->assertDatabaseHas('audit_logs', ['action' => 'import_created', 'auditable_id' => $dataImport->id]);
     }
 
-    public function test_formula_is_not_calculated_and_is_neutralized_during_import(): void
+    public function test_formula_is_not_calculated_during_import(): void
     {
         $spreadsheet = new Spreadsheet;
         $spreadsheet->getActiveSheet()->fromArray([['Nome', 'Valor'], ['Teste', '=SUM(A1:A2)']]);
@@ -61,16 +61,16 @@ class XlsxImportTest extends TestCase
 
         $dataImport = $this->upload($spreadsheet);
 
-        $this->assertSame("'=SUM(A1:A2)", $dataImport->rows()->first()->original_data['Valor']);
+        $this->assertSame('=SUM(A1:A2)', $dataImport->rows()->first()->original_data['Valor']);
         $this->assertNotSame(999, $dataImport->rows()->first()->original_data['Valor']);
     }
 
-    public function test_formula_like_strings_are_neutralized_while_scalar_types_and_normal_strings_are_preserved(): void
+    public function test_formula_like_strings_and_legitimate_prefixed_values_are_preserved_without_evaluation(): void
     {
         $spreadsheet = new Spreadsheet;
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->fromArray([
-            ['Mais', 'Menos', 'Arroba', 'Negativo', 'Decimal', 'Booleano', 'Nulo', 'Normal', 'Menos textual'],
+            ['Mais', 'Menos', 'Arroba', 'Negativo', 'Decimal', 'Booleano', 'Nulo', 'Normal', 'Menos textual', 'Telefone'],
             [null, null, null, -42, -10.5, true, null, null, null],
         ]);
         $sheet->setCellValueExplicit('A2', '+cmd', DataType::TYPE_STRING);
@@ -78,21 +78,23 @@ class XlsxImportTest extends TestCase
         $sheet->setCellValueExplicit('C2', '@payload', DataType::TYPE_STRING);
         $sheet->setCellValueExplicit('H2', 'texto normal', DataType::TYPE_STRING);
         $sheet->setCellValueExplicit('I2', '-1+2', DataType::TYPE_STRING);
+        $sheet->setCellValueExplicit('J2', '+5511999990000', DataType::TYPE_STRING);
 
         $data = $this->upload($spreadsheet)->rows()->sole()->original_data;
 
-        $this->assertSame("'+cmd", $data['Mais']);
-        $this->assertSame("'-formula-like string", $data['Menos']);
-        $this->assertSame("'@payload", $data['Arroba']);
+        $this->assertSame('+cmd', $data['Mais']);
+        $this->assertSame('-formula-like string', $data['Menos']);
+        $this->assertSame('@payload', $data['Arroba']);
         $this->assertSame(-42, $data['Negativo']);
         $this->assertSame(-10.5, $data['Decimal']);
         $this->assertTrue($data['Booleano']);
         $this->assertNull($data['Nulo']);
         $this->assertSame('texto normal', $data['Normal']);
-        $this->assertSame("'-1+2", $data['Menos textual']);
+        $this->assertSame('-1+2', $data['Menos textual']);
+        $this->assertSame('+5511999990000', $data['Telefone']);
     }
 
-    public function test_csv_and_xlsx_apply_equivalent_formula_injection_neutralization(): void
+    public function test_csv_and_xlsx_preserve_equivalent_formula_like_data_without_evaluation(): void
     {
         $spreadsheet = new Spreadsheet;
         $sheet = $spreadsheet->getActiveSheet();
@@ -122,7 +124,7 @@ class XlsxImportTest extends TestCase
         $this->assertFailed($dataImport, 'invalid_header');
     }
 
-    public function test_formula_like_header_is_rejected_before_cell_neutralization(): void
+    public function test_formula_like_header_is_rejected_before_row_ingestion(): void
     {
         foreach (['=SUM(A1:A2)', '+cmd', '-payload', '@payload'] as $header) {
             $spreadsheet = new Spreadsheet;
@@ -235,7 +237,7 @@ class XlsxImportTest extends TestCase
         $this->assertSame('00123', $data['Código']);
         $this->assertSame('00000123456789', $data['Documento']);
         $this->assertSame('01234-567', $data['CEP']);
-        $this->assertSame("'+55 71 99999-9999", $data['Telefone']);
+        $this->assertSame('+55 71 99999-9999', $data['Telefone']);
         $this->assertSame('01/08/2026', $data['Data']);
         $this->assertSame('1.234,56', $data['Moeda']);
         $this->assertFalse($data['Booleano']);

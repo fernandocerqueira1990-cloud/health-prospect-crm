@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### Sprint 10 — Validação final (TASK-116)
+
+- Sprint 10 validada de ponta a ponta em configuração de produção, autenticação, sessões/CSRF, proxies/HTTPS/headers, RBAC/IDOR, imports, logs/privacidade, repositório, dependências e CI.
+- Corrigida regressão P1 na ingestão CSV/XLSX que prefixava apóstrofo e corrompia telefones internacionais e outros valores legítimos iniciados por caracteres formula-like; valores são preservados, fórmulas não são avaliadas e as views continuam escapando conteúdo.
+- Suíte focada aprovada com 249 testes e 1.121 assertions; suíte completa aprovada com 534 testes e 2.334 assertions. Pint, PHPStan/Larastan, Composer, requisitos de plataforma, instalação pnpm congelada, auditorias Composer/pnpm, build Vite, rotas e `git diff --check` aprovados.
+- Code review final contra `main` e das alterações não commitadas concluído sem P0/P1/P2 residual. Não houve merge, Pull Request ou commit.
+
 ### Sprint 10 — TASK-115 Secrets, logs and dependency security
 
 - Sanitização centralizada adicionada aos logs Laravel e à auditoria para redigir secrets, credenciais, Authorization, cookies, sessões e payloads de importação, neutralizando CR/LF e caracteres de controle.
@@ -13,7 +20,7 @@
 ### Sprint 10 — TASK-114 Upload/import and data security
 
 - Uploads CSV/XLSX reforçados com validação coerente de extensão/MIME/tamanho, nomes originais saneados, rejeição de extensões duplas perigosas e armazenamento privado em paths UUID confinados.
-- CSV protegido contra registros/cabeçalhos abusivos, encoding ou estrutura inválidos e formula injection; conteúdo HTML/JS permanece dado escapado nas views.
+- CSV protegido contra registros/cabeçalhos abusivos, encoding ou estrutura inválidos; valores formula-like permanecem dados inertes, não são avaliados e continuam escapados nas views sem corromper telefones ou outros valores legítimos.
 - XLSX protegido contra ZIP bombs, excesso de entradas/linhas/colunas/memória, conteúdo ativo, macros, links externos, archive traversal e XML inseguro, sem avaliação de fórmulas.
 - Mapping, deduplicação e execução final reforçados com whitelist, referências vinculadas ao import, assinatura HMAC do estado analisado, revalidação de dados/decisões e bloqueio de replay ou adulteração.
 - Auditoria e falhas expõem apenas códigos e metadados técnicos mínimos, sem payload integral de arquivos ou dados comerciais das linhas.

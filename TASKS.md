@@ -258,12 +258,23 @@ Não misturar implementações antigas com o novo núcleo sem uma decisão expl�
 - [x] TASK-113 Authentication, rate limiting, RBAC and audit hardening
 - [x] TASK-114 Upload/import and data security
 - [x] TASK-115 Secrets, logs and dependency security
-- [ ] TASK-116 Security regression and final validation
+- [x] TASK-116 Security regression and final validation
+
+### Validação final da Sprint 10 — TASK-116
+
+- Revisão integrada aprovada para ambiente/produção, autenticação, sessões/CSRF, proxies/HTTPS/headers, RBAC/IDOR, imports, logs/privacidade, repositório, dependências e CI; as 95 rotas foram inspecionadas com seus middlewares efetivos.
+- Um P1 foi encontrado e corrigido: a neutralização indiscriminada na ingestão alterava telefones internacionais e outros valores legítimos iniciados por `+`, `-` ou `@`. CSV/XLSX agora preservam dados de domínio, fórmulas XLSX não são avaliadas e todas as saídas atuais permanecem escapadas em contexto HTML.
+- Testes focados finais: 249 testes e 1.121 assertions em Auth/Admin/Security/Imports/configuração; recorte final de Imports: 147 testes e 775 assertions. Suíte completa: 534 testes e 2.334 assertions.
+- `composer validate`, `composer check-platform-reqs`, Pint, PHPStan/Larastan, instalação pnpm congelada, build Vite e `git diff --check` aprovados.
+- `composer audit`: zero advisories e zero pacotes abandonados. `pnpm audit`: zero vulnerabilidades em todas as severidades.
+- `codex review --uncommitted` aprovou a correção sem novo achado concreto; review completo contra `main` encontrou o P1 corrigido e não deixou P0/P1/P2 aberto.
+- Riscos residuais: a configuração real de produção (`APP_DEBUG=false`, HTTPS, cookie Secure, HSTS e proxies explícitos) depende do ambiente de deploy; qualquer exportação futura para CSV/XLSX deverá aplicar escaping de fórmula no momento da geração, pois não existe exportação de planilhas nesta versão.
+- Sprint 10 encerrada sem merge, Pull Request ou commit; Sprint 11 não foi iniciada.
 
 ### TASK-114 — Upload/import and data security
 
 - Upload limitado a CSV/XLSX com validação de extensão, MIME real, tamanho, extensão dupla perigosa e nomes originais saneados; arquivos permanecem em disk privado com nomes UUID e paths internos validados.
-- Parser CSV reforçado com limites de registro, linhas, colunas e cabeçalhos, UTF-8 estrito, rejeição de estrutura malformada e neutralização de formula injection sem interpretar conteúdo.
+- Parser CSV reforçado com limites de registro, linhas, colunas e cabeçalhos, UTF-8 estrito e rejeição de estrutura malformada; valores formula-like são tratados como dados inertes e preservados sem avaliação.
 - Parser XLSX reforçado antes do carregamento com limites de entradas, tamanho descomprimido e taxa de compressão, validação estrutural OOXML, bloqueio de macros/conteúdo incorporado, links externos, XML com DTD/entidades e paths de archive inseguros.
 - Mapping permanece baseado em whitelist explícita; Preview e deduplicação continuam sem persistir entidades comerciais e todas as saídas Blade mantêm escaping.
 - Estado de deduplicação de imports endurecidos passou a ser assinado por HMAC; execução revalida assinatura, normalização, decisões, referências internas, registros arquivados, origem/canal e rejeita execution data inesperado.

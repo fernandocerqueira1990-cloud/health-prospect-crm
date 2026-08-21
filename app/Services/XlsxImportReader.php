@@ -16,7 +16,7 @@ use ZipArchive;
 
 class XlsxImportReader
 {
-    public function __construct(private readonly AuditService $audit, private readonly ImportCellSanitizer $sanitizer) {}
+    public function __construct(private readonly AuditService $audit) {}
 
     public function parse(DataImport $dataImport): DataImport
     {
@@ -100,7 +100,7 @@ class XlsxImportReader
             for ($rowNumber = 1; $rowNumber <= $highestRow; $rowNumber++) {
                 $values = [];
                 for ($column = 1; $column <= $highestColumn; $column++) {
-                    $values[] = $this->stagingValue($sheet->getCell([$column, $rowNumber])->getValue(), $header !== null);
+                    $values[] = $this->stagingValue($sheet->getCell([$column, $rowNumber])->getValue());
                 }
 
                 if ($this->isEmpty($values)) {
@@ -140,7 +140,7 @@ class XlsxImportReader
         }
     }
 
-    private function stagingValue(mixed $value, bool $sanitize): string|int|float|bool|null
+    private function stagingValue(mixed $value): string|int|float|bool|null
     {
         if ($value === null) {
             return null;
@@ -150,9 +150,6 @@ class XlsxImportReader
         }
         if (is_string($value) && strlen($value) > max(1, (int) config('imports.cell_max_length'))) {
             throw new XlsxImportException('cell_too_large');
-        }
-        if ($sanitize && is_string($value)) {
-            return $this->sanitizer->asData($value);
         }
         if (is_scalar($value)) {
             return $value;

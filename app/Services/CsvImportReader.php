@@ -13,7 +13,7 @@ use Throwable;
 
 class CsvImportReader
 {
-    public function __construct(private readonly AuditService $audit, private readonly ImportCellSanitizer $sanitizer) {}
+    public function __construct(private readonly AuditService $audit) {}
 
     public function parse(DataImport $dataImport): DataImport
     {
@@ -131,7 +131,6 @@ class CsvImportReader
             if (count($record) !== count($header)) {
                 throw new CsvImportException('column_count_mismatch');
             }
-            $record = array_map(fn (string $value): string => $this->sanitizer->asData($value), $record);
             $original = array_combine($header, $record);
             $batch[] = ['import_id' => $dataImport->id, 'row_number' => $currentRow, 'status' => ImportRow::STATUS_PARSED, 'original_data' => json_encode($original, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE), 'normalized_data' => null, 'error_message' => null, 'related_entity_type' => null, 'related_entity_id' => null, 'created_at' => $timestamp, 'updated_at' => $timestamp];
             $totalRows++;
