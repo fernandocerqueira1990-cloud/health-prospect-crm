@@ -18,6 +18,7 @@ use App\Http\Controllers\ImportMappingController;
 use App\Http\Controllers\ImportPreviewController;
 use App\Http\Controllers\ImportReportController;
 use App\Http\Controllers\LeadController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OpportunityController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TaskController;
@@ -54,6 +55,10 @@ Route::middleware(['auth', EnsureUserIsActive::class])->group(function (): void 
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::patch('/notifications/read-all', [NotificationController::class, 'readAll'])->name('notifications.read-all');
+    Route::patch('/notifications/{notification}/read', [NotificationController::class, 'read'])->name('notifications.read');
+
     Route::get('/imports/{dataImport}/mapping', [ImportMappingController::class, 'edit'])->name('imports.mapping.edit');
     Route::put('/imports/{dataImport}/mapping', [ImportMappingController::class, 'update'])->name('imports.mapping.update');
     Route::get('/imports/{dataImport}/preview', ImportPreviewController::class)->name('imports.preview');
@@ -72,45 +77,24 @@ Route::middleware(['auth', EnsureUserIsActive::class])->group(function (): void 
         ->name('leads.mutation-complete');
     Route::resource('leads', LeadController::class);
 
-    Route::get(
-        '/opportunities/operation-complete',
-        [OpportunityController::class, 'mutationComplete'],
-    )->name('opportunities.mutation-complete');
-
-    Route::patch(
-        '/opportunities/{opportunity}/stage',
-        [OpportunityController::class, 'moveStage'],
-    )->name('opportunities.move-stage');
-
+    Route::get('/opportunities/operation-complete', [OpportunityController::class, 'mutationComplete'])
+        ->name('opportunities.mutation-complete');
+    Route::patch('/opportunities/{opportunity}/stage', [OpportunityController::class, 'moveStage'])
+        ->name('opportunities.move-stage');
     Route::resource('opportunities', OpportunityController::class);
+    Route::get('/pipeline', [OpportunityController::class, 'kanban'])->name('roadmap.pipeline');
 
-    Route::get(
-        '/pipeline',
-        [OpportunityController::class, 'kanban'],
-    )->name('roadmap.pipeline');
-
-    Route::get(
-        '/activities/operation-complete',
-        [ActivityController::class, 'mutationComplete'],
-    )->name('activities.mutation-complete');
-
+    Route::get('/activities/operation-complete', [ActivityController::class, 'mutationComplete'])
+        ->name('activities.mutation-complete');
     Route::resource('activities', ActivityController::class);
-    Route::get(
-        '/tasks/operation-complete',
-        [TaskController::class, 'mutationComplete'],
-    )->name('tasks.mutation-complete');
 
-    Route::post(
-        '/tasks/{task}/complete-follow-up',
-        [TaskController::class, 'completeFollowUp'],
-    )->name('tasks.complete-follow-up');
-
+    Route::get('/tasks/operation-complete', [TaskController::class, 'mutationComplete'])
+        ->name('tasks.mutation-complete');
+    Route::post('/tasks/{task}/complete-follow-up', [TaskController::class, 'completeFollowUp'])
+        ->name('tasks.complete-follow-up');
     Route::resource('tasks', TaskController::class);
 
-    Route::get(
-        '/timeline',
-        [TimelineController::class, 'index'],
-    )->name('timeline.index');
+    Route::get('/timeline', [TimelineController::class, 'index'])->name('timeline.index');
 
     Route::resource('campaigns', CampaignController::class);
     Route::post('/campaigns/{campaign}/leads', [CampaignController::class, 'associateLead'])
