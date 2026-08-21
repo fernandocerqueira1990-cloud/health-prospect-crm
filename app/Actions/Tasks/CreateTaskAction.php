@@ -5,12 +5,14 @@ namespace App\Actions\Tasks;
 use App\Models\Task;
 use App\Models\User;
 use App\Services\AuditService;
+use App\Services\LeadNextActionSyncService;
 use Illuminate\Support\Facades\DB;
 
 class CreateTaskAction
 {
     public function __construct(
         private readonly AuditService $audit,
+        private readonly LeadNextActionSyncService $leadNextActionSync,
     ) {}
 
     /** @param array<string, mixed> $data */
@@ -26,6 +28,8 @@ class CreateTaskAction
             $this->applyStateDates($data);
 
             $task = Task::create($data);
+
+            $this->leadNextActionSync->sync($task->lead_id);
 
             $this->audit->record(
                 'task_created',
