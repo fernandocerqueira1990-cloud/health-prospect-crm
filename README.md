@@ -17,6 +17,33 @@ O foco inicial são empresas privadas do setor de saúde — clínicas, hospitai
 
 O projeto cobre a jornada comercial desde a organização de empresas e contatos até leads, qualificação, oportunidades, pipeline, atividades, importação de bases e indicadores.
 
+## Interface da aplicação
+
+### Dashboard
+Visão central da operação comercial, com indicadores, acessos rápidos e acompanhamento de empresas e contatos.
+
+![Dashboard do Health Prospect CRM](assets/screenshots/dashboard.png)
+
+### Pipeline comercial
+Funil comercial em Kanban, com etapas, probabilidades, filtros, responsáveis e visão de valor das oportunidades.
+
+![Pipeline comercial do Health Prospect CRM](assets/screenshots/pipeline.png)
+
+### Gestão de leads
+Tela de captação e acompanhamento de leads, com origem/canal, status, temperatura, score, responsável e próxima ação.
+
+![Gestão de leads do Health Prospect CRM](assets/screenshots/leads.png)
+
+### Campanhas
+Gestão de campanhas, canais, responsáveis, período, orçamento e parâmetros de aquisição.
+
+![Campanhas do Health Prospect CRM](assets/screenshots/campaigns.png)
+
+### Relatórios
+Indicadores comerciais e análise de desempenho, incluindo conversões de lead para oportunidade e de oportunidade para ganho.
+
+![Relatórios do Health Prospect CRM](assets/screenshots/reports.png)
+
 ## O problema que o projeto resolve
 
 Processos comerciais baseados apenas em planilhas dificultam o acompanhamento histórico, a identificação de responsáveis, o controle das próximas ações e a análise do pipeline.
