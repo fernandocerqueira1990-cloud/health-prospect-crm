@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900" role="img" aria-labelledby="title desc">
+  <title id="title">Arquitetura do Health Prospect CRM</title>
+  <desc id="desc">Diagrama em camadas com acesso, aplicação Laravel, dados PostgreSQL e Redis, integrações, observabilidade, CI e controles de segurança.</desc>
+  <defs>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-opacity="0.10"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5b7088"/>
+    </marker>
+    <style>
+      .title{font:700 34px system-ui,-apple-system,"Segoe UI",sans-serif;fill:#102a43}.subtitle{font:500 18px system-ui,-apple-system,"Segoe UI",sans-serif;fill:#486581}.section{font:700 16px system-ui,-apple-system,"Segoe UI",sans-serif;letter-spacing:1px;fill:#1769aa}.boxTitle{font:700 19px system-ui,-apple-system,"Segoe UI",sans-serif;fill:#102a43}.text{font:400 14px system-ui,-apple-system,"Segoe UI",sans-serif;fill:#486581}.small{font:400 12.5px system-ui,-apple-system,"Segoe UI",sans-serif;fill:#627d98}.badge{font:700 12px system-ui,-apple-system,"Segoe UI",sans-serif}.line{stroke:#5b7088;stroke-width:2;fill:none;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect width="1440" height="900" fill="#f7fafc"/>
+
+  <text x="60" y="58" class="title">Health Prospect CRM</text>
+  <text x="60" y="88" class="subtitle">Arquitetura atual e frentes planejadas</text>
+
+  <rect x="60" y="118" width="260" height="510" rx="18" fill="#ffffff" stroke="#b8d8f0" filter="url(#shadow)"/>
+  <text x="84" y="153" class="section">ACESSO</text>
+  <rect x="84" y="178" width="212" height="92" rx="14" fill="#eef6fc"/>
+  <text x="105" y="209" class="boxTitle">Usuários</text>
+  <text x="105" y="235" class="text">Browser desktop / mobile</text>
+  <text x="105" y="256" class="small">Interface web autenticada</text>
+  <path d="M190 270 L190 310" class="line"/>
+  <rect x="84" y="312" width="212" height="118" rx="14" fill="#fff8e8" stroke="#f4c86a"/>
+  <text x="105" y="343" class="boxTitle">Cloudflare Tunnel</text>
+  <text x="105" y="368" class="text">Acesso externo opcional</text>
+  <text x="105" y="391" class="small">Proxy confiável configurado</text>
+  <text x="105" y="411" class="small">HTTPS reconhecido pelo Laravel</text>
+  <path d="M190 430 L190 470" class="line"/>
+  <rect x="84" y="472" width="212" height="118" rx="14" fill="#eefaf4" stroke="#8dd3b4"/>
+  <text x="105" y="503" class="boxTitle">Apache 2</text>
+  <text x="105" y="529" class="text">Web server + PHP-FPM</text>
+  <text x="105" y="552" class="small">HTTP local / HTTPS produção</text>
+  <text x="105" y="573" class="small">Debian Linux</text>
+
+  <rect x="352" y="118" width="360" height="510" rx="18" fill="#ffffff" stroke="#b8d8f0" filter="url(#shadow)"/>
+  <text x="376" y="153" class="section">APLICAÇÃO</text>
+  <rect x="376" y="178" width="312" height="170" rx="14" fill="#fff1ef" stroke="#f3aaa3"/>
+  <text x="400" y="211" class="boxTitle">Laravel 13 + PHP 8.4</text>
+  <text x="400" y="240" class="text">Controllers · Routes · Middleware</text>
+  <text x="400" y="264" class="text">Policies / Gates · Form Requests</text>
+  <text x="400" y="288" class="text">Actions · Services · Events</text>
+  <text x="400" y="312" class="text">Queues / Jobs · Audit</text>
+  <rect x="376" y="370" width="148" height="116" rx="14" fill="#eef6fc"/>
+  <text x="396" y="402" class="boxTitle">Frontend</text>
+  <text x="396" y="429" class="text">Blade</text>
+  <text x="396" y="451" class="text">Tailwind CSS</text>
+  <text x="396" y="473" class="small">UI responsiva</text>
+  <rect x="540" y="370" width="148" height="116" rx="14" fill="#eefaf4"/>
+  <text x="560" y="402" class="boxTitle">Domínio</text>
+  <text x="560" y="429" class="text">CRM Core</text>
+  <text x="560" y="451" class="text">RBAC / Audit</text>
+  <text x="560" y="473" class="small">Regras testadas</text>
+  <rect x="376" y="510" width="312" height="82" rx="14" fill="#f4f0ff"/>
+  <text x="400" y="542" class="boxTitle">Módulos</text>
+  <text x="400" y="568" class="text">Leads · Pipeline · Atividades · Campanhas · Relatórios</text>
+
+  <rect x="744" y="118" width="290" height="510" rx="18" fill="#ffffff" stroke="#b8d8f0" filter="url(#shadow)"/>
+  <text x="768" y="153" class="section">DADOS</text>
+  <rect x="768" y="178" width="242" height="155" rx="14" fill="#eef6fc"/>
+  <text x="792" y="211" class="boxTitle">PostgreSQL</text>
+  <text x="792" y="240" class="text">Dados relacionais</text>
+  <text x="792" y="264" class="text">Constraints / índices</text>
+  <text x="792" y="288" class="text">Transações / integridade</text>
+  <text x="792" y="311" class="small">Banco de testes dedicado *_test</text>
+  <rect x="768" y="355" width="242" height="132" rx="14" fill="#fff1ef"/>
+  <text x="792" y="388" class="boxTitle">Redis</text>
+  <text x="792" y="416" class="text">Sessões criptografadas</text>
+  <text x="792" y="440" class="text">Cache / filas</text>
+  <text x="792" y="464" class="small">Serviço privado, não público</text>
+  <rect x="768" y="510" width="242" height="82" rx="14" fill="#eefaf4"/>
+  <text x="792" y="542" class="boxTitle">Importações</text>
+  <text x="792" y="567" class="text">CSV / XLSX privados e validados</text>
+
+  <rect x="1066" y="118" width="314" height="510" rx="18" fill="#ffffff" stroke="#b8d8f0" filter="url(#shadow)"/>
+  <text x="1090" y="153" class="section">INTEGRAÇÕES &amp; OBSERVABILIDADE</text>
+  <rect x="1090" y="178" width="266" height="116" rx="14" fill="#f4f0ff"/>
+  <text x="1114" y="211" class="boxTitle">API / Webhooks</text>
+  <text x="1114" y="239" class="text">Superfície pública em evolução</text>
+  <text x="1114" y="263" class="small">Autenticação e rate limit planejados</text>
+  <rect x="1090" y="315" width="266" height="102" rx="14" fill="#fff8e8"/>
+  <text x="1114" y="348" class="boxTitle">n8n</text>
+  <text x="1114" y="376" class="text">Automação opcional / planejada</text>
+  <text x="1114" y="397" class="small">Follow-ups · distribuição · webhooks</text>
+  <rect x="1090" y="438" width="266" height="154" rx="14" fill="#eefaf4"/>
+  <text x="1114" y="471" class="boxTitle">Observabilidade</text>
+  <text x="1114" y="499" class="text">Health check implementado</text>
+  <text x="1114" y="523" class="text">Grafana / Prometheus</text>
+  <text x="1114" y="547" class="text">Loki / Alloy / Node Exporter</text>
+  <text x="1114" y="570" class="small">Stack completa planejada</text>
+
+  <path d="M320 410 L352 410" class="line"/>
+  <path d="M712 255 L744 255" class="line"/>
+  <path d="M1034 255 L1066 255" class="line"/>
+  <path d="M712 421 L744 421" class="line"/>
+
+  <rect x="60" y="662" width="850" height="164" rx="18" fill="#ffffff" stroke="#b8d8f0" filter="url(#shadow)"/>
+  <text x="84" y="697" class="section">DEVOPS &amp; QUALIDADE</text>
+  <rect x="84" y="720" width="176" height="76" rx="12" fill="#eef6fc"/>
+  <text x="104" y="750" class="boxTitle">Git / GitHub</text>
+  <text x="104" y="776" class="small">Branches · PRs · histórico</text>
+  <path d="M260 758 L300 758" class="line"/>
+  <rect x="302" y="720" width="176" height="76" rx="12" fill="#f4f0ff"/>
+  <text x="322" y="750" class="boxTitle">GitHub Actions</text>
+  <text x="322" y="776" class="small">CI com permissões restritas</text>
+  <path d="M478 758 L518 758" class="line"/>
+  <rect x="520" y="720" width="176" height="76" rx="12" fill="#eefaf4"/>
+  <text x="540" y="750" class="boxTitle">Testes</text>
+  <text x="540" y="776" class="small">PHPUnit · 534 testes na Sprint 10</text>
+  <path d="M696 758 L736 758" class="line"/>
+  <rect x="738" y="720" width="148" height="76" rx="12" fill="#fff8e8"/>
+  <text x="758" y="750" class="boxTitle">Qualidade</text>
+  <text x="758" y="776" class="small">Pint · PHPStan · audits</text>
+
+  <rect x="940" y="662" width="440" height="164" rx="18" fill="#fffaf0" stroke="#f0c36b" filter="url(#shadow)"/>
+  <text x="964" y="697" class="section" fill="#9a6700">SEGURANÇA IMPLEMENTADA</text>
+  <text x="964" y="728" class="text">✓ RBAC + Policies/Gates + proteção IDOR</text>
+  <text x="964" y="752" class="text">✓ Rate limiting · CSRF · sessões seguras</text>
+  <text x="964" y="776" class="text">✓ Security headers · proxies confiáveis</text>
+  <text x="964" y="800" class="text">✓ Hardening de imports · logs e secrets</text>
+
+  <text x="60" y="866" class="small">Atualizado para a arquitetura Laravel self-hosted. Componentes marcados como planejados não são apresentados como ativos em produção.</text>
+</svg>
