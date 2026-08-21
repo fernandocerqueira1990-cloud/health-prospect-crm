@@ -2,11 +2,12 @@
 
 > CRM B2B self-hosted para transformar prospecção comercial em um processo estruturado, rastreável e orientado por dados.
 
-![Laravel](https://img.shields.io/badge/Laravel-PHP-red?logo=laravel)
+![Laravel](https://img.shields.io/badge/Laravel-13-red?logo=laravel)
+![PHP](https://img.shields.io/badge/PHP-8.4-777BB4?logo=php&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-blue?logo=postgresql)
 ![Redis](https://img.shields.io/badge/Redis-Cache-red?logo=redis)
 ![Debian](https://img.shields.io/badge/Debian-Linux-A81D33?logo=debian)
-![CI](https://github.com/fernandocerqueira1990-cloud/health-prospect-crm/actions/workflows/ci.yml/badge.svg)
+[![CI](https://github.com/fernandocerqueira1990-cloud/health-prospect-crm/actions/workflows/ci.yml/badge.svg)](https://github.com/fernandocerqueira1990-cloud/health-prospect-crm/actions/workflows/ci.yml)
 ![Status](https://img.shields.io/badge/status-em%20desenvolvimento-yellow)
 
 ## Sobre o projeto
@@ -62,14 +63,13 @@ O CRM centraliza essas informações em uma estrutura relacional e auditável, p
 - pesquisa e filtros avançados;
 - dashboard e relatórios comerciais;
 - autenticação, RBAC, auditoria e hardening de segurança;
-- API para integrações;
-- base preparada para observabilidade e automação.
+- base preparada para integrações, observabilidade e automação.
 
 ## Arquitetura da solução
 
 A solução foi estruturada em camadas, separando acesso, aplicação, dados, integrações, observabilidade, segurança e ciclo de desenvolvimento.
 
-![Arquitetura do Health Prospect CRM](assets/diagrams/architecture-overview.png)
+![Arquitetura do Health Prospect CRM](assets/diagrams/architecture-overview.svg)
 
 A documentação técnica detalhada está disponível em [docs/architecture](docs/architecture/README.md).
 
@@ -79,13 +79,13 @@ A documentação técnica detalhada está disponível em [docs/architecture](doc
 |---|---|
 | Sistema operacional | Debian Linux |
 | Web server | Apache 2 + PHP-FPM |
-| Backend | PHP 8.4+ / Laravel |
+| Backend | PHP 8.4+ / Laravel 13 |
 | Frontend | Blade, Tailwind CSS, Alpine.js / Livewire quando necessário |
 | Banco de dados | PostgreSQL |
 | Cache / filas | Redis / Laravel Queue |
-| Observabilidade | Grafana, Prometheus, Loki, Alloy, Node Exporter |
-| Automação | n8n Community opcional via API |
-| Analytics | Matomo self-hosted opcional |
+| Observabilidade | Health check implementado; Grafana, Prometheus, Loki, Alloy e Node Exporter planejados |
+| Automação | n8n Community opcional / planejado |
+| Analytics | Matomo self-hosted opcional / planejado |
 | Qualidade | PHPUnit, Laravel Pint, PHPStan/Larastan |
 | CI/CD | GitHub Actions |
 
@@ -145,9 +145,9 @@ A documentação foi organizada para separar arquitetura, evolução histórica,
 docs/
 ├── architecture/   # arquitetura, banco, API e segurança
 ├── evolution/      # evolução técnica documentada por etapas
-├── development/    # documentação para desenvolvimento
+├── development/    # setup, testes e qualidade
 ├── portfolio/      # visão pública e roadmap
-└── internal/       # documentação operacional e instruções internas
+└── internal/       # documentação operacional e histórica
 
 assets/
 ├── screenshots/    # capturas da aplicação
