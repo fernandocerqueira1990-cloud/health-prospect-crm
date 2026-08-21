@@ -12,11 +12,11 @@ A Sprint 11 deve aproveitar os módulos já existentes de Leads, Opportunities, 
 |---|---|---|
 | TASK-120 | Próxima ação comercial | Implementada — validação consolidada na TASK-127 |
 | TASK-121 | Central de pendências | Implementada — validação consolidada na TASK-127 |
-| TASK-122 | Leads sem interação | Próxima |
-| TASK-123 | Opportunities estagnadas | Pendente |
-| TASK-124 | Notificações internas | Pendente |
+| TASK-122 | Leads sem interação | Implementada — validação consolidada na TASK-127 |
+| TASK-123 | Opportunities estagnadas | Implementada — validação consolidada na TASK-127 |
+| TASK-124 | Notificações internas | Próxima |
 | TASK-125 | Scheduler / Queue / Redis | Pendente |
-| TASK-126 | Dashboard operacional | Pendente |
+| TASK-126 | Dashboard operacional | Em evolução contínua |
 | TASK-127 | Validação final | Pendente |
 
 ## Princípios
@@ -35,19 +35,6 @@ A Sprint 11 deve aproveitar os módulos já existentes de Leads, Opportunities, 
 
 Objetivo: garantir que Leads e Opportunities possam expor claramente a próxima ação planejada sem criar uma segunda fonte de verdade paralela a Tasks/Activities.
 
-Entregáveis:
-- definir como a próxima ação será derivada das tarefas/atividades existentes;
-- exibir próxima ação, data/hora, responsável e status;
-- destacar próxima ação vencida;
-- permitir acesso rápido à criação/edição da tarefa relacionada;
-- respeitar permissões existentes.
-
-Critérios de aceite:
-- não duplicar informação já existente em `tasks`;
-- próxima ação deve ser obtida de forma determinística;
-- registros concluídos não podem aparecer como próxima ação;
-- timezone e datas devem seguir a configuração da aplicação.
-
 Implementação:
 - `tasks` permanece como fonte de verdade;
 - `leads.next_action_at` é sincronizado com o menor `due_at` entre tarefas abertas (`pending`/`in_progress`) vinculadas ao Lead;
@@ -59,51 +46,39 @@ Implementação:
 
 Objetivo: criar uma visão operacional consolidada das ações que exigem atenção.
 
-Categorias iniciais:
-- tarefas vencidas;
-- tarefas para hoje;
-- próximas tarefas;
-- Leads sem próxima ação;
-- Opportunities sem próxima ação.
-
-Entregáveis:
-- seção no Dashboard ou tela dedicada conforme avaliação de UX;
-- contadores resumidos;
-- listagem paginada/limitada com links para o registro de origem;
-- filtros por responsável quando aplicável.
-
-Implementação inicial:
+Implementação:
 - seção `Minhas pendências comerciais` adicionada ao Dashboard;
 - contadores de tarefas atrasadas, para hoje e próximas;
-- escopo restrito ao usuário autenticado e às permissões de `tasks.view`;
+- escopo restrito ao usuário autenticado e às permissões de cada módulo;
 - listagem das próximas cinco tarefas abertas com prazo e links para o registro;
-- testes focados cobrem agrupamento por prazo, isolamento por responsável e ocultação sem permissão.
-
-Leads sem próxima ação e Opportunities sem próxima ação serão incorporados após as regras das TASK-122 e TASK-123 para evitar lógica duplicada.
+- cards de Leads sem interação e Opportunities estagnadas incorporados conforme TASK-122 e TASK-123.
 
 ### TASK-122 — Leads sem interação
 
 Objetivo: identificar Leads que estão sem atividade comercial por período relevante.
 
-Entregáveis:
-- cálculo do último contato/interação a partir do histórico existente;
-- regra configurável de dias sem interação;
-- indicador visual na listagem/show do Lead;
-- filtro para Leads sem interação;
-- inclusão na central de pendências.
-
-Observação: a regra deve diferenciar criação recente de abandono real para reduzir falsos positivos.
+Implementação:
+- limiar configurável por `LEAD_INACTIVITY_DAYS`, com default de 7 dias;
+- regra baseada em `last_interaction_at`, com proteção para leads recém-criados;
+- leads convertidos ou desqualificados não entram no alerta;
+- filtro `inactive=1` na listagem;
+- indicador visual e contador na Central Comercial;
+- escopo do Dashboard limitado ao responsável autenticado;
+- cobertura de testes focada na regra de inatividade.
 
 ### TASK-123 — Opportunities estagnadas no pipeline
 
 Objetivo: sinalizar oportunidades que permanecem tempo excessivo na mesma etapa.
 
-Entregáveis:
-- cálculo de tempo na etapa com base no stage history;
-- limite configurável por etapa ou regra global inicial;
-- indicador visual no Kanban/lista;
-- filtro de oportunidades estagnadas;
-- inclusão na central de pendências.
+Implementação:
+- limiar configurável por `OPPORTUNITY_STAGNATION_DAYS`, com default de 14 dias;
+- cálculo baseado em `OpportunityStageHistory.changed_at`, usando `created_at` apenas quando ainda não houve mudança registrada;
+- apenas etapas abertas são elegíveis;
+- oportunidades recém-criadas ou movimentadas recentemente não são sinalizadas;
+- filtro `stagnant=1` disponível na listagem e suportado pelo Kanban;
+- badge `Parada há N dias` na listagem;
+- contador `Pipeline parado` na Central Comercial, limitado ao usuário responsável;
+- testes focados cobrem oportunidade estagnada, movimentação recente, etapa terminal e criação recente.
 
 ### TASK-124 — Notificações internas
 
@@ -136,17 +111,11 @@ Entregáveis:
 
 Objetivo: incorporar os novos sinais da Sprint 11 ao Dashboard sem prejudicar a leitura atual.
 
-Indicadores candidatos:
+Indicadores:
 - ações vencidas;
 - ações para hoje;
 - Leads sem interação;
 - Opportunities estagnadas.
-
-Entregáveis:
-- cards compactos;
-- links para listas filtradas;
-- métricas respeitando RBAC;
-- layout responsivo consistente com o design atual.
 
 ### TASK-127 — Validação final da Sprint 11
 
@@ -175,8 +144,6 @@ Para manter o sprint controlado, ficam fora neste momento:
 - automações que alterem automaticamente etapa do pipeline;
 - distribuição automática de Leads entre vendedores;
 - workflows configuráveis pelo usuário final.
-
-Esses itens podem ser tratados em sprints posteriores após estabilização da automação interna.
 
 ## Resultado esperado
 
