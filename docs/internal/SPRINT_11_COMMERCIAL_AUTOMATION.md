@@ -16,8 +16,8 @@ A Sprint 11 deve aproveitar os módulos já existentes de Leads, Opportunities, 
 | TASK-123 | Opportunities estagnadas | Implementada — validação consolidada na TASK-127 |
 | TASK-124 | Notificações internas | Implementada — validação consolidada na TASK-127 |
 | TASK-125 | Scheduler / Queue / Redis | Implementada — validação consolidada na TASK-127 |
-| TASK-126 | Dashboard operacional | Próxima |
-| TASK-127 | Validação final | Pendente |
+| TASK-126 | Dashboard operacional | Implementada — validação consolidada na TASK-127 |
+| TASK-127 | Validação final | Próxima |
 
 ## Princípios
 
@@ -117,13 +117,15 @@ Operação esperada em produção:
 
 ### TASK-126 — Dashboard operacional
 
-Objetivo: incorporar os novos sinais da Sprint 11 ao Dashboard sem prejudicar a leitura atual.
+Objetivo: incorporar os novos sinais da Sprint 11 ao Dashboard e à navegação global sem prejudicar a leitura atual.
 
-Indicadores:
-- ações vencidas;
-- ações para hoje;
-- Leads sem interação;
-- Opportunities estagnadas.
+Implementação:
+- Central Comercial consolida ações vencidas, ações para hoje, próximas ações, Leads sem interação e Opportunities estagnadas;
+- cards são acionáveis e abrem as listagens já filtradas;
+- contador de notificações não lidas aparece na navegação lateral e no topbar;
+- acesso rápido à tela de notificações fica disponível em qualquer tela autenticada;
+- contagem respeita o usuário autenticado e usa a relação nativa `unreadNotifications`;
+- teste de interface cobre a exibição do contador de não lidas.
 
 ### TASK-127 — Validação final da Sprint 11
 
