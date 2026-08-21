@@ -65,26 +65,13 @@ O CRM centraliza essas informações em uma estrutura relacional e auditável, p
 - API para integrações;
 - base preparada para observabilidade e automação.
 
-## Arquitetura atual
+## Arquitetura da solução
 
-```text
-Usuário
-  │
-  ▼
-Apache 2 / HTTPS
-  │
-  ▼
-Laravel + Blade + Tailwind
-  │
-  ├──────────────► Redis
-  │
-  ▼
-PostgreSQL
-  │
-  ├──────────────► API / Webhooks / n8n
-  │
-  └──────────────► Grafana / Observabilidade
-```
+A solução foi estruturada em camadas, separando acesso, aplicação, dados, integrações, observabilidade, segurança e ciclo de desenvolvimento.
+
+![Arquitetura do Health Prospect CRM](assets/diagrams/architecture-overview.png)
+
+A documentação técnica detalhada está disponível em [docs/architecture](docs/architecture/README.md).
 
 ### Stack principal
 
