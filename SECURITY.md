@@ -130,11 +130,13 @@ Nunca registrar:
 Produção:
 - `APP_DEBUG=false`;
 - stack traces não devem ser retornados ao cliente.
+- `LOG_STACK=daily` e `LOG_LEVEL=warning`;
+- retenção configurada por `LOG_DAILY_DAYS` conforme a política operacional.
 
 ## Dependências
 
 Executar periodicamente:
 - composer audit;
-- npm audit;
+- pnpm audit;
 - análise de dependências;
 - atualização planejada.

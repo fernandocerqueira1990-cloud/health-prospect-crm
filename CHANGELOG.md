@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+### Sprint 10 — TASK-115 Secrets, logs and dependency security
+
+- Sanitização centralizada adicionada aos logs Laravel e à auditoria para redigir secrets, credenciais, Authorization, cookies, sessões e payloads de importação, neutralizando CR/LF e caracteres de controle.
+- Exceptions passam a gerar contexto técnico saneado no servidor sem expor detalhes, paths ou erros de banco nas respostas de produção.
+- `.gitignore` ampliado para chaves privadas, dumps, backups, credenciais locais, temporários e runtime; `.env.example` recomenda rotação diária, retenção configurável, `warning` e debug desabilitado em produção.
+- CI endurecido com permissões somente leitura, timeout, Actions fixadas por commit e instalações reproduzíveis por `composer.lock` e `pnpm-lock.yaml`.
+- Composer e pnpm auditados sem vulnerabilidades conhecidas; nenhuma dependência ou upgrade major foi introduzido.
+
 ### Sprint 10 — TASK-114 Upload/import and data security
 
 - Uploads CSV/XLSX reforçados com validação coerente de extensão/MIME/tamanho, nomes originais saneados, rejeição de extensões duplas perigosas e armazenamento privado em paths UUID confinados.

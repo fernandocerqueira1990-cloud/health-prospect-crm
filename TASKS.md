@@ -257,7 +257,7 @@ Não misturar implementações antigas com o novo núcleo sem uma decisão expl�
 - [x] TASK-112 HTTPS, sessions, proxies and security headers
 - [x] TASK-113 Authentication, rate limiting, RBAC and audit hardening
 - [x] TASK-114 Upload/import and data security
-- [ ] TASK-115 Secrets, logs and dependency security
+- [x] TASK-115 Secrets, logs and dependency security
 - [ ] TASK-116 Security regression and final validation
 
 ### TASK-114 — Upload/import and data security
@@ -271,6 +271,16 @@ Não misturar implementações antigas com o novo núcleo sem uma decisão expl�
 - Rotas de upload, consulta, mapping, Preview, dedup, execução, relatório e exclusão permanecem protegidas por policies/Form Requests, com linhas sempre vinculadas ao import no backend.
 - Auditoria de importação registra somente IDs, estados, contadores e metadados técnicos; payloads de arquivo, original_data, normalized_data e execution_data são removidos pelo sanitizador.
 - Exclusão de arquivo ausente permanece idempotente; falhas de filesystem preservam o banco para retry e filenames internos inválidos não alcançam o disk.
+
+### TASK-115 — Secrets, logs and dependency security
+
+- Repositório e histórico auditados para credenciais, chaves privadas e dados sensíveis; `.env`, dumps, logs, backups, credenciais locais e formatos de chave privada permanecem fora do versionamento.
+- Sanitização centralizada aplicada aos canais Laravel e à auditoria, removendo credenciais, headers/cookies/sessions, payloads de importação e objetos arbitrários, com neutralização de CR/LF e caracteres de controle.
+- Exceptions continuam registrando classe, mensagem saneada, código e stack técnico limitado no servidor, enquanto respostas HTTP de produção permanecem genéricas com `APP_DEBUG=false`.
+- Produção documentada com logs `daily`, nível `warning` e retenção configurável por `LOG_DAILY_DAYS`; desenvolvimento preserva nível configurável.
+- Composer e pnpm auditados sem advisories conhecidos; lockfiles permanecem versionados e não houve upgrade major ou dependência nova.
+- CI restringe `GITHUB_TOKEN` a leitura, fixa Actions em commits imutáveis, limita tempo de execução e instala Composer/pnpm de forma reproduzível pelos lockfiles.
+- Testes focados cobrem secrets em mensagem/contexto/exception, Authorization, cookies, session IDs, payloads de importação, log injection e erro genérico em produção.
 
 ### TASK-110 — Security/environment baseline
 
