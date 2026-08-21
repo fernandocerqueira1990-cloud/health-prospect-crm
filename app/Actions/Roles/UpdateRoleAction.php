@@ -4,7 +4,9 @@ namespace App\Actions\Roles;
 
 use App\Models\Role;
 use App\Services\AuditService;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -17,6 +19,7 @@ class UpdateRoleAction
 
     public function execute(Role $role, array $data): Role
     {
+        $this->ensureActorCanUpdate($role);
         $this->ensureAdministratorInvariant($role, $data);
 
         return DB::transaction(function () use ($role, $data): Role {
@@ -30,6 +33,15 @@ class UpdateRoleAction
 
             return $role->refresh();
         });
+    }
+
+    private function ensureActorCanUpdate(Role $role): void
+    {
+        $actor = Auth::user();
+
+        if ($actor && ! $actor->hasRole(Role::ADMIN_SLUG) && $role->isAdministrative()) {
+            throw new AuthorizationException('Somente administradores podem alterar roles administrativas.');
+        }
     }
 
     private function ensureAdministratorInvariant(Role $role, array $data): void

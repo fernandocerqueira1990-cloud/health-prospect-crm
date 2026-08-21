@@ -4,16 +4,13 @@ namespace App\Services;
 
 use App\Models\AuditLog;
 use App\Models\User;
+use App\Support\LogSanitizer;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 
 class AuditService
 {
-    /** @var list<string> */
-    private const SENSITIVE_KEYS = [
-        'password', 'password_confirmation', 'current_password', 'remember_token',
-        'token', 'secret', 'cookie', 'authorization',
-    ];
+    public function __construct(private readonly LogSanitizer $sanitizer) {}
 
     public function record(
         string $action,
@@ -27,13 +24,13 @@ class AuditService
 
         return AuditLog::create([
             'user_id' => $user?->getKey() ?? auth()->id(),
-            'action' => $action,
+            'action' => $this->sanitizer->sanitizeMessage($action),
             'auditable_type' => $auditable?->getMorphClass(),
             'auditable_id' => $auditable?->getKey(),
             'before' => $this->sanitize($before),
             'after' => $this->sanitize($after),
-            'ip_address' => $request?->ip(),
-            'user_agent' => $request?->userAgent(),
+            'ip_address' => $request ? $this->sanitizer->sanitizeMessage((string) $request->ip()) : null,
+            'user_agent' => $request ? $this->sanitizer->sanitizeMessage((string) $request->userAgent()) : null,
         ]);
     }
 
@@ -44,15 +41,21 @@ class AuditService
             return null;
         }
 
+        $sanitized = $this->sanitizer->sanitize($data);
+
+        return is_array($sanitized) ? $this->removeRedactedValues($sanitized) : null;
+    }
+
+    /** @param array<string|int, mixed> $data
+     * @return array<string|int, mixed>
+     */
+    private function removeRedactedValues(array $data): array
+    {
         foreach ($data as $key => $value) {
-            if (in_array(strtolower((string) $key), self::SENSITIVE_KEYS, true)) {
+            if ($value === '[REDACTED]') {
                 unset($data[$key]);
-
-                continue;
-            }
-
-            if (is_array($value)) {
-                $data[$key] = $this->sanitize($value);
+            } elseif (is_array($value)) {
+                $data[$key] = $this->removeRedactedValues($value);
             }
         }
 

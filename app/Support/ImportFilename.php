@@ -21,9 +21,8 @@ class ImportFilename
             return $filename;
         }
 
-        $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION)) === 'csv'
-            ? '.csv'
-            : '';
+        $candidate = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        $extension = in_array($candidate, ['csv', 'xlsx'], true) ? '.'.$candidate : '';
 
         return mb_substr($filename, 0, self::MAX_LENGTH - mb_strlen($extension)).$extension;
     }

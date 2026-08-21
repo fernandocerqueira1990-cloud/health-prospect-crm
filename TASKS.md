@@ -250,6 +250,93 @@ Não misturar implementações antigas com o novo núcleo sem uma decisão expl�
 - Soft deletes, divisão por zero, múltiplos Pipelines, múltiplas moedas, dados legados e RBAC foram cobertos por testes automatizados.
 - Interface de Relatórios foi refinada e reorganizada para leitura executiva: KPIs → visão executiva → funil → aquisição → campanhas → tempo por etapa.
 
+## Sprint 10 — Security & Production Hardening
+
+- [x] TASK-110 Security/environment baseline
+- [x] TASK-111 Public registration and tester hardening
+- [x] TASK-112 HTTPS, sessions, proxies and security headers
+- [x] TASK-113 Authentication, rate limiting, RBAC and audit hardening
+- [x] TASK-114 Upload/import and data security
+- [x] TASK-115 Secrets, logs and dependency security
+- [x] TASK-116 Security regression and final validation
+
+### Validação final da Sprint 10 — TASK-116
+
+- Revisão integrada aprovada para ambiente/produção, autenticação, sessões/CSRF, proxies/HTTPS/headers, RBAC/IDOR, imports, logs/privacidade, repositório, dependências e CI; as 95 rotas foram inspecionadas com seus middlewares efetivos.
+- Um P1 foi encontrado e corrigido: a neutralização indiscriminada na ingestão alterava telefones internacionais e outros valores legítimos iniciados por `+`, `-` ou `@`. CSV/XLSX agora preservam dados de domínio, fórmulas XLSX não são avaliadas e todas as saídas atuais permanecem escapadas em contexto HTML.
+- Testes focados finais: 249 testes e 1.121 assertions em Auth/Admin/Security/Imports/configuração; recorte final de Imports: 147 testes e 775 assertions. Suíte completa: 534 testes e 2.334 assertions.
+- `composer validate`, `composer check-platform-reqs`, Pint, PHPStan/Larastan, instalação pnpm congelada, build Vite e `git diff --check` aprovados.
+- `composer audit`: zero advisories e zero pacotes abandonados. `pnpm audit`: zero vulnerabilidades em todas as severidades.
+- `codex review --uncommitted` aprovou a correção sem novo achado concreto; review completo contra `main` encontrou o P1 corrigido e não deixou P0/P1/P2 aberto.
+- Riscos residuais: a configuração real de produção (`APP_DEBUG=false`, HTTPS, cookie Secure, HSTS e proxies explícitos) depende do ambiente de deploy; qualquer exportação futura para CSV/XLSX deverá aplicar escaping de fórmula no momento da geração, pois não existe exportação de planilhas nesta versão.
+- Sprint 10 encerrada sem merge, Pull Request ou commit; Sprint 11 não foi iniciada.
+
+### TASK-114 — Upload/import and data security
+
+- Upload limitado a CSV/XLSX com validação de extensão, MIME real, tamanho, extensão dupla perigosa e nomes originais saneados; arquivos permanecem em disk privado com nomes UUID e paths internos validados.
+- Parser CSV reforçado com limites de registro, linhas, colunas e cabeçalhos, UTF-8 estrito e rejeição de estrutura malformada; valores formula-like são tratados como dados inertes e preservados sem avaliação.
+- Parser XLSX reforçado antes do carregamento com limites de entradas, tamanho descomprimido e taxa de compressão, validação estrutural OOXML, bloqueio de macros/conteúdo incorporado, links externos, XML com DTD/entidades e paths de archive inseguros.
+- Mapping permanece baseado em whitelist explícita; Preview e deduplicação continuam sem persistir entidades comerciais e todas as saídas Blade mantêm escaping.
+- Estado de deduplicação de imports endurecidos passou a ser assinado por HMAC; execução revalida assinatura, normalização, decisões, referências internas, registros arquivados, origem/canal e rejeita execution data inesperado.
+- Execução mantém locks, transações por linha, proteção contra concorrência/replay, idempotência após conclusão e nenhuma criação implícita de Opportunity.
+- Rotas de upload, consulta, mapping, Preview, dedup, execução, relatório e exclusão permanecem protegidas por policies/Form Requests, com linhas sempre vinculadas ao import no backend.
+- Auditoria de importação registra somente IDs, estados, contadores e metadados técnicos; payloads de arquivo, original_data, normalized_data e execution_data são removidos pelo sanitizador.
+- Exclusão de arquivo ausente permanece idempotente; falhas de filesystem preservam o banco para retry e filenames internos inválidos não alcançam o disk.
+
+### TASK-115 — Secrets, logs and dependency security
+
+- Repositório e histórico auditados para credenciais, chaves privadas e dados sensíveis; `.env`, dumps, logs, backups, credenciais locais e formatos de chave privada permanecem fora do versionamento.
+- Sanitização centralizada aplicada aos canais Laravel e à auditoria, removendo credenciais, headers/cookies/sessions, payloads de importação e objetos arbitrários, com neutralização de CR/LF e caracteres de controle.
+- Exceptions continuam registrando classe, mensagem saneada, código e stack técnico limitado no servidor, enquanto respostas HTTP de produção permanecem genéricas com `APP_DEBUG=false`.
+- Produção documentada com logs `daily`, nível `warning` e retenção configurável por `LOG_DAILY_DAYS`; desenvolvimento preserva nível configurável.
+- Composer e pnpm auditados sem advisories conhecidos; lockfiles permanecem versionados e não houve upgrade major ou dependência nova.
+- CI restringe `GITHUB_TOKEN` a leitura, fixa Actions em commits imutáveis, limita tempo de execução e instala Composer/pnpm de forma reproduzível pelos lockfiles.
+- Testes focados cobrem secrets em mensagem/contexto/exception, Authorization, cookies, session IDs, payloads de importação, log injection e erro genérico em produção.
+
+### TASK-110 — Security/environment baseline
+
+- Feature flag `PUBLIC_REGISTRATION_ENABLED` adicionada.
+- Cadastro público preparado para ser configurável por ambiente.
+- Default seguro definido como desabilitado quando a variável não existir.
+- `.env.example` documenta diferenças entre desenvolvimento/homologação e produção.
+- Produção prevista com `APP_ENV=production`, `APP_DEBUG=false` e `SESSION_SECURE_COOKIE=true`.
+- Nenhuma credencial, secret ou `.env` real deve ser versionado.
+- Aplicação efetiva da flag ao `/register` permanece para a TASK-111.
+
+### TASK-111 — Public registration and tester hardening
+
+- Cadastro público controlado por `PUBLIC_REGISTRATION_ENABLED`.
+- `/register` retorna 404 quando o cadastro público está desabilitado.
+- Link de criação de conta é ocultado no login quando o cadastro está desabilitado.
+- Acesso de usuários com papel `tester` controlado por `TESTER_ACCESS_ENABLED`.
+- Testers existentes não conseguem autenticar quando o acesso de teste está desabilitado.
+- Sessões já autenticadas de testers são invalidadas quando o acesso de teste é desabilitado.
+- Usuários inativos continuam sendo bloqueados independentemente do papel.
+- Homologação mantém cadastro e testers habilitados.
+- Produção deverá utilizar `PUBLIC_REGISTRATION_ENABLED=false` e `TESTER_ACCESS_ENABLED=false`.
+- Rate limiting, CSRF, RBAC e auditoria existentes foram preservados.
+
+### TASK-113 — Authentication, rate limiting, RBAC and audit hardening
+
+- Login preserva normalização de e-mail, remember me e mensagem genérica, regenera a sessão após sucesso e invalida sessão/CSRF no logout ou bloqueio posterior da conta.
+- Falhas de login são limitadas simultaneamente por identidade normalizada e por IP confiável, com chaves opacas, janela configurável, resposta HTTP 429 com `Retry-After` e auditoria de bloqueio; cadastro público usa limites independentes equivalentes.
+- Contas inativas e testers desabilitados perdem sessões existentes com mensagem uniforme e não recebem autorização por Gates, inclusive quando acumulam roles indevidas.
+- Delegação administrativa não permite atribuir a role reservada `admin`, editar administradores nem conceder permissions administrativas; a role admin e o último administrador ativo permanecem protegidos, incluindo self-lockout da sessão atual.
+- Auditoria cobre login, falha, bloqueio, logout e mudanças administrativas sem payload de credenciais; sanitização recursiva remove senhas, cookies, sessions, headers de autorização, CSRF, tokens e secrets por nomes canônicos e sufixos sensíveis.
+- Recuperação de senha continua sem rotas públicas nesta versão; portanto não existe endpoint de envio/reset para enumerar ou abusar, e essa superfície é coberta explicitamente por teste.
+- Testes focados cobrem rotação/invalidação de sessão, enumeração, contas bloqueadas, limites por identidade/IP e janela, acesso direto, privilege escalation, admin/último admin e sanitização recursiva.
+
+### TASK-112 — HTTPS, sessions, proxies and security headers
+
+- Confiança irrestrita em proxies foi removida; apenas loopback é confiável por padrão e `TRUSTED_PROXIES` aceita uma lista explícita de IPs ou CIDRs do proxy diretamente conectado.
+- Cabeçalhos `X-Forwarded-For`, `Host`, `Port` e `Proto` são considerados somente quando a conexão vem de proxy confiável, permitindo reconhecer HTTPS através do Cloudflare Tunnel local sem aceitar spoofing direto.
+- Sessões permanecem criptografadas, HttpOnly e SameSite `lax`; `SESSION_SECURE_COOKIE` continua desabilitado para HTTP local e deve ser habilitado em produção HTTPS.
+- Middleware web centralizado adiciona `nosniff`, `SAMEORIGIN`, Referrer Policy, Permissions Policy e CSP conservadora compatível com Blade, assets Vite e o servidor Vite local.
+- CSP protege `frame-ancestors` e `object-src`; suas policies podem ser ajustadas exclusivamente por configuração de ambiente.
+- HSTS é configurável, sem `preload`, emitido somente em requisições efetivamente reconhecidas como HTTPS e desabilitado por padrão para não afetar localhost HTTP.
+- Produção deve usar `APP_URL=https://...`, `SESSION_SECURE_COOKIE=true`, `SECURITY_HSTS_ENABLED=true` e configurar `TRUSTED_PROXIES` apenas com os IPs/CIDRs que se conectam diretamente ao Laravel.
+- Testes de regressão cobrem headers, HSTS em HTTP/HTTPS, proxies confiáveis e não confiáveis, cookie Secure e login/autenticação.
+
 ## Definition of Done
 
 Uma tarefa só pode ser marcada como concluída quando:

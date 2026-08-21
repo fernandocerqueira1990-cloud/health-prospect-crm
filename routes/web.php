@@ -22,6 +22,7 @@ use App\Http\Controllers\OpportunityController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TimelineController;
+use App\Http\Middleware\EnsurePublicRegistrationIsEnabled;
 use App\Http\Middleware\EnsureUserIsActive;
 use Illuminate\Support\Facades\Route;
 
@@ -37,9 +38,15 @@ Route::get('/health', function () {
 Route::middleware('guest')->group(function (): void {
     Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
     Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('login.store');
-    Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
+    Route::get('/register', [RegisteredUserController::class, 'create'])
+        ->middleware(EnsurePublicRegistrationIsEnabled::class)
+        ->name('register');
+
     Route::post('/register', [RegisteredUserController::class, 'store'])
-        ->middleware('throttle:register')
+        ->middleware([
+            EnsurePublicRegistrationIsEnabled::class,
+            'throttle:register',
+        ])
         ->name('register.store');
 });
 

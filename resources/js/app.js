@@ -1,10 +1,19 @@
+const sidebarStorageKey = 'crm-sidebar-collapsed';
+
+try {
+    if (localStorage.getItem(sidebarStorageKey) === 'true') {
+        document.documentElement.classList.add('sidebar-collapsed');
+    }
+} catch {
+    // O layout expandido continua sendo o fallback seguro.
+}
+
 const body = document.body;
 const openButton = document.querySelector('[data-sidebar-toggle]');
 const closeButton = document.querySelector('[data-sidebar-close]');
 const backdrop = document.querySelector('[data-sidebar-backdrop]');
 const collapseButton = document.querySelector('[data-sidebar-collapse]');
 const collapseIcon = document.querySelector('[data-sidebar-collapse-icon]');
-const sidebarStorageKey = 'crm-sidebar-collapsed';
 const pipelineFilterOpen = document.querySelector('[data-pipeline-filter-open]');
 const pipelineFilterDrawer = document.querySelector(
     '[data-pipeline-filter-drawer]',
@@ -15,6 +24,7 @@ const pipelineFilterBackdrop = document.querySelector(
 const pipelineFilterClose = document.querySelectorAll(
     '[data-pipeline-filter-close]',
 );
+const confirmationForms = document.querySelectorAll('form[data-confirm]');
 
 const syncBodyScroll = () => {
     const mobileSidebarOpen = body.classList.contains('sidebar-open')
@@ -86,6 +96,13 @@ pipelineFilterOpen?.addEventListener('click', openPipelineFilters);
 pipelineFilterBackdrop?.addEventListener('click', closePipelineFilters);
 pipelineFilterClose.forEach((button) => {
     button.addEventListener('click', closePipelineFilters);
+});
+confirmationForms.forEach((form) => {
+    form.addEventListener('submit', (event) => {
+        if (!window.confirm(form.dataset.confirm)) {
+            event.preventDefault();
+        }
+    });
 });
 collapseButton?.addEventListener('click', () => {
     const collapsed = document.documentElement.classList.toggle(

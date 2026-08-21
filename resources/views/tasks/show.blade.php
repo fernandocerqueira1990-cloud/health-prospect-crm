@@ -64,7 +64,7 @@
             </x-form-section>
             <x-form-section title="Metadados"><dl class="detail-grid xl:grid-cols-1"><div class="detail-item"><dt class="detail-label">Criada por</dt><dd class="detail-value">{{ $task->createdByUser?->name ?? '—' }}</dd></div></dl></x-form-section>
             @can('delete', $task)
-                <section class="rounded-xl border border-red-200 bg-white p-4 shadow-sm"><h2 class="font-semibold text-red-900">Excluir tarefa</h2><p class="mt-1 text-sm text-slate-600">O registro será arquivado por soft delete.</p><form class="mt-3" method="POST" action="{{ route('tasks.destroy', $task) }}" onsubmit="return confirm('Deseja excluir esta tarefa?')">@csrf @method('DELETE')<button class="btn-danger" type="submit">Excluir</button></form></section>
+                <section class="rounded-xl border border-red-200 bg-white p-4 shadow-sm"><h2 class="font-semibold text-red-900">Excluir tarefa</h2><p class="mt-1 text-sm text-slate-600">O registro será arquivado por soft delete.</p><form class="mt-3" method="POST" action="{{ route('tasks.destroy', $task) }}" data-confirm="Deseja excluir esta tarefa?">@csrf @method('DELETE')<button class="btn-danger" type="submit">Excluir</button></form></section>
             @endcan
         </aside>
     </div>

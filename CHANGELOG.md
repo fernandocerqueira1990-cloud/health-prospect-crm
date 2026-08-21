@@ -2,6 +2,45 @@
 
 ## Unreleased
 
+### Sprint 10 — Validação final (TASK-116)
+
+- Sprint 10 validada de ponta a ponta em configuração de produção, autenticação, sessões/CSRF, proxies/HTTPS/headers, RBAC/IDOR, imports, logs/privacidade, repositório, dependências e CI.
+- Corrigida regressão P1 na ingestão CSV/XLSX que prefixava apóstrofo e corrompia telefones internacionais e outros valores legítimos iniciados por caracteres formula-like; valores são preservados, fórmulas não são avaliadas e as views continuam escapando conteúdo.
+- Suíte focada aprovada com 249 testes e 1.121 assertions; suíte completa aprovada com 534 testes e 2.334 assertions. Pint, PHPStan/Larastan, Composer, requisitos de plataforma, instalação pnpm congelada, auditorias Composer/pnpm, build Vite, rotas e `git diff --check` aprovados.
+- Code review final contra `main` e das alterações não commitadas concluído sem P0/P1/P2 residual. Não houve merge, Pull Request ou commit.
+
+### Sprint 10 — TASK-115 Secrets, logs and dependency security
+
+- Sanitização centralizada adicionada aos logs Laravel e à auditoria para redigir secrets, credenciais, Authorization, cookies, sessões e payloads de importação, neutralizando CR/LF e caracteres de controle.
+- Exceptions passam a gerar contexto técnico saneado no servidor sem expor detalhes, paths ou erros de banco nas respostas de produção.
+- `.gitignore` ampliado para chaves privadas, dumps, backups, credenciais locais, temporários e runtime; `.env.example` recomenda rotação diária, retenção configurável, `warning` e debug desabilitado em produção.
+- CI endurecido com permissões somente leitura, timeout, Actions fixadas por commit e instalações reproduzíveis por `composer.lock` e `pnpm-lock.yaml`.
+- Composer e pnpm auditados sem vulnerabilidades conhecidas; nenhuma dependência ou upgrade major foi introduzido.
+
+### Sprint 10 — TASK-114 Upload/import and data security
+
+- Uploads CSV/XLSX reforçados com validação coerente de extensão/MIME/tamanho, nomes originais saneados, rejeição de extensões duplas perigosas e armazenamento privado em paths UUID confinados.
+- CSV protegido contra registros/cabeçalhos abusivos, encoding ou estrutura inválidos; valores formula-like permanecem dados inertes, não são avaliados e continuam escapados nas views sem corromper telefones ou outros valores legítimos.
+- XLSX protegido contra ZIP bombs, excesso de entradas/linhas/colunas/memória, conteúdo ativo, macros, links externos, archive traversal e XML inseguro, sem avaliação de fórmulas.
+- Mapping, deduplicação e execução final reforçados com whitelist, referências vinculadas ao import, assinatura HMAC do estado analisado, revalidação de dados/decisões e bloqueio de replay ou adulteração.
+- Auditoria e falhas expõem apenas códigos e metadados técnicos mínimos, sem payload integral de arquivos ou dados comerciais das linhas.
+- Cobertura de segurança ampliada para upload, parsers, integridade da execução, idempotência, autorização, escaping e privacidade de auditoria.
+
+### Sprint 10 — TASK-113 Authentication, rate limiting, RBAC and audit hardening
+
+- Autenticação reforçada com rotação/invalidação de sessão, mensagens uniformes, bloqueio contínuo de contas inativas/tester e auditoria de sucessos, falhas, bloqueios e logout.
+- Rate limiting centralizado por identidade normalizada e IP confiável para login e cadastro habilitado, usando chaves opacas, limites configuráveis e resposta 429 com `Retry-After`.
+- RBAC administrativo endurecido contra atribuição da role admin, edição indevida de administradores, concessão delegada de permissions administrativas, acesso direto e self-lockout crítico, preservando a proteção transacional do último admin ativo.
+- Sanitização recursiva de auditoria ampliada para senhas, cookies, sessions, CSRF, Authorization, API/access/refresh tokens e secrets, sem registrar payloads sensíveis de autenticação.
+- Recuperação de senha permanece sem endpoints públicos nesta versão e foi validada como superfície não exposta; nenhuma funcionalidade das TASK-114, TASK-115 ou TASK-116 foi antecipada.
+
+### Sprint 10 — TASK-112 HTTPS, sessions, proxies and security headers
+
+- Proxies confiáveis passaram a ser configurados explicitamente, com default restrito a loopback e reconhecimento seguro de HTTPS encaminhado pelo Cloudflare Tunnel local.
+- Sessões mantêm criptografia, HttpOnly e SameSite `lax`, com cookie Secure configurável e recomendado para produção HTTPS.
+- Middleware web centralizado adiciona security headers, CSP conservadora e HSTS condicional, sem preload e sem afetar localhost HTTP.
+- Configuração de ambiente e testes de regressão foram adicionados para transporte HTTPS, spoofing de forwarded headers, cookies e autenticação.
+
 ### Architecture
 - Arquitetura alvo definida como Laravel + PostgreSQL + Redis + Apache/Debian.
 - Grafana definido para analytics e observabilidade.

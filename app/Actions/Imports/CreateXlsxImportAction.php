@@ -26,7 +26,7 @@ class CreateXlsxImportAction
         try {
             $dataImport = DB::transaction(function () use ($file, $filename, $user): DataImport {
                 $dataImport = DataImport::create(['user_id' => $user->id, 'filename' => $filename, 'original_filename' => ImportFilename::sanitize($file->getClientOriginalName()), 'type' => DataImport::TYPE_XLSX, 'status' => DataImport::STATUS_UPLOADED, 'metadata' => []]);
-                $this->audit->record('import_created', $dataImport, after: ['original_filename' => $dataImport->original_filename, 'type' => $dataImport->type, 'status' => $dataImport->status]);
+                $this->audit->record('import_created', $dataImport, after: ['import_id' => $dataImport->id, 'type' => $dataImport->type, 'status' => $dataImport->status]);
 
                 return $dataImport;
             });

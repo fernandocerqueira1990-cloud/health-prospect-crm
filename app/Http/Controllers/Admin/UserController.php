@@ -7,6 +7,7 @@ use App\Actions\Users\UpdateUserAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Users\StoreUserRequest;
 use App\Http\Requests\Users\UpdateUserRequest;
+use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -26,7 +27,7 @@ class UserController extends Controller
     {
         Gate::authorize('create', User::class);
 
-        return view('admin.users.create', ['roles' => Role::where('active', true)->orderBy('name')->get()]);
+        return view('admin.users.create', ['roles' => $this->manageableRoles()]);
     }
 
     public function store(StoreUserRequest $request, CreateUserAction $action): RedirectResponse
@@ -40,7 +41,7 @@ class UserController extends Controller
     {
         Gate::authorize('update', $user);
 
-        return view('admin.users.edit', ['managedUser' => $user->load('roles'), 'roles' => Role::where('active', true)->orderBy('name')->get()]);
+        return view('admin.users.edit', ['managedUser' => $user->load('roles'), 'roles' => $this->manageableRoles()]);
     }
 
     public function update(UpdateUserRequest $request, User $user, UpdateUserAction $action): RedirectResponse
@@ -48,5 +49,16 @@ class UserController extends Controller
         $action->execute($user, $request->validated());
 
         return redirect()->route('admin.users.index')->with('status', __('Usuário atualizado com sucesso.'));
+    }
+
+    private function manageableRoles()
+    {
+        return Role::query()
+            ->where('active', true)
+            ->when(! request()->user()->hasRole(Role::ADMIN_SLUG), fn ($query) => $query
+                ->where('slug', '!=', Role::ADMIN_SLUG)
+                ->whereDoesntHave('permissions', fn ($permissions) => $permissions->whereIn('slug', Permission::ADMINISTRATIVE_SLUGS)))
+            ->orderBy('name')
+            ->get();
     }
 }

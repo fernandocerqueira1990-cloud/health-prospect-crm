@@ -9,6 +9,7 @@ use App\Models\ImportRow;
 use App\Models\Lead;
 use App\Models\User;
 use App\Services\AuditService;
+use App\Services\ImportIntegrityService;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
@@ -16,7 +17,7 @@ use Illuminate\Validation\ValidationException;
 
 class UpdateImportDedupDecisionAction
 {
-    public function __construct(private readonly AuditService $audit) {}
+    public function __construct(private readonly AuditService $audit, private readonly ImportIntegrityService $integrity) {}
 
     public function execute(DataImport $dataImport, ImportRow $importRow, string $group, string $action, ?string $candidateRef, User $user): ImportRow
     {
@@ -59,6 +60,11 @@ class UpdateImportDedupDecisionAction
             $row->dedup_data = $dedup;
             $row->save();
             $this->refreshSummary($lockedImport);
+            if (($lockedImport->refresh()->metadata['security']['version'] ?? null) === 1) {
+                $metadata = $lockedImport->metadata;
+                $metadata['security']['dedup_signature'] = $this->integrity->dedupSignature($lockedImport);
+                $lockedImport->update(['metadata' => $metadata]);
+            }
             $this->audit->record('import_dedup_decision_updated', $row, after: ['import_id' => $lockedImport->id, 'row_number' => $row->row_number, 'group' => $group, 'action' => $action, 'candidate_source' => $source, 'candidate_id' => $candidateId], user: $user);
 
             return $row->refresh();

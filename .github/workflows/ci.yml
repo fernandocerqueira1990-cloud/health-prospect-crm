@@ -4,9 +4,13 @@ on:
   push:
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   quality:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
 
     services:
       postgres:
@@ -48,19 +52,19 @@ jobs:
       REDIS_HOST: 127.0.0.1
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
-      - uses: shivammathur/setup-php@v2
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
         with:
           php-version: '8.4'
           extensions: mbstring, pdo_pgsql, redis
           coverage: none
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
         with:
           version: 11.19.0
           run_install: false
@@ -69,6 +73,9 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm run build
       - run: php artisan migrate --force
-      - run: php artisan test
+      - name: Run tests
+        run: php artisan test
+        env:
+          CACHE_STORE: array
       - run: ./vendor/bin/pint --test
       - run: ./vendor/bin/phpstan analyse --memory-limit=1G

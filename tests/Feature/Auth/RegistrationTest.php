@@ -24,6 +24,10 @@ class RegistrationTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        config()->set('features.public_registration', true);
+        config()->set('features.tester_access', true);
+
         $this->seed(DatabaseSeeder::class);
         RateLimiter::clear(md5('registertester@example.com|127.0.0.1'));
     }
@@ -170,6 +174,29 @@ class RegistrationTest extends TestCase
 
         $this->post(route('register.store'), $this->validPayload())->assertTooManyRequests();
         $this->assertDatabaseMissing('users', ['email' => 'tester@example.com']);
+    }
+
+    public function test_registration_is_not_available_when_public_registration_is_disabled(): void
+    {
+        config()->set('features.public_registration', false);
+
+        $this->get('/register')->assertNotFound();
+
+        $this->post('/register', $this->validPayload())->assertNotFound();
+
+        $this->assertDatabaseMissing('users', [
+            'email' => 'tester@example.com',
+        ]);
+    }
+
+    public function test_login_hides_registration_link_when_public_registration_is_disabled(): void
+    {
+        config()->set('features.public_registration', false);
+
+        $this->get('/login')
+            ->assertOk()
+            ->assertDontSee('Criar uma conta para testar')
+            ->assertDontSee('Ainda não tem uma conta?');
     }
 
     /** @return array<string, string> */

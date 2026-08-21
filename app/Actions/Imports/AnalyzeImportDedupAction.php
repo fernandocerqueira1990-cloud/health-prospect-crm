@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Services\AuditService;
 use App\Services\ImportDedupKeyRegistry;
 use App\Services\ImportDedupMatcher;
+use App\Services\ImportIntegrityService;
 use App\Services\ImportPreviewService;
 use App\Services\ImportPreviewValidator;
 use Illuminate\Support\Facades\DB;
@@ -20,6 +21,7 @@ class AnalyzeImportDedupAction
         private readonly ImportPreviewValidator $validator,
         private readonly ImportDedupMatcher $matcher,
         private readonly AuditService $audit,
+        private readonly ImportIntegrityService $integrity,
     ) {}
 
     public function execute(DataImport $dataImport, User $user): DataImport
@@ -68,6 +70,11 @@ class AnalyzeImportDedupAction
             $metadata = $lockedImport->metadata;
             $metadata['dedup'] = ['version' => 1, 'analyzed_at' => $analyzedAt, 'analyzed_by_user_id' => $user->id, 'summary' => $summary];
             $lockedImport->update(['metadata' => $metadata, 'duplicate_rows' => $summary['exact_matches']]);
+            if (($metadata['security']['version'] ?? null) === 1) {
+                $metadata = $lockedImport->metadata;
+                $metadata['security']['dedup_signature'] = $this->integrity->dedupSignature($lockedImport);
+                $lockedImport->update(['metadata' => $metadata]);
+            }
             $this->audit->record('import_dedup_analyzed', $lockedImport, after: ['import_id' => $lockedImport->id, 'summary' => $summary], user: $user);
 
             return $lockedImport->refresh();

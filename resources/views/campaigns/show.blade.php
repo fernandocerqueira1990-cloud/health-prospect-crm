@@ -88,6 +88,6 @@
                 @endif
             </x-form-section>
         @endif
-        @can('delete', $campaign)<section class="rounded-xl border border-red-200 bg-white p-4 shadow-sm"><h2 class="font-semibold text-red-900">Excluir campanha</h2><p class="mt-1 text-sm text-slate-600">A campanha será arquivada e deixará de aparecer nas consultas.</p><form class="mt-3" method="POST" action="{{ route('campaigns.destroy', $campaign) }}" onsubmit="return confirm('Deseja excluir esta campanha?')">@csrf @method('DELETE')<button class="btn-danger" type="submit">Excluir</button></form></section>@endcan
+        @can('delete', $campaign)<section class="rounded-xl border border-red-200 bg-white p-4 shadow-sm"><h2 class="font-semibold text-red-900">Excluir campanha</h2><p class="mt-1 text-sm text-slate-600">A campanha será arquivada e deixará de aparecer nas consultas.</p><form class="mt-3" method="POST" action="{{ route('campaigns.destroy', $campaign) }}" data-confirm="Deseja excluir esta campanha?">@csrf @method('DELETE')<button class="btn-danger" type="submit">Excluir</button></form></section>@endcan
     </aside></div>
 </x-layouts.app>

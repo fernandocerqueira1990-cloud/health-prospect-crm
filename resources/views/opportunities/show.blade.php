@@ -572,7 +572,7 @@
                         class="mt-4"
                         method="POST"
                         action="{{ route('opportunities.destroy', $opportunity) }}"
-                        onsubmit="return confirm('Arquivar esta oportunidade?');"
+                        data-confirm="Arquivar esta oportunidade?"
                     >
                         @csrf
                         @method('DELETE')

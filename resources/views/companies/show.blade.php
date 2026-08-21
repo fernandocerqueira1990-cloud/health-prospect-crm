@@ -64,7 +64,7 @@
             <x-form-section title="Metadados">
                 <dl><div class="detail-item"><dt class="detail-label">Criada em</dt><dd class="detail-value">{{ $company->created_at->format('d/m/Y H:i') }}</dd></div></dl>
             </x-form-section>
-            @can('delete', $company)<section class="rounded-xl border border-red-200 bg-white p-4 shadow-sm"><h2 class="font-semibold text-red-900">Excluir empresa</h2><p class="mt-1 text-sm text-slate-600">A empresa será arquivada por soft delete e não será removida definitivamente.</p><form class="mt-3" method="POST" action="{{ route('companies.destroy', $company) }}" onsubmit="return confirm('Confirma a exclusão desta empresa?')">@csrf @method('DELETE')<button class="btn-danger" type="submit">Excluir empresa</button></form></section>@endcan
+            @can('delete', $company)<section class="rounded-xl border border-red-200 bg-white p-4 shadow-sm"><h2 class="font-semibold text-red-900">Excluir empresa</h2><p class="mt-1 text-sm text-slate-600">A empresa será arquivada por soft delete e não será removida definitivamente.</p><form class="mt-3" method="POST" action="{{ route('companies.destroy', $company) }}" data-confirm="Confirma a exclusão desta empresa?">@csrf @method('DELETE')<button class="btn-danger" type="submit">Excluir empresa</button></form></section>@endcan
         </aside>
     </div>
 </x-layouts.app>

@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Exceptions\XlsxImportException;
 use App\Models\DataImport;
 use App\Models\ImportRow;
+use App\Support\ImportStoragePath;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
@@ -29,7 +30,7 @@ class XlsxImportReader
                     'status' => DataImport::STATUS_PARSED,
                     'total_rows' => $result['total_rows'],
                     'finished_at' => now(),
-                    'metadata' => ['sheet' => $result['sheet'], 'header' => $result['header']],
+                    'metadata' => ['sheet' => $result['sheet'], 'header' => $result['header'], 'security' => ['version' => 1]],
                 ]);
             });
 
@@ -57,7 +58,10 @@ class XlsxImportReader
             throw new XlsxImportException('local_disk_required');
         }
 
-        $path = Storage::disk($diskName)->path($dataImport->filename);
+        $path = Storage::disk($diskName)->path(ImportStoragePath::assertSafe($dataImport));
+        if (is_link($path)) {
+            throw new XlsxImportException('unsafe_storage_path');
+        }
         $this->validateArchive($path);
 
         $reader = new Xlsx;
@@ -105,7 +109,9 @@ class XlsxImportReader
                 if ($header === null) {
                     $header = array_map(fn (mixed $value): string => $this->headerValue($value), $values);
                     $normalized = array_map(fn (string $value): string => mb_strtolower($value), $header);
-                    if (in_array('', $header, true) || count($normalized) !== count(array_unique($normalized))) {
+                    $maxHeaderLength = max(1, (int) config('imports.header_max_length'));
+                    if (in_array('', $header, true) || count($normalized) !== count(array_unique($normalized))
+                        || array_any($header, fn (string $value): bool => mb_strlen($value) > $maxHeaderLength || preg_match('/[\p{Cc}\p{Cf}]/u', $value) === 1 || preg_match('/^[=+\-@]/', $value) === 1)) {
                         throw new XlsxImportException('invalid_header');
                     }
 
@@ -140,7 +146,10 @@ class XlsxImportReader
             return null;
         }
         if ($value instanceof RichText) {
-            return $value->getPlainText();
+            $value = $value->getPlainText();
+        }
+        if (is_string($value) && strlen($value) > max(1, (int) config('imports.cell_max_length'))) {
+            throw new XlsxImportException('cell_too_large');
         }
         if (is_scalar($value)) {
             return $value;
@@ -183,6 +192,7 @@ class XlsxImportReader
             }
 
             $uncompressedBytes = 0;
+            $requiredEntries = ['[content_types].xml' => false, 'xl/workbook.xml' => false];
             for ($index = 0; $index < $archive->numFiles; $index++) {
                 $entry = $archive->statIndex($index);
                 if ($entry === false) {
@@ -191,10 +201,34 @@ class XlsxImportReader
 
                 $size = (int) $entry['size'];
                 $compressedSize = (int) $entry['comp_size'];
+                $name = $entry['name'];
+                $normalizedName = strtolower(str_replace('\\', '/', $name));
+                if (array_key_exists($normalizedName, $requiredEntries)) {
+                    $requiredEntries[$normalizedName] = true;
+                }
+                if ($name === '' || str_contains($name, "\0") || str_starts_with($name, '/') || preg_match('#(^|/)\.\.(/|$)#', str_replace('\\', '/', $name)) === 1) {
+                    throw new XlsxImportException('invalid_archive');
+                }
+                if (preg_match('#(^|/)(?:vbaProject\.bin|activeX/|embeddings/)#i', $name) === 1) {
+                    throw new XlsxImportException('active_content_not_allowed');
+                }
                 $uncompressedBytes += $size;
                 if ($uncompressedBytes > $maxUncompressedBytes || ($size > 0 && $compressedSize === 0) || ($compressedSize > 0 && $size / $compressedSize > $maxCompressionRatio)) {
                     throw new XlsxImportException('archive_too_large');
                 }
+
+                if ($size > 0 && preg_match('/\.(?:xml|rels)$/i', $name) === 1) {
+                    $contents = $archive->getFromIndex($index, 0, ZipArchive::FL_UNCHANGED);
+                    if (! is_string($contents) || preg_match('/<!DOCTYPE|<!ENTITY/i', $contents) === 1) {
+                        throw new XlsxImportException('unsafe_xml');
+                    }
+                    if (str_ends_with(strtolower($name), '.rels') && preg_match('/TargetMode\s*=\s*["\']External["\']/i', $contents) === 1) {
+                        throw new XlsxImportException('external_links_not_allowed');
+                    }
+                }
+            }
+            if (in_array(false, $requiredEntries, true)) {
+                throw new XlsxImportException('invalid_archive');
             }
         } finally {
             $archive->close();

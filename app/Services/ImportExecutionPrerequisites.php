@@ -9,11 +9,18 @@ class ImportExecutionPrerequisites
 {
     private const ACTIONS = ['create_new', 'use_existing', 'reuse_import_row', 'skip'];
 
-    public function __construct(private readonly ImportPreviewService $preview) {}
+    public function __construct(
+        private readonly ImportPreviewService $preview,
+        private readonly ImportValueNormalizer $normalizer,
+        private readonly ImportPreviewValidator $validator,
+        private readonly ImportIntegrityService $integrity,
+    ) {}
 
     public function validate(DataImport $dataImport): void
     {
-        if ($dataImport->status !== DataImport::STATUS_PARSED) {
+        $resumingFailedExecution = $dataImport->status === DataImport::STATUS_FAILED
+            && ($dataImport->metadata['execution']['status'] ?? null) === 'failed';
+        if ($dataImport->status !== DataImport::STATUS_PARSED && ! $resumingFailedExecution) {
             throw new ImportExecutionException('invalid_import_status', 'A importação não está pronta para execução.');
         }
         if (! $this->preview->hasValidMapping($dataImport) || ! $this->preview->hasNormalizedData($dataImport)) {
@@ -23,8 +30,22 @@ class ImportExecutionPrerequisites
             throw new ImportExecutionException('dedup_required', 'Analise e resolva as duplicidades antes da execução final.');
         }
 
+        if (($dataImport->metadata['security']['version'] ?? null) === 1 && ! $this->integrity->validDedupSignature($dataImport)) {
+            throw new ImportExecutionException('import_data_tampered', 'Os dados da importação foram alterados após a análise. Execute novamente o mapeamento e a deduplicação.');
+        }
         $seenRows = [];
-        foreach ($dataImport->rows()->select(['id', 'row_number', 'dedup_data'])->lazyById(500, 'row_number') as $row) {
+        $mapping = $dataImport->metadata['mapping']['columns'];
+        $mappedTargets = array_values($mapping);
+        foreach ($dataImport->rows()->select(['id', 'row_number', 'original_data', 'normalized_data', 'dedup_data', 'execution_data'])->lazyById(500, 'row_number') as $row) {
+            if (($dataImport->metadata['security']['version'] ?? null) === 1) {
+                if ($row->execution_data !== null && ! $this->integrity->validExecutionSignature($dataImport, $row)) {
+                    throw new ImportExecutionException('execution_replay_data', 'A importação contém dados de execução inesperados.');
+                }
+                $expected = $this->normalizer->normalize($row->original_data, $mapping);
+                if ($row->normalized_data !== $expected || $this->validator->validate($expected, $mappedTargets)['status'] === ImportPreviewValidator::STATUS_ERROR) {
+                    throw new ImportExecutionException('normalized_data_invalid', 'Os dados normalizados não correspondem ao arquivo e ao mapeamento aprovados.');
+                }
+            }
             $dedup = $row->dedup_data;
             if (! is_array($dedup) || ($dedup['version'] ?? null) !== 1 || ! isset($dedup['groups']) || ! is_array($dedup['groups'])) {
                 throw new ImportExecutionException('dedup_stale', 'A análise de duplicidades está ausente ou desatualizada.');

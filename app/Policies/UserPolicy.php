@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\Role;
 use App\Models\User;
 
 class UserPolicy
@@ -18,6 +19,7 @@ class UserPolicy
 
     public function update(User $user, User $managedUser): bool
     {
-        return $user->hasPermission('users.update');
+        return $user->hasPermission('users.update')
+            && (! $managedUser->hasRole(Role::ADMIN_SLUG) || $user->hasRole(Role::ADMIN_SLUG));
     }
 }

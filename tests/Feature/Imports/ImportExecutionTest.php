@@ -18,6 +18,7 @@ use App\Models\LeadSource;
 use App\Models\LeadSourceEvent;
 use App\Models\Opportunity;
 use App\Models\User;
+use App\Services\ImportIntegrityService;
 use Database\Seeders\ChannelSeeder;
 use Database\Seeders\LeadSourceSeeder;
 use Database\Seeders\PermissionSeeder;
@@ -399,6 +400,39 @@ class ImportExecutionTest extends TestCase
 
         $this->assertLessThanOrEqual(1, $leadSelects);
         $this->assertDatabaseCount('leads', 30);
+    }
+
+    public function test_hardened_import_rejects_tampered_normalized_dedup_or_execution_data(): void
+    {
+        foreach (['normalized', 'dedup', 'execution'] as $tampering) {
+            $import = $this->executableImport([['company' => ['legal_name' => 'Empresa íntegra']]]);
+            $metadata = $import->metadata;
+            $metadata['security'] = ['version' => 1];
+            $import->update(['metadata' => $metadata]);
+            $metadata = $import->metadata;
+            $metadata['security']['dedup_signature'] = app(ImportIntegrityService::class)->dedupSignature($import);
+            $import->update(['metadata' => $metadata]);
+            $row = $import->rows()->sole();
+
+            if ($tampering === 'normalized') {
+                $row->normalized_data = ['company' => ['legal_name' => 'Forjada']];
+            } elseif ($tampering === 'dedup') {
+                $dedup = $row->dedup_data;
+                $dedup['groups']['company']['decision']['action'] = 'skip';
+                $row->dedup_data = $dedup;
+            } else {
+                $row->execution_data = ['version' => 1, 'status' => 'success', 'groups' => []];
+            }
+            $row->save();
+
+            try {
+                $this->execute($import);
+                $this->fail("A adulteração de {$tampering} deveria ser bloqueada.");
+            } catch (ImportExecutionException $exception) {
+                $this->assertContains($exception->errorCode, ['import_data_tampered', 'execution_replay_data']);
+            }
+            $this->assertDatabaseCount('companies', 0);
+        }
     }
 
     private function execute(DataImport $import, ?int $channelId = null): DataImport

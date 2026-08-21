@@ -26,7 +26,7 @@ class RoleController extends Controller
     {
         Gate::authorize('create', Role::class);
 
-        return view('admin.roles.create', ['permissions' => Permission::orderBy('slug')->get()]);
+        return view('admin.roles.create', ['permissions' => $this->manageablePermissions()]);
     }
 
     public function store(StoreRoleRequest $request, CreateRoleAction $action): RedirectResponse
@@ -40,7 +40,7 @@ class RoleController extends Controller
     {
         Gate::authorize('update', $role);
 
-        return view('admin.roles.edit', ['role' => $role->load('permissions'), 'permissions' => Permission::orderBy('slug')->get()]);
+        return view('admin.roles.edit', ['role' => $role->load('permissions'), 'permissions' => $this->manageablePermissions()]);
     }
 
     public function update(UpdateRoleRequest $request, Role $role, UpdateRoleAction $action): RedirectResponse
@@ -48,5 +48,13 @@ class RoleController extends Controller
         $action->execute($role, $request->validated());
 
         return redirect()->route('admin.roles.index')->with('status', __('Role atualizada com sucesso.'));
+    }
+
+    private function manageablePermissions()
+    {
+        return Permission::query()
+            ->when(! request()->user()->hasRole(Role::ADMIN_SLUG), fn ($query) => $query->whereNotIn('slug', Permission::ADMINISTRATIVE_SLUGS))
+            ->orderBy('slug')
+            ->get();
     }
 }

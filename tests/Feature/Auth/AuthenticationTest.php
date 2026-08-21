@@ -3,7 +3,9 @@
 namespace Tests\Feature\Auth;
 
 use App\Models\AuditLog;
+use App\Models\Role;
 use App\Models\User;
+use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
@@ -83,7 +85,8 @@ class AuthenticationTest extends TestCase
         }
 
         $this->post('/login', ['email' => $user->email, 'password' => 'invalid'])
-            ->assertSessionHasErrors('email');
+            ->assertStatus(429)
+            ->assertHeader('Retry-After');
     }
 
     public function test_login_normalizes_email_case_and_surrounding_spaces(): void
@@ -96,5 +99,44 @@ class AuthenticationTest extends TestCase
         ])->assertRedirect(route('dashboard'));
 
         $this->assertAuthenticatedAs($user);
+    }
+
+    public function test_tester_cannot_login_when_tester_access_is_disabled(): void
+    {
+        $this->seed(DatabaseSeeder::class);
+
+        config()->set('features.tester_access', false);
+
+        $tester = User::factory()->create([
+            'password' => Hash::make('Valid-password-123'),
+        ]);
+
+        $role = Role::where('slug', Role::TESTER_SLUG)->firstOrFail();
+        $tester->roles()->sync([$role->id]);
+
+        $this->post('/login', [
+            'email' => $tester->email,
+            'password' => 'Valid-password-123',
+        ])->assertSessionHasErrors('email');
+
+        $this->assertGuest();
+    }
+
+    public function test_logged_in_tester_is_logged_out_when_tester_access_is_disabled(): void
+    {
+        $this->seed(DatabaseSeeder::class);
+
+        config()->set('features.tester_access', false);
+
+        $tester = User::factory()->create();
+
+        $role = Role::where('slug', Role::TESTER_SLUG)->firstOrFail();
+        $tester->roles()->sync([$role->id]);
+
+        $this->actingAs($tester)
+            ->get('/dashboard')
+            ->assertRedirect(route('login'));
+
+        $this->assertGuest();
     }
 }

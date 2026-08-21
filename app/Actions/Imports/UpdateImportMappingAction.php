@@ -47,6 +47,7 @@ class UpdateImportMappingAction
             $metadata = $lockedImport->metadata;
             unset($metadata['dedup']);
             unset($metadata['execution'], $metadata['execution_config']);
+            unset($metadata['security']['dedup_signature']);
             $metadata['mapping'] = [
                 'version' => 1,
                 'mapped_at' => now()->toIso8601String(),
