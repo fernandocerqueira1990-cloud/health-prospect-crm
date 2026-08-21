@@ -256,9 +256,21 @@ Não misturar implementações antigas com o novo núcleo sem uma decisão expl�
 - [x] TASK-111 Public registration and tester hardening
 - [x] TASK-112 HTTPS, sessions, proxies and security headers
 - [x] TASK-113 Authentication, rate limiting, RBAC and audit hardening
-- [ ] TASK-114 Upload/import and data security
+- [x] TASK-114 Upload/import and data security
 - [ ] TASK-115 Secrets, logs and dependency security
 - [ ] TASK-116 Security regression and final validation
+
+### TASK-114 — Upload/import and data security
+
+- Upload limitado a CSV/XLSX com validação de extensão, MIME real, tamanho, extensão dupla perigosa e nomes originais saneados; arquivos permanecem em disk privado com nomes UUID e paths internos validados.
+- Parser CSV reforçado com limites de registro, linhas, colunas e cabeçalhos, UTF-8 estrito, rejeição de estrutura malformada e neutralização de formula injection sem interpretar conteúdo.
+- Parser XLSX reforçado antes do carregamento com limites de entradas, tamanho descomprimido e taxa de compressão, validação estrutural OOXML, bloqueio de macros/conteúdo incorporado, links externos, XML com DTD/entidades e paths de archive inseguros.
+- Mapping permanece baseado em whitelist explícita; Preview e deduplicação continuam sem persistir entidades comerciais e todas as saídas Blade mantêm escaping.
+- Estado de deduplicação de imports endurecidos passou a ser assinado por HMAC; execução revalida assinatura, normalização, decisões, referências internas, registros arquivados, origem/canal e rejeita execution data inesperado.
+- Execução mantém locks, transações por linha, proteção contra concorrência/replay, idempotência após conclusão e nenhuma criação implícita de Opportunity.
+- Rotas de upload, consulta, mapping, Preview, dedup, execução, relatório e exclusão permanecem protegidas por policies/Form Requests, com linhas sempre vinculadas ao import no backend.
+- Auditoria de importação registra somente IDs, estados, contadores e metadados técnicos; payloads de arquivo, original_data, normalized_data e execution_data são removidos pelo sanitizador.
+- Exclusão de arquivo ausente permanece idempotente; falhas de filesystem preservam o banco para retry e filenames internos inválidos não alcançam o disk.
 
 ### TASK-110 — Security/environment baseline
 

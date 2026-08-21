@@ -150,6 +150,34 @@ class CsvImportTest extends TestCase
         $this->assertDatabaseCount('imports', 0);
     }
 
+    public function test_dangerous_double_extension_is_rejected(): void
+    {
+        $this->actingAs($this->admin())->post(route('imports.store'), [
+            'file' => UploadedFile::fake()->createWithContent('payload.php.csv', "Nome,Email\nAna,a@b.test\n"),
+        ])->assertSessionHasErrors('file');
+
+        $this->assertDatabaseCount('imports', 0);
+    }
+
+    public function test_csv_formula_cells_are_neutralized_as_data(): void
+    {
+        $dataImport = $this->upload("Nome,Observação\nAna,=1+1\n", 'formula.csv');
+
+        $this->assertSame("'=1+1", $dataImport->rows()->sole()->original_data['Observação']);
+    }
+
+    public function test_oversized_csv_record_fails_without_partial_rows(): void
+    {
+        config(['imports.csv_max_record_bytes' => 1024]);
+
+        $this->assertFailedImport("Nome,Observação\nAna,".str_repeat('x', 1100)."\n", 'record_too_large');
+    }
+
+    public function test_formula_and_control_character_headers_are_rejected(): void
+    {
+        $this->assertFailedImport("=cmd,Email\nAna,a@b.test\n", 'invalid_header');
+    }
+
     public function test_invalid_mime_is_rejected(): void
     {
         $file = UploadedFile::fake()->create('dados.csv', 1, 'image/png');
@@ -190,11 +218,12 @@ class CsvImportTest extends TestCase
 
     public function test_filesystem_failure_keeps_database_record_and_rows_for_retry(): void
     {
-        $dataImport = DataImport::factory()->create(['filename' => 'arquivo.csv']);
+        $filename = '550e8400-e29b-41d4-a716-446655440000.csv';
+        $dataImport = DataImport::factory()->create(['filename' => $filename]);
         ImportRow::factory()->for($dataImport, 'dataImport')->create();
         $disk = Mockery::mock(FilesystemAdapter::class);
-        $disk->shouldReceive('exists')->once()->with('arquivo.csv')->andReturnTrue();
-        $disk->shouldReceive('delete')->once()->with('arquivo.csv')->andReturnFalse();
+        $disk->shouldReceive('exists')->once()->with($filename)->andReturnTrue();
+        $disk->shouldReceive('delete')->once()->with($filename)->andReturnFalse();
         Storage::shouldReceive('disk')->once()->with('imports')->andReturn($disk);
 
         try {

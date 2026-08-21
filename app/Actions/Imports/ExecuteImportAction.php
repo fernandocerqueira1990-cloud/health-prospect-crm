@@ -12,6 +12,7 @@ use App\Services\AuditService;
 use App\Services\ImportExecutionCandidateRegistry;
 use App\Services\ImportExecutionEntityRegistry;
 use App\Services\ImportExecutionPrerequisites;
+use App\Services\ImportIntegrityService;
 use App\Services\ImportRowExecutor;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
@@ -24,6 +25,7 @@ class ExecuteImportAction
         private readonly ImportExecutionPrerequisites $prerequisites,
         private readonly ImportRowExecutor $rowExecutor,
         private readonly AuditService $audit,
+        private readonly ImportIntegrityService $integrity,
     ) {}
 
     public function execute(DataImport $dataImport, ?int $channelId, User $user): DataImport
@@ -100,6 +102,7 @@ class ExecuteImportAction
                         $execution = DB::transaction(function () use ($executingImport, $row, $registry, $candidates, $source, $channel, $user): array {
                             $lockedRow = ImportRow::query()->lockForUpdate()->where('import_id', $executingImport->id)->findOrFail($row->id);
                             $result = $this->rowExecutor->execute($executingImport, $lockedRow, $registry, $candidates, $source, $channel);
+                            $result['integrity_signature'] = $this->integrity->executionSignature($executingImport, $lockedRow, $result);
                             $lockedRow->execution_data = $result;
                             $lockedRow->save();
                             $this->audit->record('import_row_executed', $lockedRow, after: ['import_id' => $executingImport->id, 'row_number' => $lockedRow->row_number, 'status' => $result['status'], 'groups' => $result['groups']], user: $user);
@@ -112,6 +115,7 @@ class ExecuteImportAction
                         $execution = DB::transaction(function () use ($executingImport, $row, $error, $user): array {
                             $lockedRow = ImportRow::query()->lockForUpdate()->where('import_id', $executingImport->id)->findOrFail($row->id);
                             $result = ['version' => 1, 'executed_at' => now()->toIso8601String(), 'status' => 'failed', 'error_code' => $error->errorCode, 'groups' => []];
+                            $result['integrity_signature'] = $this->integrity->executionSignature($executingImport, $lockedRow, $result);
                             $lockedRow->execution_data = $result;
                             $lockedRow->save();
                             $this->audit->record('import_row_executed', $lockedRow, after: ['import_id' => $executingImport->id, 'row_number' => $lockedRow->row_number, 'status' => 'failed', 'error_code' => $error->errorCode], user: $user);

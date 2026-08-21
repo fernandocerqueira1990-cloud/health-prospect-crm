@@ -14,6 +14,7 @@ class AuditService
         'password', 'password_confirmation', 'current_password', 'remember_token',
         'token', 'api_token', 'access_token', 'refresh_token', 'csrf_token', '_token',
         'secret', 'client_secret', 'cookie', 'cookies', 'authorization', 'session_id',
+        'file', 'file_content', 'original_data', 'normalized_data', 'execution_data',
     ];
 
     public function record(

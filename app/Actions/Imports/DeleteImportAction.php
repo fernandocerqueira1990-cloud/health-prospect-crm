@@ -4,6 +4,7 @@ namespace App\Actions\Imports;
 
 use App\Models\DataImport;
 use App\Services\AuditService;
+use App\Support\ImportStoragePath;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use RuntimeException;
@@ -14,7 +15,7 @@ class DeleteImportAction
 
     public function execute(DataImport $dataImport): void
     {
-        $filename = $dataImport->filename;
+        $filename = ImportStoragePath::assertSafe($dataImport);
         $disk = Storage::disk((string) config('imports.disk'));
 
         if ($disk->exists($filename) && ! $disk->delete($filename)) {
@@ -22,7 +23,7 @@ class DeleteImportAction
         }
 
         DB::transaction(function () use ($dataImport): void {
-            $this->audit->record('import_deleted', $dataImport, before: ['original_filename' => $dataImport->original_filename, 'type' => $dataImport->type, 'status' => $dataImport->status, 'total_rows' => $dataImport->total_rows]);
+            $this->audit->record('import_deleted', $dataImport, before: ['import_id' => $dataImport->id, 'type' => $dataImport->type, 'status' => $dataImport->status, 'total_rows' => $dataImport->total_rows]);
             $dataImport->delete();
         });
     }

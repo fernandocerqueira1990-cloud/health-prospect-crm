@@ -10,6 +10,7 @@ use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -39,7 +40,9 @@ class XlsxImportTest extends TestCase
         $this->assertSame(DataImport::TYPE_XLSX, $dataImport->type);
         $this->assertSame(DataImport::STATUS_PARSED, $dataImport->status);
         $this->assertSame(2, $dataImport->total_rows);
-        $this->assertSame(['sheet' => 'Clientes', 'header' => ['Nome', 'Cidade']], $dataImport->metadata);
+        $this->assertSame('Clientes', $dataImport->metadata['sheet']);
+        $this->assertSame(['Nome', 'Cidade'], $dataImport->metadata['header']);
+        $this->assertSame(1, $dataImport->metadata['security']['version']);
         $this->assertSame([2, 4], $dataImport->rows()->orderBy('row_number')->pluck('row_number')->all());
         $this->assertSame(['Nome' => 'Clínica Saúde', 'Cidade' => 'São Paulo'], $dataImport->rows()->orderBy('row_number')->first()->original_data);
         $this->assertNull($dataImport->rows()->orderBy('row_number')->first()->normalized_data);
@@ -50,15 +53,63 @@ class XlsxImportTest extends TestCase
         $this->assertDatabaseHas('audit_logs', ['action' => 'import_created', 'auditable_id' => $dataImport->id]);
     }
 
-    public function test_formula_is_not_calculated_during_import(): void
+    public function test_formula_is_not_calculated_and_is_neutralized_during_import(): void
     {
         $spreadsheet = new Spreadsheet;
-        $spreadsheet->getActiveSheet()->fromArray([['Nome', 'Valor'], ['Teste', '=1+1']]);
-        $spreadsheet->getActiveSheet()->getCell('B2')->setCalculatedValue(2);
+        $spreadsheet->getActiveSheet()->fromArray([['Nome', 'Valor'], ['Teste', '=SUM(A1:A2)']]);
+        $spreadsheet->getActiveSheet()->getCell('B2')->setCalculatedValue(999);
 
         $dataImport = $this->upload($spreadsheet);
 
-        $this->assertSame('=1+1', $dataImport->rows()->first()->original_data['Valor']);
+        $this->assertSame("'=SUM(A1:A2)", $dataImport->rows()->first()->original_data['Valor']);
+        $this->assertNotSame(999, $dataImport->rows()->first()->original_data['Valor']);
+    }
+
+    public function test_formula_like_strings_are_neutralized_while_scalar_types_and_normal_strings_are_preserved(): void
+    {
+        $spreadsheet = new Spreadsheet;
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->fromArray([
+            ['Mais', 'Menos', 'Arroba', 'Negativo', 'Decimal', 'Booleano', 'Nulo', 'Normal', 'Menos textual'],
+            [null, null, null, -42, -10.5, true, null, null, null],
+        ]);
+        $sheet->setCellValueExplicit('A2', '+cmd', DataType::TYPE_STRING);
+        $sheet->setCellValueExplicit('B2', '-formula-like string', DataType::TYPE_STRING);
+        $sheet->setCellValueExplicit('C2', '@payload', DataType::TYPE_STRING);
+        $sheet->setCellValueExplicit('H2', 'texto normal', DataType::TYPE_STRING);
+        $sheet->setCellValueExplicit('I2', '-1+2', DataType::TYPE_STRING);
+
+        $data = $this->upload($spreadsheet)->rows()->sole()->original_data;
+
+        $this->assertSame("'+cmd", $data['Mais']);
+        $this->assertSame("'-formula-like string", $data['Menos']);
+        $this->assertSame("'@payload", $data['Arroba']);
+        $this->assertSame(-42, $data['Negativo']);
+        $this->assertSame(-10.5, $data['Decimal']);
+        $this->assertTrue($data['Booleano']);
+        $this->assertNull($data['Nulo']);
+        $this->assertSame('texto normal', $data['Normal']);
+        $this->assertSame("'-1+2", $data['Menos textual']);
+    }
+
+    public function test_csv_and_xlsx_apply_equivalent_formula_injection_neutralization(): void
+    {
+        $spreadsheet = new Spreadsheet;
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->fromArray([['Igual', 'Mais', 'Menos', 'Arroba', 'Mais numérico textual', 'Menos numérico textual']]);
+        foreach (['A2' => '=SUM(A1:A2)', 'B2' => '+cmd', 'C2' => '-formula-like string', 'D2' => '@payload', 'E2' => '+1+1', 'F2' => '-1+2'] as $cell => $value) {
+            $sheet->setCellValueExplicit($cell, $value, DataType::TYPE_STRING);
+        }
+        $xlsxData = $this->upload($spreadsheet)->rows()->sole()->original_data;
+
+        $csv = "Igual,Mais,Menos,Arroba,Mais numérico textual,Menos numérico textual\n=SUM(A1:A2),+cmd,-formula-like string,@payload,+1+1,-1+2\n";
+        $response = $this->actingAs($this->admin())->post(route('imports.store'), [
+            'file' => UploadedFile::fake()->createWithContent('equivalente.csv', $csv),
+        ]);
+        $response->assertSessionHasNoErrors();
+        $csvData = DataImport::query()->latest('id')->firstOrFail()->rows()->sole()->original_data;
+
+        $this->assertSame($csvData, $xlsxData);
     }
 
     public function test_duplicate_or_empty_header_fails_without_partial_rows(): void
@@ -69,6 +120,17 @@ class XlsxImportTest extends TestCase
         $dataImport = $this->upload($spreadsheet);
 
         $this->assertFailed($dataImport, 'invalid_header');
+    }
+
+    public function test_formula_like_header_is_rejected_before_cell_neutralization(): void
+    {
+        foreach (['=SUM(A1:A2)', '+cmd', '-payload', '@payload'] as $header) {
+            $spreadsheet = new Spreadsheet;
+            $spreadsheet->getActiveSheet()->setCellValueExplicit('A1', $header, DataType::TYPE_STRING);
+            $spreadsheet->getActiveSheet()->setCellValue('A2', 'valor');
+
+            $this->assertFailed($this->upload($spreadsheet), 'invalid_header');
+        }
     }
 
     public function test_only_first_worksheet_is_processed_when_multiple_are_filled(): void
@@ -148,6 +210,18 @@ class XlsxImportTest extends TestCase
         $this->assertFailed($this->upload($spreadsheet), 'archive_too_large');
     }
 
+    public function test_archive_over_entry_and_compression_ratio_limits_fails(): void
+    {
+        foreach (['imports.xlsx_max_archive_entries' => 1, 'imports.xlsx_max_compression_ratio' => 1] as $key => $limit) {
+            config([$key => $limit]);
+            $spreadsheet = new Spreadsheet;
+            $spreadsheet->getActiveSheet()->fromArray([['Nome'], [str_repeat('A', 5000)]]);
+
+            $this->assertFailed($this->upload($spreadsheet), 'archive_too_large');
+            config([$key => $key === 'imports.xlsx_max_archive_entries' ? 10000 : 100]);
+        }
+    }
+
     public function test_staging_preserves_scalar_types_and_business_like_strings(): void
     {
         $spreadsheet = new Spreadsheet;
@@ -161,7 +235,7 @@ class XlsxImportTest extends TestCase
         $this->assertSame('00123', $data['Código']);
         $this->assertSame('00000123456789', $data['Documento']);
         $this->assertSame('01234-567', $data['CEP']);
-        $this->assertSame('+55 71 99999-9999', $data['Telefone']);
+        $this->assertSame("'+55 71 99999-9999", $data['Telefone']);
         $this->assertSame('01/08/2026', $data['Data']);
         $this->assertSame('1.234,56', $data['Moeda']);
         $this->assertFalse($data['Booleano']);

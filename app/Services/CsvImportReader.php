@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Exceptions\CsvImportException;
 use App\Models\DataImport;
 use App\Models\ImportRow;
+use App\Support\ImportStoragePath;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use SplFileObject;
@@ -12,7 +13,7 @@ use Throwable;
 
 class CsvImportReader
 {
-    public function __construct(private readonly AuditService $audit) {}
+    public function __construct(private readonly AuditService $audit, private readonly ImportCellSanitizer $sanitizer) {}
 
     public function parse(DataImport $dataImport): DataImport
     {
@@ -27,7 +28,7 @@ class CsvImportReader
                     'status' => DataImport::STATUS_PARSED,
                     'total_rows' => $result['total_rows'],
                     'finished_at' => now(),
-                    'metadata' => ['delimiter' => $this->delimiterName($result['delimiter']), 'header' => $result['header']],
+                    'metadata' => ['delimiter' => $this->delimiterName($result['delimiter']), 'header' => $result['header'], 'security' => ['version' => 1]],
                 ]);
             });
 
@@ -60,7 +61,10 @@ class CsvImportReader
             throw new CsvImportException('local_disk_required');
         }
 
-        $path = Storage::disk($diskName)->path($dataImport->filename);
+        $path = Storage::disk($diskName)->path(ImportStoragePath::assertSafe($dataImport));
+        if (is_link($path)) {
+            throw new CsvImportException('unsafe_storage_path');
+        }
         $delimiter = $this->detectDelimiter($path);
         $file = new SplFileObject($path, 'rb');
         $header = null;
@@ -72,6 +76,10 @@ class CsvImportReader
         $recordBuffer = '';
         $recordHasOpenQuote = false;
         $timestamp = now();
+        $maxRecordBytes = max(1024, (int) config('imports.csv_max_record_bytes'));
+        $maxColumns = max(1, (int) config('imports.csv_max_columns'));
+        $maxRows = max(1, (int) config('imports.csv_max_rows'));
+        $maxHeaderLength = max(1, (int) config('imports.header_max_length'));
 
         while (! $file->eof()) {
             $line = $file->fgets();
@@ -86,6 +94,9 @@ class CsvImportReader
             }
 
             $recordStart ??= $physicalRow;
+            if (strlen($recordBuffer) + strlen($line) > $maxRecordBytes) {
+                throw new CsvImportException('record_too_large');
+            }
             $recordBuffer .= $line;
             $this->updateQuoteState($line, $recordHasOpenQuote);
 
@@ -106,7 +117,8 @@ class CsvImportReader
                 $record[0] = preg_replace('/^\xEF\xBB\xBF/', '', $record[0]) ?? $record[0];
                 $header = array_map('trim', $record);
                 $normalizedHeader = array_map(fn (string $value): string => mb_strtolower($value), $header);
-                if (in_array('', $header, true) || count($normalizedHeader) !== count(array_unique($normalizedHeader))) {
+                if (count($header) > $maxColumns || in_array('', $header, true) || count($normalizedHeader) !== count(array_unique($normalizedHeader))
+                    || array_any($header, fn (string $value): bool => mb_strlen($value) > $maxHeaderLength || preg_match('/[\p{Cc}\p{Cf}]/u', $value) === 1 || preg_match('/^[=+\-@]/', $value) === 1)) {
                     throw new CsvImportException('invalid_header');
                 }
 
@@ -119,9 +131,13 @@ class CsvImportReader
             if (count($record) !== count($header)) {
                 throw new CsvImportException('column_count_mismatch');
             }
+            $record = array_map(fn (string $value): string => $this->sanitizer->asData($value), $record);
             $original = array_combine($header, $record);
             $batch[] = ['import_id' => $dataImport->id, 'row_number' => $currentRow, 'status' => ImportRow::STATUS_PARSED, 'original_data' => json_encode($original, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE), 'normalized_data' => null, 'error_message' => null, 'related_entity_type' => null, 'related_entity_id' => null, 'created_at' => $timestamp, 'updated_at' => $timestamp];
             $totalRows++;
+            if ($totalRows > $maxRows) {
+                throw new CsvImportException('row_limit_exceeded');
+            }
             if (count($batch) >= $batchSize) {
                 ImportRow::query()->insert($batch);
                 $batch = [];

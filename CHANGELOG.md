@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+### Sprint 10 — TASK-114 Upload/import and data security
+
+- Uploads CSV/XLSX reforçados com validação coerente de extensão/MIME/tamanho, nomes originais saneados, rejeição de extensões duplas perigosas e armazenamento privado em paths UUID confinados.
+- CSV protegido contra registros/cabeçalhos abusivos, encoding ou estrutura inválidos e formula injection; conteúdo HTML/JS permanece dado escapado nas views.
+- XLSX protegido contra ZIP bombs, excesso de entradas/linhas/colunas/memória, conteúdo ativo, macros, links externos, archive traversal e XML inseguro, sem avaliação de fórmulas.
+- Mapping, deduplicação e execução final reforçados com whitelist, referências vinculadas ao import, assinatura HMAC do estado analisado, revalidação de dados/decisões e bloqueio de replay ou adulteração.
+- Auditoria e falhas expõem apenas códigos e metadados técnicos mínimos, sem payload integral de arquivos ou dados comerciais das linhas.
+- Cobertura de segurança ampliada para upload, parsers, integridade da execução, idempotência, autorização, escaping e privacidade de auditoria.
+
 ### Sprint 10 — TASK-113 Authentication, rate limiting, RBAC and audit hardening
 
 - Autenticação reforçada com rotação/invalidação de sessão, mensagens uniformes, bloqueio contínuo de contas inativas/tester e auditoria de sucessos, falhas, bloqueios e logout.
