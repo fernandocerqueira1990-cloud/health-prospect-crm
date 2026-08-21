@@ -55,7 +55,7 @@
                 </dl>
             </x-form-section>
             @can('delete', $activity)
-                <section class="rounded-xl border border-red-200 bg-white p-4 shadow-sm"><h2 class="font-semibold text-red-900">Excluir atividade</h2><p class="mt-1 text-sm text-slate-600">A atividade será arquivada por soft delete.</p><form class="mt-3" method="POST" action="{{ route('activities.destroy', $activity) }}" onsubmit="return confirm('Deseja excluir esta atividade?')">@csrf @method('DELETE')<button class="btn-danger" type="submit">Excluir</button></form></section>
+                <section class="rounded-xl border border-red-200 bg-white p-4 shadow-sm"><h2 class="font-semibold text-red-900">Excluir atividade</h2><p class="mt-1 text-sm text-slate-600">A atividade será arquivada por soft delete.</p><form class="mt-3" method="POST" action="{{ route('activities.destroy', $activity) }}" data-confirm="Deseja excluir esta atividade?">@csrf @method('DELETE')<button class="btn-danger" type="submit">Excluir</button></form></section>
             @endcan
         </aside>
     </div>

@@ -44,7 +44,7 @@
                     <div class="detail-item"><dt class="detail-label">Atualizado em</dt><dd class="detail-value">{{ $contact->updated_at->format('d/m/Y H:i') }}</dd></div>
                 </dl>
             </x-form-section>
-            @can('delete',$contact)<section class="rounded-xl border border-red-200 bg-white p-4 shadow-sm"><h2 class="font-semibold text-red-900">Excluir contato</h2><p class="mt-1 text-sm text-slate-600">O contato será arquivado por soft delete.</p><form class="mt-3" method="POST" action="{{ route('contacts.destroy',$contact) }}" onsubmit="return confirm('Confirma a exclusão deste contato?')">@csrf @method('DELETE')<button class="btn-danger" type="submit">Excluir contato</button></form></section>@endcan
+            @can('delete',$contact)<section class="rounded-xl border border-red-200 bg-white p-4 shadow-sm"><h2 class="font-semibold text-red-900">Excluir contato</h2><p class="mt-1 text-sm text-slate-600">O contato será arquivado por soft delete.</p><form class="mt-3" method="POST" action="{{ route('contacts.destroy',$contact) }}" data-confirm="Confirma a exclusão deste contato?">@csrf @method('DELETE')<button class="btn-danger" type="submit">Excluir contato</button></form></section>@endcan
         </aside>
     </div>
 </x-layouts.app>

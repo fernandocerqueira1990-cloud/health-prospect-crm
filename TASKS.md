@@ -254,7 +254,7 @@ Não misturar implementações antigas com o novo núcleo sem uma decisão expl�
 
 - [x] TASK-110 Security/environment baseline
 - [x] TASK-111 Public registration and tester hardening
-- [ ] TASK-112 HTTPS, sessions, proxies and security headers
+- [x] TASK-112 HTTPS, sessions, proxies and security headers
 - [ ] TASK-113 Authentication, rate limiting, RBAC and audit hardening
 - [ ] TASK-114 Upload/import and data security
 - [ ] TASK-115 Secrets, logs and dependency security
@@ -282,6 +282,17 @@ Não misturar implementações antigas com o novo núcleo sem uma decisão expl�
 - Homologação mantém cadastro e testers habilitados.
 - Produção deverá utilizar `PUBLIC_REGISTRATION_ENABLED=false` e `TESTER_ACCESS_ENABLED=false`.
 - Rate limiting, CSRF, RBAC e auditoria existentes foram preservados.
+
+### TASK-112 — HTTPS, sessions, proxies and security headers
+
+- Confiança irrestrita em proxies foi removida; apenas loopback é confiável por padrão e `TRUSTED_PROXIES` aceita uma lista explícita de IPs ou CIDRs do proxy diretamente conectado.
+- Cabeçalhos `X-Forwarded-For`, `Host`, `Port` e `Proto` são considerados somente quando a conexão vem de proxy confiável, permitindo reconhecer HTTPS através do Cloudflare Tunnel local sem aceitar spoofing direto.
+- Sessões permanecem criptografadas, HttpOnly e SameSite `lax`; `SESSION_SECURE_COOKIE` continua desabilitado para HTTP local e deve ser habilitado em produção HTTPS.
+- Middleware web centralizado adiciona `nosniff`, `SAMEORIGIN`, Referrer Policy, Permissions Policy e CSP conservadora compatível com Blade, assets Vite e o servidor Vite local.
+- CSP protege `frame-ancestors` e `object-src`; suas policies podem ser ajustadas exclusivamente por configuração de ambiente.
+- HSTS é configurável, sem `preload`, emitido somente em requisições efetivamente reconhecidas como HTTPS e desabilitado por padrão para não afetar localhost HTTP.
+- Produção deve usar `APP_URL=https://...`, `SESSION_SECURE_COOKIE=true`, `SECURITY_HSTS_ENABLED=true` e configurar `TRUSTED_PROXIES` apenas com os IPs/CIDRs que se conectam diretamente ao Laravel.
+- Testes de regressão cobrem headers, HSTS em HTTP/HTTPS, proxies confiáveis e não confiáveis, cookie Secure e login/autenticação.
 
 ## Definition of Done
 

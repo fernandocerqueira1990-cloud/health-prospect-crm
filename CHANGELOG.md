@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### Sprint 10 — TASK-112 HTTPS, sessions, proxies and security headers
+
+- Proxies confiáveis passaram a ser configurados explicitamente, com default restrito a loopback e reconhecimento seguro de HTTPS encaminhado pelo Cloudflare Tunnel local.
+- Sessões mantêm criptografia, HttpOnly e SameSite `lax`, com cookie Secure configurável e recomendado para produção HTTPS.
+- Middleware web centralizado adiciona security headers, CSP conservadora e HSTS condicional, sem preload e sem afetar localhost HTTP.
+- Configuração de ambiente e testes de regressão foram adicionados para transporte HTTPS, spoofing de forwarded headers, cookies e autenticação.
+
 ### Architecture
 - Arquitetura alvo definida como Laravel + PostgreSQL + Redis + Apache/Debian.
 - Grafana definido para analytics e observabilidade.

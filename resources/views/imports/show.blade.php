@@ -30,7 +30,7 @@
             @endcan
         @endif
         @can('delete', $dataImport)
-            <form class="mt-6 border-t border-slate-200 pt-6" method="POST" action="{{ route('imports.destroy', $dataImport) }}" onsubmit="return confirm('Excluir esta importação e seu arquivo privado?')">
+            <form class="mt-6 border-t border-slate-200 pt-6" method="POST" action="{{ route('imports.destroy', $dataImport) }}" data-confirm="Excluir esta importação e seu arquivo privado?">
                 @csrf @method('DELETE')
                 <button class="btn-secondary" type="submit">Excluir importação</button>
             </form>

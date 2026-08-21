@@ -113,7 +113,7 @@
                 <section class="rounded-xl border border-red-200 bg-white p-4 shadow-sm">
                     <h2 class="font-semibold text-red-900">Excluir lead</h2>
                     <p class="mt-1 text-sm text-slate-600">O lead será arquivado por soft delete e não será removido definitivamente.</p>
-                    <form class="mt-3" method="POST" action="{{ route('leads.destroy', $lead) }}" onsubmit="return confirm('Confirma a exclusão deste lead?')">
+                    <form class="mt-3" method="POST" action="{{ route('leads.destroy', $lead) }}" data-confirm="Confirma a exclusão deste lead?">
                         @csrf @method('DELETE')
                         <button class="btn-danger" type="submit">Excluir lead</button>
                     </form>

@@ -111,4 +111,30 @@ class DashboardShellTest extends TestCase
         $response->assertDontSee('data-active-sprint', false)
             ->assertDontSee('Módulo em desenvolvimento');
     }
+
+    public function test_authenticated_layout_contains_no_inline_scripts_blocked_by_csp(): void
+    {
+        $response = $this->actingAs($this->admin())->get(route('dashboard'));
+
+        $response->assertOk();
+
+        preg_match_all(
+            '/<script\b([^>]*)>(.*?)<\/script>/is',
+            (string) $response->getContent(),
+            $scripts,
+            PREG_SET_ORDER,
+        );
+
+        $this->assertNotEmpty($scripts, 'The authenticated layout should load the Vite JavaScript bundle.');
+
+        foreach ($scripts as $script) {
+            $this->assertMatchesRegularExpression('/\bsrc\s*=/', $script[1], 'Inline scripts violate the default CSP.');
+        }
+
+        $this->assertDoesNotMatchRegularExpression(
+            '/\son[a-z]+\s*=/i',
+            (string) $response->getContent(),
+            'Inline event handlers violate the default CSP.',
+        );
+    }
 }
