@@ -16,6 +16,7 @@ Este roadmap apresenta o estado atual do projeto e as próximas frentes de evolu
 | Campanhas e atribuição | Concluída |
 | Relatórios comerciais | Concluída |
 | Security & Production Hardening | Concluída |
+| Automação comercial & follow-ups | Em desenvolvimento — Sprint 11 |
 | API pública / integrações avançadas | Planejada |
 | Automação com n8n | Planejada |
 | Observabilidade completa | Planejada |
@@ -115,6 +116,23 @@ Este roadmap apresenta o estado atual do projeto e as próximas frentes de evolu
 - [x] proteção de secrets, logs e dependências
 - [x] regressão final de segurança
 
+## Sprint atual
+
+### Sprint 11 — Commercial Automation & Follow-ups
+
+Objetivo: tornar o CRM mais proativo no acompanhamento comercial, centralizando próximas ações, pendências, Leads sem interação e oportunidades estagnadas.
+
+- [ ] TASK-120 próxima ação comercial
+- [ ] TASK-121 central de pendências
+- [ ] TASK-122 Leads sem interação
+- [ ] TASK-123 Opportunities estagnadas
+- [ ] TASK-124 notificações internas
+- [ ] TASK-125 Scheduler / Queue / Redis
+- [ ] TASK-126 dashboard operacional
+- [ ] TASK-127 validação final da Sprint 11
+
+Documento técnico: [`docs/internal/SPRINT_11_COMMERCIAL_AUTOMATION.md`](../internal/SPRINT_11_COMMERCIAL_AUTOMATION.md)
+
 ## Próximas frentes
 
 ### API e integrações
@@ -124,11 +142,11 @@ Este roadmap apresenta o estado atual do projeto e as próximas frentes de evolu
 - [ ] logs de integração
 - [ ] políticas de rate limiting específicas para API
 
-### Automação
+### Automação avançada
 - [ ] integrar n8n Community
-- [ ] automação de follow-up
-- [ ] distribuição de leads
-- [ ] notificações
+- [ ] distribuição automática de leads
+- [ ] notificações externas
+- [ ] workflows configuráveis
 - [ ] integrações oficiais quando aplicável
 
 ### Observabilidade
