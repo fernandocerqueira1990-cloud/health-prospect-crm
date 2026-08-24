@@ -7,3 +7,4 @@ Histórico narrativo da construção do Health Prospect CRM, organizado por etap
 3. Leads, pipeline e dados
 4. Automações e integrações
 5. Evolução do CRM
+6. Acesso externo seguro em ambiente de testes
