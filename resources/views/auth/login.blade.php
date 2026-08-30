@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Entrar — Techsallus CRM</title>
+    <title>Entrar — CRM X</title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -22,7 +22,7 @@
                 >
 
                 <p class="mt-8 text-sm font-black uppercase tracking-[0.20em] text-crm-blue">
-                    Techsallus CRM
+                    CRM X
                 </p>
 
                 <h1 class="mt-5 max-w-3xl text-5xl font-black leading-[1.08] tracking-tight text-crm-navy xl:text-6xl">
@@ -81,7 +81,7 @@
                     </div>
 
                     <p class="mt-4 text-xs font-black uppercase tracking-[0.18em] text-crm-blue lg:mt-0">
-                        Techsallus CRM
+                        CRM X
                     </p>
 
                     <h2 class="mt-4 text-4xl font-black tracking-tight text-crm-navy">
@@ -199,7 +199,7 @@
                     </div>
 @endif
                     <p class="mt-8 text-center text-[11px] text-slate-400">
-                        Techsallus CRM · Gestão comercial, prospecção e relacionamento
+                        CRM X · Gestão comercial, prospecção e relacionamento
                     </p>
                 </div>
             </section>

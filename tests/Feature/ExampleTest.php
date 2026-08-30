@@ -22,7 +22,7 @@ class ExampleTest extends TestCase
             ->assertOk()
             ->assertExactJson([
                 'status' => 'ok',
-                'service' => 'Health Prospect CRM',
+                'service' => 'CRM X',
             ]);
     }
 }

@@ -8,7 +8,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $title ?? 'Techsallus CRM' }} — Techsallus CRM</title>
+    <title>{{ $title ?? 'CRM X' }} — CRM X</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body @class([
@@ -23,8 +23,8 @@
                 <span class="sidebar-brand-full flex h-11 w-36 shrink-0 items-center justify-center rounded-xl bg-white px-3 shadow-sm">
                     <img src="{{ asset('images/techsallus-logo.png') }}" alt="Techsallus" class="w-full object-contain">
                 </span>
-                <span class="sidebar-brand-mark hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-crm-blue text-xs font-black tracking-wide text-white shadow-sm">TS</span>
-                <span class="sidebar-brand-copy min-w-0"><span class="block truncate text-sm font-bold tracking-tight text-crm-blue">CRM Comercial</span><span class="block text-[11px] text-slate-500">Prospecção e relacionamento</span></span>
+                <span class="sidebar-brand-mark hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-crm-blue text-xs font-black tracking-wide text-white shadow-sm">X</span>
+                <span class="sidebar-brand-copy min-w-0"><span class="block truncate text-sm font-bold tracking-tight text-crm-blue">CRM X</span><span class="block text-[11px] text-slate-500">Prospecção e relacionamento</span></span>
             </a>
             <button type="button" class="sidebar-collapse-button hidden rounded-lg p-2 text-slate-300 hover:bg-white/10 hover:text-white lg:inline-flex" data-sidebar-collapse aria-controls="crm-sidebar" aria-expanded="true" aria-label="Recolher menu" title="Recolher menu"><span aria-hidden="true" data-sidebar-collapse-icon>‹</span></button>
             <button type="button" class="rounded-lg p-2 text-slate-400 hover:bg-slate-800 hover:text-white lg:hidden" data-sidebar-close aria-label="Fechar menu">✕</button>
@@ -71,7 +71,7 @@
 
     <div class="crm-main min-h-screen">
         <header class="crm-topbar">
-            <div class="flex min-w-0 items-center gap-3"><button type="button" class="rounded-lg border border-slate-200 bg-white p-2.5 text-slate-700 shadow-sm hover:bg-slate-50 lg:hidden" data-sidebar-toggle aria-label="Abrir menu">☰</button><div class="min-w-0"><p class="truncate text-sm font-semibold text-slate-950">{{ $title ?? 'Techsallus CRM' }}</p><p class="hidden text-xs text-slate-500 sm:block">Gestão comercial, prospecção e relacionamento</p></div></div>
+            <div class="flex min-w-0 items-center gap-3"><button type="button" class="rounded-lg border border-slate-200 bg-white p-2.5 text-slate-700 shadow-sm hover:bg-slate-50 lg:hidden" data-sidebar-toggle aria-label="Abrir menu">☰</button><div class="min-w-0"><p class="truncate text-sm font-semibold text-slate-950">{{ $title ?? 'CRM X' }}</p><p class="hidden text-xs text-slate-500 sm:block">Gestão comercial, prospecção e relacionamento</p></div></div>
             <div class="flex items-center gap-3">
                 <a href="{{ route('notifications.index') }}" class="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-sm transition hover:border-crm-sky hover:text-crm-blue" aria-label="Notificações{{ $unreadNotificationsCount > 0 ? ': '.$unreadNotificationsCount.' não lidas' : '' }}" title="Notificações"><span aria-hidden="true">N</span>@if($unreadNotificationsCount > 0)<span class="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-extrabold text-white">{{ $unreadNotificationsCount > 9 ? '9+' : $unreadNotificationsCount }}</span>@endif</a>
                 <div class="hidden text-right sm:block"><p class="text-sm font-semibold text-slate-900">{{ auth()->user()->name }}</p><p class="text-xs text-slate-500">{{ auth()->user()->primaryRole()?->name ?? 'Sem role' }}</p></div>
