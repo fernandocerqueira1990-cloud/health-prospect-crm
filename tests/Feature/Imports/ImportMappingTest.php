@@ -44,7 +44,7 @@ class ImportMappingTest extends TestCase
 
         $response->assertOk()->assertSee('Mapear colunas')->assertSee('company.trade_name')->assertDontSee('company.assigned_user_id');
         $response->assertSee('&lt;script&gt;alert(1)&lt;/script&gt;', false)->assertDontSee('<script>alert(1)</script>', false);
-        $response->assertDontSee('>D<', false);
+        $response->assertSee('A · B · C', false)->assertDontSee('A · B · C · D', false);
         $response->assertSee('<input type="hidden" name="columns[1][source]" value="Nome">', false);
         $response->assertDontSee('<option value="contact.name" selected>', false);
     }
