@@ -42,7 +42,7 @@ class ImportExecutionPrerequisites
                     throw new ImportExecutionException('execution_replay_data', 'A importação contém dados de execução inesperados.');
                 }
                 $expected = $this->normalizer->normalize($row->original_data, $mapping);
-                if ($row->normalized_data !== $expected || $this->validator->validate($expected, $mappedTargets)['status'] === ImportPreviewValidator::STATUS_ERROR) {
+                if (! $this->normalizedDataMatches($row->normalized_data, $expected) || $this->validator->validate($expected, $mappedTargets)['status'] === ImportPreviewValidator::STATUS_ERROR) {
                     throw new ImportExecutionException('normalized_data_invalid', 'Os dados normalizados não correspondem ao arquivo e ao mapeamento aprovados.');
                 }
             }
@@ -57,6 +57,28 @@ class ImportExecutionPrerequisites
             }
             $seenRows[$row->id] = $row->row_number;
         }
+    }
+    private function normalizedDataMatches(mixed $actual, mixed $expected): bool
+    {
+        return $this->canonicalizeNormalizedData($actual)
+            === $this->canonicalizeNormalizedData($expected);
+    }
+
+    private function canonicalizeNormalizedData(mixed $value): mixed
+    {
+        if (! is_array($value)) {
+            return $value;
+        }
+
+        foreach ($value as $key => $item) {
+            $value[$key] = $this->canonicalizeNormalizedData($item);
+        }
+
+        if (! array_is_list($value)) {
+            ksort($value);
+        }
+
+        return $value;
     }
 
     public function needsLeadChannel(DataImport $dataImport): bool
