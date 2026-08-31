@@ -13,7 +13,7 @@
                     Núcleo Laravel
                 </p>
                 <h1 class="text-4xl font-semibold tracking-tight sm:text-6xl">
-                    Health Prospect CRM
+                    CRM X
                 </h1>
                 <p class="mt-6 text-lg leading-8 text-slate-300">
                     Fundação self-hosted preparada com Blade, Tailwind CSS, PostgreSQL e Redis.

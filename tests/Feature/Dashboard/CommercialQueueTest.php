@@ -30,7 +30,7 @@ class CommercialQueueTest extends TestCase
         Task::factory()->create([
             'assigned_user_id' => $admin->id,
             'status' => 'in_progress',
-            'due_at' => now()->addHour(),
+            'due_at' => now()->startOfDay()->addHours(12),
         ]);
         Task::factory()->create([
             'assigned_user_id' => $admin->id,
