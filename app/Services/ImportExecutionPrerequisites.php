@@ -58,6 +58,7 @@ class ImportExecutionPrerequisites
             $seenRows[$row->id] = $row->row_number;
         }
     }
+
     private function normalizedDataMatches(mixed $actual, mixed $expected): bool
     {
         return $this->canonicalizeNormalizedData($actual)
