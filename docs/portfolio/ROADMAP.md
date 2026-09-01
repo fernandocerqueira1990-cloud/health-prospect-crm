@@ -16,7 +16,7 @@ Este roadmap apresenta o estado atual do projeto e as próximas frentes de evolu
 | Campanhas e atribuição | Concluída |
 | Relatórios comerciais | Concluída |
 | Security & Production Hardening | Concluída |
-| Automação comercial & follow-ups | Em desenvolvimento — Sprint 11 |
+| Automação comercial & follow-ups | Concluída — Sprint 11 |
 | API pública / integrações avançadas | Planejada |
 | Automação com n8n | Planejada |
 | Observabilidade completa | Planejada |
@@ -116,22 +116,26 @@ Este roadmap apresenta o estado atual do projeto e as próximas frentes de evolu
 - [x] proteção de secrets, logs e dependências
 - [x] regressão final de segurança
 
-## Sprint atual
-
 ### Sprint 11 — Commercial Automation & Follow-ups
 
-Objetivo: tornar o CRM mais proativo no acompanhamento comercial, centralizando próximas ações, pendências, Leads sem interação e oportunidades estagnadas.
+Objetivo concluído: tornar o CRM mais proativo no acompanhamento comercial, centralizando próximas ações, pendências, Leads sem interação e oportunidades estagnadas.
 
-- [ ] TASK-120 próxima ação comercial
-- [ ] TASK-121 central de pendências
-- [ ] TASK-122 Leads sem interação
-- [ ] TASK-123 Opportunities estagnadas
-- [ ] TASK-124 notificações internas
-- [ ] TASK-125 Scheduler / Queue / Redis
-- [ ] TASK-126 dashboard operacional
-- [ ] TASK-127 validação final da Sprint 11
+- [x] TASK-120 próxima ação comercial
+- [x] TASK-121 central de pendências
+- [x] TASK-122 Leads sem interação
+- [x] TASK-123 Opportunities estagnadas
+- [x] TASK-124 notificações internas
+- [x] TASK-125 Scheduler / Queue / Redis
+- [x] TASK-126 dashboard operacional
+- [x] TASK-127 validação final da Sprint 11
 
-Documento técnico: [`docs/internal/SPRINT_11_COMMERCIAL_AUTOMATION.md`](../internal/SPRINT_11_COMMERCIAL_AUTOMATION.md)
+Validação consolidada no Pull Request #11: 551 testes e 2.383 assertions aprovados, PHPStan sem erros, Pint aprovado em 350 arquivos e build Vite concluído. O merge em `main` ocorreu em 21/08/2026; o CI posterior da branch principal segue aprovado.
+
+Documento técnico: [`docs/internal/SPRINT_11_COMMERCIAL_AUTOMATION.md`](../internal/SPRINT_11_COMMERCIAL_AUTOMATION.md).
+
+## Próxima frente
+
+Com a Sprint 11 encerrada, a próxima evolução planejada é a preparação operacional para produção: workers e scheduler supervisionados, backup com teste de restauração, monitoramento, alertas e runbook.
 
 ## Próximas frentes
 
