@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+### Sprint 11 — Commercial Automation & Follow-ups
+
+- Central Comercial adicionada ao Dashboard, com tarefas atrasadas, ações para hoje, próximas ações, Leads sem interação e Opportunities estagnadas, sempre no escopo do usuário autenticado.
+- `leads.next_action_at` passou a refletir a próxima Task aberta; criação, atualização, conclusão, transferência e exclusão de Task recalculam esse dado dentro das transações do domínio.
+- Alertas configuráveis de inatividade de Leads e estagnação de Opportunities adicionados aos filtros, listagens e Kanban, sem incluir registros recém-criados, convertidos, desqualificados ou em etapas terminais.
+- Notificações internas persistidas no banco adicionadas com chaves idempotentes, tela de consulta, marcação como lida e contador global de não lidas.
+- Command `commercial:notifications`, Job por usuário ativo, fila `commercial` e agendamento horário adicionados para processar alertas sem dependência de canais externos.
+- Pull Request #11 integrado a `main` em 21/08/2026, validado com 551 testes e 2.383 assertions, PHPStan sem erros, Pint aprovado em 350 arquivos e build Vite concluído. O CI posterior da `main` permanece aprovado.
+
 ### Sprint 10 — Validação final (TASK-116)
 
 - Sprint 10 validada de ponta a ponta em configuração de produção, autenticação, sessões/CSRF, proxies/HTTPS/headers, RBAC/IDOR, imports, logs/privacidade, repositório, dependências e CI.
