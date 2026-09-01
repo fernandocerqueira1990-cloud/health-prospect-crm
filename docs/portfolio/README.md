@@ -1,4 +1,4 @@
-# Portfólio — Health Prospect CRM
+# Portfólio — CRM X
 
 Esta área reúne materiais de apresentação do projeto como **case técnico e produto**, facilitando a navegação por recrutadores, gestores técnicos e pessoas interessadas na evolução da solução.
 

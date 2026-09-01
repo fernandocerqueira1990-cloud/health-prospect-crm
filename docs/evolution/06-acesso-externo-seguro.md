@@ -10,7 +10,7 @@ A decisão foi evitar exposição direta do servidor de aplicação à internet 
 
 ## Objetivo da etapa
 
-Validar o acesso externo ao Health Prospect CRM com uma arquitetura que reduza a superfície de exposição do servidor e permita testar domínio, HTTPS, proxies, sessão, aplicação e banco de dados em condições mais próximas de um ambiente real.
+Validar o acesso externo ao CRM X com uma arquitetura que reduza a superfície de exposição do servidor e permita testar domínio, HTTPS, proxies, sessão, aplicação e banco de dados em condições mais próximas de um ambiente real.
 
 Os principais objetivos desta fase são:
 

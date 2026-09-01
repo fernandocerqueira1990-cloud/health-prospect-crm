@@ -39,7 +39,7 @@ export default function Login() {
     <div className="min-h-screen grid place-items-center p-4 bg-slate-100">
       <form onSubmit={submit} className="w-full max-w-md bg-white rounded-2xl shadow-sm border p-8 space-y-5">
         <div>
-          <h1 className="text-2xl font-bold">Health Prospect CRM</h1>
+          <h1 className="text-2xl font-bold">CRM X</h1>
           <p className="text-slate-500 mt-1">{mode === 'login' ? 'Entre para gerenciar sua prospecção comercial em saúde.' : 'Crie a primeira conta do CRM.'}</p>
         </div>
         {mode === 'signup' && <div>

@@ -1,4 +1,4 @@
-# ROADMAP — Health Prospect CRM
+# ROADMAP — CRM X
 
 Este roadmap apresenta o estado atual do projeto e as próximas frentes de evolução. O histórico técnico detalhado de cada sprint permanece em `docs/internal/TASKS.md` e no `CHANGELOG.md`.
 

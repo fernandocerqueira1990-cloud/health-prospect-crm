@@ -414,7 +414,7 @@ const initPipelineKanban = () => {
 
 document.addEventListener('DOMContentLoaded', initPipelineKanban);
 
-/* Techsallus CRM — preserve sidebar scroll position */
+/* CRM X — preserve sidebar scroll position */
 const initSidebarScrollPersistence = () => {
     const sidebarNav = document.querySelector('[data-sidebar-nav]');
 
@@ -422,7 +422,7 @@ const initSidebarScrollPersistence = () => {
         return;
     }
 
-    const storageKey = 'techsallus-crm-sidebar-scroll-top';
+    const storageKey = 'crm-x-sidebar-scroll-top';
 
     try {
         const storedPosition = sessionStorage.getItem(storageKey);

@@ -1,6 +1,6 @@
 # Portfolio Maintenance Checklist
 
-Checklist de manutenção da apresentação pública do **Health Prospect CRM**.
+Checklist de manutenção da apresentação pública do **CRM X**.
 
 ## Antes de divulgar uma nova versão
 

@@ -2,7 +2,7 @@
 
 ## 🎯 Objetivo da etapa
 
-Depois de estruturar empresas, contatos, leads e pipeline comercial, o próximo passo do Health Prospect CRM é reduzir atividades manuais e preparar a aplicação para uma operação comercial mais automatizada.
+Depois de estruturar empresas, contatos, leads e pipeline comercial, o próximo passo do CRM X é reduzir atividades manuais e preparar a aplicação para uma operação comercial mais automatizada.
 
 Nesta etapa, o foco está na arquitetura necessária para conectar dados, atividades e serviços externos.
 
@@ -156,7 +156,7 @@ Essa abordagem reduz complexidade e mantém cada evolução ligada a uma necessi
 
 ## 📌 Resultado desta etapa
 
-A arquitetura do Health Prospect CRM passa a estar preparada não apenas para armazenar informações, mas para apoiar a execução do processo comercial.
+A arquitetura do CRM X passa a estar preparada não apenas para armazenar informações, mas para apoiar a execução do processo comercial.
 
 Com dados, autenticação, APIs e estrutura de atividades conectados, o próximo passo é evoluir o CRM com indicadores, novas funcionalidades e melhorias contínuas.
 

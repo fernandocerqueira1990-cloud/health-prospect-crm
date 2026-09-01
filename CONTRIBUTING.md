@@ -1,8 +1,8 @@
-# Contribuindo com o Health Prospect CRM
+# Contribuindo com o CRM X
 
 Obrigado pelo interesse no projeto.
 
-O Health Prospect CRM é desenvolvido de forma incremental, com foco em qualidade, segurança, rastreabilidade e documentação.
+O CRM X é desenvolvido de forma incremental, com foco em qualidade, segurança, rastreabilidade e documentação.
 
 ## Antes de começar
 

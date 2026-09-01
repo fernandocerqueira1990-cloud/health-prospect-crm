@@ -1,4 +1,4 @@
-# Health Prospect CRM
+# CRM X
 
 > CRM B2B self-hosted para transformar prospecção comercial em um processo estruturado, rastreável e orientado por dados.
 
@@ -12,7 +12,7 @@
 
 ## Sobre o projeto
 
-O **Health Prospect CRM** nasceu de uma necessidade prática: substituir planilhas e controles dispersos por uma aplicação própria para gestão da prospecção comercial B2B.
+O **CRM X** nasceu de uma necessidade prática: substituir planilhas e controles dispersos por uma aplicação própria para gestão da prospecção comercial B2B.
 
 O foco inicial são empresas privadas do setor de saúde — clínicas, hospitais, laboratórios, centros médicos e diagnóstico — mas a arquitetura foi desenhada para não limitar o produto a esse segmento.
 
@@ -23,27 +23,27 @@ O projeto cobre a jornada comercial desde a organização de empresas e contatos
 ### Dashboard
 Visão central da operação comercial, com indicadores, acessos rápidos e acompanhamento de empresas e contatos.
 
-![Dashboard do Health Prospect CRM](assets/screenshots/dashboard.png)
+![Dashboard do CRM X](assets/screenshots/dashboard.png)
 
 ### Pipeline comercial
 Funil comercial em Kanban, com etapas, probabilidades, filtros, responsáveis e visão de valor das oportunidades.
 
-![Pipeline comercial do Health Prospect CRM](assets/screenshots/pipeline.png)
+![Pipeline comercial do CRM X](assets/screenshots/pipeline.png)
 
 ### Gestão de leads
 Tela de captação e acompanhamento de leads, com origem/canal, status, temperatura, score, responsável e próxima ação.
 
-![Gestão de leads do Health Prospect CRM](assets/screenshots/leads.png)
+![Gestão de leads do CRM X](assets/screenshots/leads.png)
 
 ### Campanhas
 Gestão de campanhas, canais, responsáveis, período, orçamento e parâmetros de aquisição.
 
-![Campanhas do Health Prospect CRM](assets/screenshots/campaigns.png)
+![Campanhas do CRM X](assets/screenshots/campaigns.png)
 
 ### Relatórios
 Indicadores comerciais e análise de desempenho, incluindo conversões de lead para oportunidade e de oportunidade para ganho.
 
-![Relatórios do Health Prospect CRM](assets/screenshots/reports.png)
+![Relatórios do CRM X](assets/screenshots/reports.png)
 
 ## O problema que o projeto resolve
 
@@ -69,7 +69,7 @@ O CRM centraliza essas informações em uma estrutura relacional e auditável, p
 
 A solução foi estruturada em camadas, separando acesso, aplicação, dados, integrações, observabilidade, segurança e ciclo de desenvolvimento.
 
-![Arquitetura do Health Prospect CRM](assets/diagrams/architecture-overview.svg)
+![Arquitetura do CRM X](assets/diagrams/architecture-overview.svg)
 
 A documentação técnica detalhada está disponível em [docs/architecture](docs/architecture/README.md).
 
@@ -216,4 +216,4 @@ O projeto funciona também como demonstração prática de competências em **si
 
 ---
 
-**Health Prospect CRM** — projeto em desenvolvimento contínuo.
+**CRM X** — projeto em desenvolvimento contínuo.

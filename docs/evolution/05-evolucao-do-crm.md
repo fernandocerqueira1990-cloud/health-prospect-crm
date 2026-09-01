@@ -1,8 +1,8 @@
-# 05 — Evolução do Health Prospect CRM
+# 05 — Evolução do CRM X
 
 ## 🎯 Uma aplicação em evolução
 
-O Health Prospect CRM foi pensado desde o início como um projeto incremental.
+O CRM X foi pensado desde o início como um projeto incremental.
 
 Em vez de tentar construir todas as funcionalidades de uma única vez, o desenvolvimento foi dividido em etapas que representam problemas reais do processo comercial.
 
@@ -137,7 +137,7 @@ O objetivo é transformar os dados operacionais em informações úteis para tom
 
 A proposta não é construir apenas um cadastro de empresas.
 
-A evolução do Health Prospect CRM busca conectar:
+A evolução do CRM X busca conectar:
 
 Prospecção  
 ↓  

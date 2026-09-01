@@ -2,7 +2,7 @@
 
 ## 🎯 Contexto
 
-O Health Prospect CRM nasceu de uma necessidade prática: organizar e transformar um processo de prospecção comercial inicialmente baseado em planilhas em uma aplicação estruturada.
+O CRM X nasceu de uma necessidade prática: organizar e transformar um processo de prospecção comercial inicialmente baseado em planilhas em uma aplicação estruturada.
 
 O projeto é direcionado à prospecção B2B no setor privado de saúde, incluindo clínicas, hospitais, laboratórios, centros médicos e outras organizações do segmento.
 

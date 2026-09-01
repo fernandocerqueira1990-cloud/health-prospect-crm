@@ -1,8 +1,8 @@
-# MASTER — Health Prospect CRM
+# MASTER — CRM X
 
 ## 1. Visão do produto
 
-O Health Prospect CRM será um CRM B2B self-hosted para gestão comercial completa.
+O CRM X será um CRM B2B self-hosted para gestão comercial completa.
 
 Objetivos:
 
