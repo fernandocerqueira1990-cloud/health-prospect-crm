@@ -348,3 +348,20 @@ Uma tarefa só pode ser marcada como concluída quando:
 - testes passando;
 - documentação atualizada;
 - lint/static analysis aprovado quando configurado.
+
+## Sprint 11 — Commercial Automation & Follow-ups — CONCLUÍDA
+
+- [x] TASK-120 Próxima ação comercial sincronizada a partir de Tasks abertas.
+- [x] TASK-121 Central de pendências comerciais no Dashboard.
+- [x] TASK-122 Monitoramento e filtro de Leads sem interação.
+- [x] TASK-123 Monitoramento e filtro de Opportunities estagnadas.
+- [x] TASK-124 Notificações internas idempotentes no banco.
+- [x] TASK-125 Command, Scheduler, Queue e Redis para alertas comerciais.
+- [x] TASK-126 Dashboard operacional e contador de notificações não lidas.
+- [x] TASK-127 Validação final e merge do Pull Request #11 em `main` em 21/08/2026.
+
+### Validação da Sprint 11
+
+- Pull Request #11: 551 testes e 2.383 assertions aprovados; PHPStan sem erros; Pint aprovado em 350 arquivos; build Vite concluído.
+- A implementação respeita RBAC e escopo do usuário autenticado, usa alertas idempotentes e não executa alterações comerciais irreversíveis automaticamente.
+- A documentação pública e o changelog foram sincronizados no encerramento posterior da sprint.
