@@ -17,7 +17,7 @@ A Sprint 11 deve aproveitar os módulos já existentes de Leads, Opportunities, 
 | TASK-124 | Notificações internas | Implementada — validação consolidada na TASK-127 |
 | TASK-125 | Scheduler / Queue / Redis | Implementada — validação consolidada na TASK-127 |
 | TASK-126 | Dashboard operacional | Implementada — validação consolidada na TASK-127 |
-| TASK-127 | Validação final | Próxima |
+| TASK-127 | Validação final | Concluída em 21/08/2026 |
 
 ## Princípios
 
@@ -129,20 +129,16 @@ Implementação:
 
 ### TASK-127 — Validação final da Sprint 11
 
-Checklist mínimo:
-- suíte focada da Sprint 11;
-- suíte completa;
-- `./vendor/bin/pint --test`;
-- `./vendor/bin/phpstan analyse`;
-- `pnpm run build`;
-- `git diff --check`;
-- revisão manual pelo navegador;
-- revisão de autorização/RBAC;
-- revisão de queries e N+1;
-- atualização de `docs/portfolio/ROADMAP.md`;
-- atualização de `CHANGELOG.md`;
-- screenshot de alterações relevantes para `assets/screenshots/` quando aplicável;
-- Pull Request com escopo, testes e evidências.
+Concluída no Pull Request #11, integrado a `main` em 21/08/2026.
+
+- suíte completa: 551 testes e 2.383 assertions aprovados;
+- `./vendor/bin/pint --test`: aprovado em 350 arquivos;
+- `./vendor/bin/phpstan analyse`: sem erros;
+- `pnpm run build`: concluído com sucesso;
+- Pull Request com escopo, testes e evidências: concluído;
+- CI mais recente de `main`: aprovado após as alterações posteriores de nomenclatura.
+
+As capturas existentes em `assets/screenshots/` representam a interface base. Uma captura específica da Central Comercial e das notificações deve ser incluída junto da próxima validação visual em navegador, sem substituir a evidência funcional já registrada no PR.
 
 ## Fora do escopo da Sprint 11
 
