@@ -20,9 +20,7 @@
     <aside id="crm-sidebar" class="crm-sidebar" data-sidebar-panel aria-label="Navegação principal">
         <div class="sidebar-brand flex h-20 items-center justify-between border-b border-white/10 px-5">
             <a href="{{ route('dashboard') }}" class="group flex min-w-0 items-center gap-3">
-                <span class="sidebar-brand-full flex h-11 w-36 shrink-0 items-center justify-center rounded-xl bg-white px-3 shadow-sm">
-                    <img src="{{ asset('images/techsallus-logo.png') }}" alt="Techsallus" class="w-full object-contain">
-                </span>
+                <span class="sidebar-brand-full flex h-11 w-36 shrink-0 items-center justify-center rounded-xl bg-white px-3 text-sm font-black tracking-tight text-crm-navy shadow-sm">CRM <span class="ml-1 text-crm-blue">X</span></span>
                 <span class="sidebar-brand-mark hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-crm-blue text-xs font-black tracking-wide text-white shadow-sm">X</span>
                 <span class="sidebar-brand-copy min-w-0"><span class="block truncate text-sm font-bold tracking-tight text-crm-blue">CRM X</span><span class="block text-[11px] text-slate-500">Prospecção e relacionamento</span></span>
             </a>

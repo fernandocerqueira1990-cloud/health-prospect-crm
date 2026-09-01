@@ -1,6 +1,6 @@
-# Documentação — Health Prospect CRM
+# Documentação — CRM X
 
-Esta área reúne a documentação pública e técnica do **Health Prospect CRM**, organizada para facilitar a navegação por arquitetura, desenvolvimento, evolução do produto e roadmap.
+Esta área reúne a documentação pública e técnica do **CRM X**, organizada para facilitar a navegação por arquitetura, desenvolvimento, evolução do produto e roadmap.
 
 ## Navegação
 

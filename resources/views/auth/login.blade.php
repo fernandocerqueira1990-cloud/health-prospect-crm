@@ -15,11 +15,7 @@
 
             {{-- Área institucional --}}
             <section class="hidden lg:block">
-                <img
-                    src="{{ asset('images/techsallus-logo.png') }}"
-                    alt="Techsallus"
-                    class="h-16 w-auto object-contain"
-                >
+                <div class="inline-flex h-16 items-center rounded-2xl bg-crm-navy px-6 text-xl font-black tracking-tight text-white shadow-sm">CRM <span class="ml-1 text-crm-sky">X</span></div>
 
                 <p class="mt-8 text-sm font-black uppercase tracking-[0.20em] text-crm-blue">
                     CRM X
@@ -73,11 +69,7 @@
                 <div class="w-full max-w-lg rounded-[2rem] border border-slate-200 bg-white p-7 shadow-[0_24px_70px_rgba(18,57,93,0.10)] sm:p-10">
 
                     <div class="lg:hidden">
-                        <img
-                            src="{{ asset('images/techsallus-logo.png') }}"
-                            alt="Techsallus"
-                            class="h-12 w-auto object-contain"
-                        >
+                        <div class="inline-flex h-12 items-center rounded-xl bg-crm-navy px-4 text-base font-black tracking-tight text-white shadow-sm">CRM <span class="ml-1 text-crm-sky">X</span></div>
                     </div>
 
                     <p class="mt-4 text-xs font-black uppercase tracking-[0.18em] text-crm-blue lg:mt-0">

@@ -1,4 +1,4 @@
-# Desenvolvimento — Health Prospect CRM
+# Desenvolvimento — CRM X
 
 Esta seção reúne instruções de apoio ao desenvolvimento local, testes e qualidade do projeto.
 

@@ -19,7 +19,7 @@ export function Layout() {
     <div className="min-h-screen flex">
       <aside className={`${open ? 'block' : 'hidden'} md:block w-64 bg-slate-950 text-white p-4 fixed md:static inset-y-0 z-30`}>
         <div className="mb-8">
-          <div className="text-lg font-bold">Health Prospect CRM</div>
+          <div className="text-lg font-bold">CRM X</div>
           <div className="text-xs text-slate-400">Prospecção B2B em Saúde</div>
         </div>
         <nav className="space-y-1">

@@ -2,7 +2,7 @@
 
 ## Objetivo
 
-Colocar o Health Prospect CRM em um estado visual navegável antes da Sprint 4, mantendo os módulos Empresas e Contatos funcionais e apresentando os próximos módulos como áreas planejadas.
+Colocar o CRM X em um estado visual navegável antes da Sprint 4, mantendo os módulos Empresas e Contatos funcionais e apresentando os próximos módulos como áreas planejadas.
 
 ## Escopo
 

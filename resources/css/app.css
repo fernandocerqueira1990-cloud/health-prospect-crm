@@ -6,7 +6,7 @@
 @theme {
     --font-sans: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
-    /* Techsallus CRM brand */
+    /* CRM X brand */
     --color-crm-navy: #12395d;
     --color-crm-teal: #2f6fa5;
     --color-crm-blue: #2f6fa5;
@@ -250,7 +250,7 @@
     }
 }
 
-/* Techsallus CRM — sidebar branding */
+/* CRM X — sidebar branding */
 @media (min-width: 1024px) {
     html.sidebar-collapsed .sidebar-brand-full {
         display: none;
@@ -266,7 +266,7 @@
 }
 
 
-/* Techsallus CRM — sidebar branca */
+/* CRM X — sidebar branca */
 .crm-sidebar .sidebar-brand-full {
     @apply border border-crm-light bg-white shadow-sm;
 }
@@ -284,7 +284,7 @@
 }
 
 
-/* TECHSALLUS UI TUNING - SIDEBAR/TOPBAR START */
+/* CRM X UI TUNING - SIDEBAR/TOPBAR START */
 
 /* Sidebar */
 .crm-sidebar {
@@ -414,10 +414,10 @@
     border-color: #d7e7f3;
 }
 
-/* TECHSALLUS UI TUNING - SIDEBAR/TOPBAR END */
+/* CRM X UI TUNING - SIDEBAR/TOPBAR END */
 
 
-/* TECHSALLUS CRM — Dashboard */
+/* CRM X — Dashboard */
 .metric-card {
     border-color: var(--color-crm-light) !important;
     background: #ffffff !important;

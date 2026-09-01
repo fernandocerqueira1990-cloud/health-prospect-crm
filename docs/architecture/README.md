@@ -1,6 +1,6 @@
 # Arquitetura
 
-Documentação técnica da arquitetura do **Health Prospect CRM**.
+Documentação técnica da arquitetura do **CRM X**.
 
 ## Conteúdo
 

@@ -2,7 +2,7 @@
 
 ## 🎯 Objetivo da etapa
 
-Com a arquitetura e a base da aplicação estruturadas, o Health Prospect CRM começou a avançar para o seu objetivo principal: transformar dados de prospecção em um processo comercial organizado.
+Com a arquitetura e a base da aplicação estruturadas, o CRM X começou a avançar para o seu objetivo principal: transformar dados de prospecção em um processo comercial organizado.
 
 Nesta etapa, o foco passa para leads, empresas, contatos e pipeline comercial.
 
@@ -150,7 +150,7 @@ Assim, o projeto deixa de ser apenas um cadastro de empresas e começa a se tran
 
 ## 📌 Resultado desta etapa
 
-A estrutura de empresas, contatos, leads e oportunidades estabelece o núcleo comercial do Health Prospect CRM.
+A estrutura de empresas, contatos, leads e oportunidades estabelece o núcleo comercial do CRM X.
 
 A partir dessa base, torna-se possível avançar para automações e integrações capazes de reduzir atividades manuais e melhorar o acompanhamento da prospecção.
 

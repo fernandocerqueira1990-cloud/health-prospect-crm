@@ -1,4 +1,4 @@
-# ARCHITECTURE — Health Prospect CRM
+# ARCHITECTURE — CRM X
 
 ## Arquitetura alvo
 

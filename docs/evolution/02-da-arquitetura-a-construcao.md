@@ -2,7 +2,7 @@
 
 ## 🎯 Objetivo da etapa
 
-Depois de definir a arquitetura inicial do Health Prospect CRM, o próximo desafio foi transformar o planejamento em uma aplicação funcional.
+Depois de definir a arquitetura inicial do CRM X, o próximo desafio foi transformar o planejamento em uma aplicação funcional.
 
 Nesta etapa, a estrutura técnica começou a ganhar forma: frontend, autenticação, banco de dados, organização do código e integração entre os componentes.
 
@@ -112,7 +112,7 @@ A validação garante que mudanças estruturais não interrompam a compilação 
 
 ## 📌 Resultado desta etapa
 
-Ao final desta fase, o Health Prospect CRM deixou de existir apenas como arquitetura planejada e passou a possuir uma aplicação web funcional conectada aos serviços de backend.
+Ao final desta fase, o CRM X deixou de existir apenas como arquitetura planejada e passou a possuir uma aplicação web funcional conectada aos serviços de backend.
 
 A base estava preparada para iniciar a implementação das funcionalidades diretamente relacionadas ao processo comercial.
 

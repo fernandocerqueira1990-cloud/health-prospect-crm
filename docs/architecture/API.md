@@ -1,4 +1,4 @@
-# API — Health Prospect CRM
+# API — CRM X
 
 ## Base
 

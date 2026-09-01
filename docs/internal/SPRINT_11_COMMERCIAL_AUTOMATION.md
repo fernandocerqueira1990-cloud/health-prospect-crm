@@ -2,7 +2,7 @@
 
 ## Objetivo
 
-Evoluir o Health Prospect CRM de um sistema orientado a registro e acompanhamento para uma operação comercial mais proativa, com centralização de próximas ações, follow-ups, pendências e sinais de estagnação no pipeline.
+Evoluir o CRM X de um sistema orientado a registro e acompanhamento para uma operação comercial mais proativa, com centralização de próximas ações, follow-ups, pendências e sinais de estagnação no pipeline.
 
 A Sprint 11 deve aproveitar os módulos já existentes de Leads, Opportunities, Activities, Tasks, Timeline, Dashboard, Redis e Laravel Queue/Scheduler sem duplicar conceitos de domínio.
 
