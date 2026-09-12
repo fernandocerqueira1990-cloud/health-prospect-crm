@@ -466,3 +466,2235 @@
 .section-title {
     color: var(--color-crm-navy) !important;
 }
+/* =========================================================
+/* =========================================================
+   CRM X - LOGIN PAGE
+   Estilos isolados: não afetam o restante do CRM
+   ========================================================= */
+
+.login-page {
+    margin: 0;
+    min-height: 100vh;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 50% 45%, rgba(27, 82, 115, 0.16), transparent 38%),
+        #061b2c;
+    color: #f4f8fc;
+    font-family: "Sora", ui-sans-serif, system-ui, sans-serif;
+}
+
+.login-page .login-shell {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* Logo TechSallus */
+.login-page .login-header {
+    position: absolute;
+    top: 26px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 30;
+}
+
+.login-page .login-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-page .login-brand-symbol {
+    display: block;
+    width: 150px;
+    max-height: 58px;
+    object-fit: contain;
+    background: transparent;
+}
+
+/* Animação / rede */
+.login-page .connected-flow {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.login-page .connected-flow svg {
+    width: min(980px, 82vw);
+    height: auto;
+    max-height: 76vh;
+    opacity: 0.72;
+}
+
+/* Grid da animação */
+.login-page .connected-flow-grid {
+    opacity: 0.10;
+}
+
+.login-page .connected-flow-lines {
+    opacity: 0.65;
+}
+
+.login-page .connected-flow-particles {
+    opacity: 1;
+}
+
+/* Área de login */
+.login-page .login-access {
+    position: relative;
+    z-index: 20;
+
+    width: min(420px, calc(100vw - 40px));
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Caixa de login transparente */
+.login-page .login-form {
+    width: 100%;
+    padding: 30px 32px;
+
+    background: rgba(4, 22, 37, 0.58);
+    border: 1px solid rgba(101, 217, 255, 0.22);
+    border-radius: 18px;
+
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+
+    box-shadow:
+        0 24px 60px rgba(0, 0, 0, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+/* Labels */
+.login-page .login-label {
+    display: block;
+    margin-bottom: 7px;
+
+    color: #c6dbea;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* Espaçamento dos campos */
+.login-page .login-form form > div {
+    margin-bottom: 18px;
+}
+
+/* Inputs */
+.login-page .login-input {
+    width: 100%;
+    min-height: 48px;
+
+    padding-top: 11px;
+    padding-right: 14px;
+    padding-bottom: 11px;
+
+    background: rgba(11, 45, 73, 0.72) !important;
+    color: #f4f8fc !important;
+
+    border: 1px solid #285878 !important;
+    border-radius: 11px;
+
+    outline: none;
+    box-shadow: none !important;
+
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.login-page .login-input::placeholder {
+    color: #8baec5 !important;
+    opacity: 1;
+}
+
+.login-page .login-input:hover {
+    border-color: #39799d !important;
+}
+
+.login-page .login-input:focus {
+    background: rgba(11, 45, 73, 0.92) !important;
+    border-color: #65d9ff !important;
+    box-shadow: 0 0 0 3px rgba(101, 217, 255, 0.12) !important;
+}
+
+/* Ícones dos inputs */
+.login-page .login-form svg {
+    color: #65d9ff;
+}
+
+/* Checkbox / lembrar */
+.login-page .login-form label.flex {
+    color: #b8d4e6 !important;
+}
+
+/* Botão Entrar */
+.login-page .login-submit {
+    width: 100%;
+    min-height: 48px;
+
+    margin-top: 6px;
+
+    background: linear-gradient(135deg, #2789bd, #2f6fa5) !important;
+    color: #ffffff !important;
+
+    border: 1px solid #53bce7 !important;
+    border-radius: 11px;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    box-shadow: 0 10px 24px rgba(47, 111, 165, 0.26);
+
+    transition:
+        transform 0.2s ease,
+        filter 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.login-page .login-submit:hover {
+    filter: brightness(1.08);
+    transform: translateY(-1px);
+    box-shadow: 0 14px 30px rgba(47, 111, 165, 0.34);
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .login-page {
+        overflow-y: auto;
+    }
+
+    .login-page .login-shell {
+        min-height: 100svh;
+        padding: 100px 20px 32px;
+    }
+
+    .login-page .login-header {
+        top: 20px;
+    }
+
+    .login-page .login-brand-symbol {
+        width: 132px;
+    }
+
+    .login-page .connected-flow svg {
+        width: 900px;
+        max-width: none;
+        opacity: 0.35;
+    }
+
+    .login-page .login-form {
+        padding: 26px 22px;
+    }
+}
+/* =========================================================
+   CRM X - LOGIN CONNECTED FLOW FIX
+   Restaura visual do SVG animado
+   ========================================================= */
+
+.login-page .connected-flow {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.login-page .connected-flow svg {
+    width: min(980px, 82vw);
+    height: auto;
+    max-height: 76vh;
+    overflow: visible;
+}
+
+/* Grade de fundo */
+.login-page .connected-flow-grid path {
+    fill: none !important;
+    stroke: rgba(101, 217, 255, 0.10) !important;
+    stroke-width: 1 !important;
+}
+
+/* Linhas de conexão */
+.login-page .connected-flow-lines use {
+    fill: none !important;
+    stroke: url(#flow-line) !important;
+    stroke-width: 2.2 !important;
+    stroke-linecap: round !important;
+}
+
+/* Cards / nós do diagrama */
+.login-page .flow-node rect {
+    fill: rgba(8, 39, 62, 0.88) !important;
+    stroke: rgba(101, 217, 255, 0.38) !important;
+    stroke-width: 1.2 !important;
+}
+
+/* Ícones circulares */
+.login-page .flow-node circle {
+    fill: rgba(47, 111, 165, 0.30) !important;
+    stroke: rgba(101, 217, 255, 0.55) !important;
+    stroke-width: 1.2 !important;
+}
+
+/* Ícones internos */
+.login-page .flow-node path {
+    fill: none !important;
+    stroke: #65d9ff !important;
+    stroke-width: 1.8 !important;
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
+}
+
+/* Textos dos nós */
+.login-page .flow-node text {
+    fill: #d7eaf5 !important;
+    font-family: "Sora", ui-sans-serif, system-ui, sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+}
+
+/* Elemento central */
+.login-page .flow-core {
+    fill: rgba(7, 34, 54, 0.92) !important;
+    stroke: rgba(101, 217, 255, 0.50) !important;
+    stroke-width: 1.5 !important;
+}
+
+/* Marca / símbolo do centro */
+.login-page .flow-core-mark {
+    fill: none !important;
+    stroke: #65d9ff !important;
+    stroke-width: 2 !important;
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
+}
+
+/* Partículas animadas */
+.login-page .connected-flow-particles circle {
+    fill: #72e9f5 !important;
+    stroke: none !important;
+    filter: url(#flow-glow);
+}
+
+/* Não deixar nenhum elemento do SVG herdar preto */
+.login-page .connected-flow svg {
+    color: #65d9ff;
+}
+/* =========================================================
+   CRM X - LOGIN LAYOUT FINAL
+   Logo superior esquerdo + vetor maior + login centralizado
+   ========================================================= */
+
+.login-page {
+    margin: 0;
+    min-height: 100vh;
+    overflow: hidden;
+    background: #061b2c;
+}
+
+/* Estrutura principal */
+.login-page .login-shell {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+/* =========================================================
+   LOGO TECHSALLUS - CANTO SUPERIOR ESQUERDO
+   ========================================================= */
+
+.login-page .login-header {
+    position: absolute !important;
+    top: 26px !important;
+    left: 30px !important;
+    right: auto !important;
+    transform: none !important;
+    z-index: 40;
+}
+
+.login-page .login-brand {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.login-page .login-brand-symbol {
+    width: 155px !important;
+    height: auto !important;
+    max-height: 60px !important;
+    object-fit: contain;
+    display: block;
+}
+
+/* =========================================================
+   VETOR / ANIMAÇÃO
+   ========================================================= */
+
+.login-page .connected-flow {
+    position: absolute !important;
+    inset: 0 !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+/* deixa a animação significativamente maior */
+.login-page .connected-flow svg {
+    width: min(1400px, 94vw) !important;
+    max-width: 1400px !important;
+
+    height: auto !important;
+    max-height: 94vh !important;
+
+    opacity: 0.92 !important;
+
+    transform: scale(1.08);
+    transform-origin: center center;
+}
+
+/* nós */
+.login-page .flow-node rect {
+    fill: rgba(7, 39, 62, 0.74) !important;
+    stroke: rgba(101, 217, 255, 0.38) !important;
+    stroke-width: 1.15 !important;
+}
+
+/* círculos dos nós */
+.login-page .flow-node circle {
+    fill: rgba(47, 111, 165, 0.28) !important;
+    stroke: rgba(101, 217, 255, 0.58) !important;
+}
+
+/* ícones */
+.login-page .flow-node path {
+    fill: none !important;
+    stroke: #65d9ff !important;
+    stroke-width: 1.8 !important;
+}
+
+/* textos Leads / Oportunidades / Campanhas / Indicadores */
+.login-page .flow-node text {
+    fill: #c6dbea !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+}
+
+/* linhas */
+.login-page .connected-flow-lines use {
+    fill: none !important;
+    stroke: url(#flow-line) !important;
+    stroke-width: 2.2 !important;
+}
+
+/* centro */
+.login-page .flow-core {
+    fill: rgba(5, 30, 48, 0.84) !important;
+    stroke: rgba(101, 217, 255, 0.45) !important;
+    stroke-width: 1.5 !important;
+}
+
+.login-page .flow-core-mark {
+    fill: none !important;
+    stroke: #65d9ff !important;
+    stroke-width: 2 !important;
+}
+
+/* partículas animadas */
+.login-page .connected-flow-particles circle {
+    fill: #72e9f5 !important;
+    filter: url(#flow-glow);
+}
+
+/* =========================================================
+   LOGIN CENTRAL
+   ========================================================= */
+
+.login-page .login-access {
+    position: absolute !important;
+
+    top: 50% !important;
+    left: 50% !important;
+
+    transform: translate(-50%, -50%) !important;
+
+    width: min(420px, calc(100vw - 40px)) !important;
+
+    z-index: 30;
+}
+
+/* área transparente */
+.login-page .login-form {
+    width: 100%;
+
+    padding: 26px 30px;
+
+    background: rgba(4, 22, 37, 0.34) !important;
+
+    border: 1px solid rgba(101, 217, 255, 0.22) !important;
+    border-radius: 18px;
+
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+
+    box-shadow:
+        0 20px 50px rgba(0, 0, 0, 0.18),
+        inset 0 1px 0 rgba(255,255,255,0.025);
+}
+
+/* labels */
+.login-page .login-label {
+    color: #d2e5f0 !important;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* inputs */
+.login-page .login-input {
+    min-height: 48px;
+
+    background: rgba(232, 242, 249, 0.97) !important;
+    color: #0b2032 !important;
+
+    border: 1px solid #4aa7cc !important;
+    border-radius: 11px;
+
+    box-shadow: none !important;
+}
+
+.login-page .login-input::placeholder {
+    color: #61798c !important;
+}
+
+/* botão */
+.login-page .login-submit {
+    min-height: 48px;
+
+    background: linear-gradient(
+        135deg,
+        #2794c6,
+        #327ab0
+    ) !important;
+
+    color: #ffffff !important;
+
+    border: 1px solid #59c4ec !important;
+    border-radius: 11px;
+}
+
+/* lembrar de mim */
+.login-page .login-form label.flex {
+    color: #bdd4e2 !important;
+}
+
+/* =========================================================
+   RESPONSIVO
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .login-page {
+        overflow-y: auto;
+    }
+
+    .login-page .login-header {
+        top: 18px !important;
+        left: 18px !important;
+    }
+
+    .login-page .login-brand-symbol {
+        width: 125px !important;
+    }
+
+    .login-page .connected-flow svg {
+        width: 1050px !important;
+        max-width: none !important;
+        opacity: 0.45 !important;
+        transform: scale(1);
+    }
+
+    .login-page .login-access {
+        width: calc(100vw - 32px) !important;
+        max-width: 400px;
+    }
+
+    .login-page .login-form {
+        padding: 24px 22px;
+    }
+}
+/* =========================================================
+   CRM X - LOGIN HUB CONNECTED FINAL
+   Implementação baseada no mockup aprovado
+   ========================================================= */
+
+.login-page {
+    margin: 0;
+    min-height: 100vh;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at center, rgba(31, 101, 141, 0.16), transparent 36%),
+        #051b2c;
+}
+
+/* shell */
+.login-page .login-shell {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+/* logo no canto superior esquerdo */
+.login-page .login-header {
+    position: absolute !important;
+    top: 28px !important;
+    left: 34px !important;
+    right: auto !important;
+    transform: none !important;
+    z-index: 50;
+}
+
+.login-page .login-brand {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.login-page .login-brand-symbol {
+    width: 165px !important;
+    max-height: 62px !important;
+    height: auto !important;
+    object-fit: contain;
+    display: block;
+}
+
+/* animação */
+.login-page .connected-flow {
+    position: absolute !important;
+    inset: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.login-page .connected-flow svg {
+    width: min(1540px, 98vw) !important;
+    max-width: 1540px !important;
+    max-height: 96vh !important;
+    height: auto !important;
+    overflow: visible;
+    opacity: .98;
+}
+
+/* grid */
+.login-page .connected-flow-grid path {
+    fill: none !important;
+    stroke: rgba(78, 162, 207, 0.10) !important;
+    stroke-width: 1 !important;
+}
+
+/* linhas conectadas */
+.login-page .connected-flow-lines use {
+    fill: none !important;
+    stroke: url(#flow-line) !important;
+    stroke-width: 4 !important;
+    stroke-linecap: round !important;
+    filter: url(#flow-glow);
+}
+
+/* partículas */
+.login-page .connected-flow-particles circle {
+    fill: #70ebff !important;
+    filter: url(#flow-glow);
+}
+
+/* hub central */
+.login-page .flow-login-hub rect {
+    fill: rgba(7, 39, 62, 0.16) !important;
+    stroke: rgba(90, 216, 255, 0.34) !important;
+    stroke-width: 1.6 !important;
+}
+
+.login-page .flow-login-hub .hub-node {
+    fill: #70ebff !important;
+    filter: url(#flow-glow);
+}
+
+/* cards laterais */
+.login-page .flow-node > rect {
+    fill: rgba(5, 35, 56, 0.70) !important;
+    stroke: rgba(34, 204, 255, 0.70) !important;
+    stroke-width: 2 !important;
+}
+
+.login-page .flow-node > circle {
+    fill: rgba(23, 102, 148, 0.24) !important;
+    stroke: rgba(34, 204, 255, 0.92) !important;
+    stroke-width: 2 !important;
+}
+
+.login-page .flow-node > path {
+    fill: none !important;
+    stroke: #00d2ff !important;
+    stroke-width: 3 !important;
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
+}
+
+.login-page .flow-node text {
+    fill: #e7f6ff !important;
+    font-family: "Sora", ui-sans-serif, system-ui, sans-serif !important;
+    font-size: 22px !important;
+    font-weight: 600 !important;
+}
+.login-page .flow-mini-icon path {
+    fill: none !important;
+    stroke: rgba(0, 156, 255, 0.78) !important;
+    stroke-width: 3 !important;
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
+}
+
+.login-page .flow-mini-icon rect {
+    fill: rgba(0, 156, 255, 0.68) !important;
+    stroke: none !important;
+}
+
+/* caixa de login real */
+.login-page .login-access {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: min(430px, calc(100vw - 40px)) !important;
+    z-index: 30;
+}
+
+.login-page .login-form {
+    width: 100%;
+    padding: 28px 30px;
+    background: rgba(4, 22, 37, 0.22) !important;
+    border: 1px solid rgba(101, 217, 255, 0.22) !important;
+    border-radius: 18px !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow:
+        0 20px 48px rgba(0, 0, 0, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+/* labels */
+.login-page .login-label {
+    color: #d7edf9 !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    margin-bottom: 8px !important;
+    display: block;
+}
+
+/* inputs */
+.login-page .login-input {
+    min-height: 50px !important;
+    background: rgba(242, 247, 252, 0.96) !important;
+    color: #0b2032 !important;
+    border: 1px solid #58c6f0 !important;
+    border-radius: 12px !important;
+    box-shadow: none !important;
+}
+
+.login-page .login-input::placeholder {
+    color: #6a8091 !important;
+    opacity: 1 !important;
+}
+
+.login-page .login-input:focus {
+    border-color: #0fd4ff !important;
+    box-shadow: 0 0 0 4px rgba(15, 212, 255, 0.12) !important;
+}
+
+/* ícones */
+.login-page .login-form svg {
+    color: #2ec8ff !important;
+}
+
+/* lembrar de mim */
+.login-page .login-form label.flex {
+    color: #d2e5f0 !important;
+}
+
+/* botão */
+.login-page .login-submit {
+    min-height: 50px !important;
+    border-radius: 12px !important;
+    border: 1px solid #4fe1ff !important;
+    color: #ffffff !important;
+    background: linear-gradient(135deg, #21c4f6 0%, #1888ff 100%) !important;
+    box-shadow: 0 14px 28px rgba(27, 144, 255, 0.25) !important;
+    font-weight: 700 !important;
+}
+
+.login-page .login-submit:hover {
+    filter: brightness(1.05);
+    transform: translateY(-1px);
+}
+
+/* responsivo */
+@media (max-width: 900px) {
+    .login-page .connected-flow svg {
+        width: 1280px !important;
+        max-width: none !important;
+        opacity: .55;
+    }
+
+    .login-page .login-brand-symbol {
+        width: 138px !important;
+    }
+
+    .login-page .login-access {
+        width: min(410px, calc(100vw - 28px)) !important;
+    }
+
+    .login-page .login-form {
+        padding: 24px 22px;
+    }
+}
+/* =========================================================
+   CRM X LOGIN - LAYOUT FINAL APROVADO
+   ========================================================= */
+
+.login-page {
+    margin: 0;
+    min-height: 100vh;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 50% 48%, rgba(21, 90, 128, .15), transparent 40%),
+        #061b2c;
+}
+
+/* shell */
+.login-page .login-shell {
+    position: relative;
+    min-height: 100vh;
+    width: 100%;
+    overflow: hidden;
+}
+
+/* logo */
+.login-page .login-header {
+    position: absolute !important;
+    top: 28px !important;
+    left: 34px !important;
+    transform: none !important;
+    z-index: 50;
+}
+
+.login-page .login-brand-symbol {
+    width: 165px !important;
+    height: auto !important;
+    display: block;
+}
+
+/* SVG */
+.login-page .connected-flow {
+    position: absolute !important;
+    inset: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.login-page .connected-flow svg {
+    width: min(1540px, 98vw) !important;
+    height: auto !important;
+    max-height: 96vh !important;
+    overflow: visible;
+}
+
+/* grid */
+.login-page .connected-flow-grid path {
+    fill: none;
+    stroke: rgba(75, 164, 211, .09);
+    stroke-width: 1;
+}
+
+/* linhas */
+.login-page .connected-flow-lines use {
+    fill: none;
+    stroke: url(#flow-line);
+    stroke-width: 4;
+    stroke-linecap: round;
+    filter: url(#flow-glow);
+}
+
+/* partículas */
+.login-page .connected-flow-particles circle {
+    fill: #72ebff;
+}
+
+/* pontos do box central */
+.login-page .login-corner-nodes circle {
+    fill: #74efff;
+    filter: url(#flow-glow);
+}
+
+/* cards externos */
+.login-page .flow-node > rect {
+    fill: rgba(5, 35, 56, .72);
+    stroke: #16bde8;
+    stroke-width: 2;
+}
+
+.login-page .flow-node > circle {
+    fill: rgba(20, 108, 153, .24);
+    stroke: #23d0ff;
+    stroke-width: 2;
+}
+
+.login-page .flow-node > path {
+    fill: none;
+    stroke: #22d3ff;
+    stroke-width: 3;
+    stroke-linecap: round;
+}
+
+.login-page .flow-node text {
+    fill: #e4f4ff;
+    font-family: "Sora", sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.login-page .flow-mini-icon path {
+    fill: none;
+    stroke: rgba(16, 152, 230, .65);
+    stroke-width: 3;
+    stroke-linecap: round;
+}
+
+/* login central exatamente alinhado aos pontos do SVG */
+.login-page .login-access {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+
+    width: 430px !important;
+    z-index: 20;
+}
+
+/* único quadrado central */
+.login-page .login-form {
+    position: relative;
+    width: 100%;
+
+    padding: 28px 30px;
+
+    background: rgba(6, 30, 48, .52) !important;
+
+    border: 1px solid rgba(79, 215, 255, .45) !important;
+    border-radius: 18px !important;
+
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
+    box-shadow:
+        0 20px 55px rgba(0,0,0,.22),
+        0 0 30px rgba(41, 194, 244, .05);
+}
+
+/* labels */
+.login-page .login-label {
+    display: block;
+    color: #d8edf8 !important;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+/* inputs */
+.login-page .login-input {
+    min-height: 50px !important;
+
+    background: #eef5fb !important;
+    color: #102536 !important;
+
+    border: 1px solid #60cff3 !important;
+    border-radius: 12px !important;
+
+    box-shadow: none !important;
+}
+
+.login-page .login-input:focus {
+    border-color: #27dbff !important;
+    box-shadow: 0 0 0 4px rgba(39,219,255,.12) !important;
+}
+
+/* checkbox */
+.login-page .login-form label.flex {
+    color: #d4e7f1 !important;
+}
+
+/* botão */
+.login-page .login-submit {
+    min-height: 50px !important;
+
+    background: linear-gradient(135deg, #20c9f6, #1885ff) !important;
+
+    border: 1px solid #54e3ff !important;
+    border-radius: 12px !important;
+
+    color: #fff !important;
+    font-weight: 700 !important;
+
+    box-shadow: 0 12px 28px rgba(22, 144, 255, .25) !important;
+}
+
+/* mobile */
+@media (max-width: 900px) {
+    .login-page .connected-flow svg {
+        width: 1280px !important;
+        max-width: none !important;
+        opacity: .5;
+    }
+
+    .login-page .login-access {
+        width: min(410px, calc(100vw - 28px)) !important;
+    }
+
+    .login-page .login-brand-symbol {
+        width: 135px !important;
+    }
+}
+/* =========================================================
+   CRM X LOGIN - AJUSTE FINAL IGUAL AO EXEMPLO
+   ========================================================= */
+
+.login-page .connected-flow svg {
+    width: min(1540px, 98vw) !important;
+    height: auto !important;
+    max-height: 96vh !important;
+    overflow: visible;
+}
+
+.login-page .connected-flow-grid path {
+    fill: none !important;
+    stroke: rgba(73, 163, 210, 0.09) !important;
+    stroke-width: 1 !important;
+}
+
+.login-page .connected-flow-lines use {
+    fill: none !important;
+    stroke: url(#flow-line) !important;
+    stroke-width: 4 !important;
+    stroke-linecap: round !important;
+    filter: url(#flow-glow);
+}
+
+.login-page .connected-flow-particles circle {
+    fill: #78efff !important;
+}
+
+.login-page .login-corner-nodes circle {
+    fill: #78efff !important;
+    filter: url(#flow-glow);
+}
+
+.login-page .flow-node > rect {
+    fill: rgba(7, 38, 60, 0.72) !important;
+    stroke: #14c7f4 !important;
+    stroke-width: 2 !important;
+}
+
+.login-page .flow-node > circle {
+    fill: rgba(22, 112, 160, 0.22) !important;
+    stroke: #19d4ff !important;
+    stroke-width: 2 !important;
+}
+
+.login-page .flow-node > path {
+    fill: none !important;
+    stroke: #18d3ff !important;
+    stroke-width: 3 !important;
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
+}
+
+.login-page .flow-node text {
+    fill: #ecf7ff !important;
+    font-family: "Sora", sans-serif !important;
+    font-size: 22px !important;
+    font-weight: 600 !important;
+}
+
+.login-page .flow-mini-icon path {
+    fill: none !important;
+    stroke: rgba(0, 154, 255, 0.70) !important;
+    stroke-width: 3 !important;
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
+}
+
+/* BOX CENTRAL */
+.login-page .login-access {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 430px !important;
+    z-index: 20 !important;
+}
+
+.login-page .login-form {
+    width: 100%;
+    padding: 28px 30px;
+    background: rgba(6, 30, 48, 0.50) !important;
+    border: 1px solid rgba(79, 215, 255, 0.42) !important;
+    border-radius: 18px !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow:
+        0 20px 55px rgba(0,0,0,.22),
+        0 0 30px rgba(41,194,244,.05);
+}
+
+/* inputs */
+.login-page .login-input {
+    min-height: 50px !important;
+    background: #eef5fb !important;
+    color: #102536 !important;
+    border: 1px solid #60cff3 !important;
+    border-radius: 12px !important;
+    box-shadow: none !important;
+}
+
+.login-page .login-input:focus {
+    border-color: #27dbff !important;
+    box-shadow: 0 0 0 4px rgba(39,219,255,.12) !important;
+}
+
+/* labels */
+.login-page .login-label {
+    display: block;
+    color: #d8edf8 !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    margin-bottom: 8px !important;
+}
+
+/* checkbox */
+.login-page .login-form label.flex {
+    color: #d4e7f1 !important;
+}
+
+/* botão */
+.login-page .login-submit {
+    min-height: 50px !important;
+    background: linear-gradient(135deg, #20c9f6, #1885ff) !important;
+    border: 1px solid #54e3ff !important;
+    border-radius: 12px !important;
+    color: #fff !important;
+    font-weight: 700 !important;
+    box-shadow: 0 12px 28px rgba(22, 144, 255, .25) !important;
+}
+/* =========================================================
+   CRM X LOGIN - OVERRIDE FINAL EXATO
+   ========================================================= */
+
+.login-page {
+    margin: 0;
+    min-height: 100vh;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 50% 50%, rgba(18, 88, 128, 0.14), transparent 38%),
+        #051b2c;
+    font-family: "Sora", sans-serif;
+}
+
+.login-page .login-shell {
+    position: relative;
+    min-height: 100vh;
+    width: 100%;
+    overflow: hidden;
+}
+
+.login-page .login-header {
+    position: absolute !important;
+    top: 28px !important;
+    left: 34px !important;
+    z-index: 50 !important;
+}
+
+.login-page .login-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.login-page .login-brand-symbol {
+    width: 110px !important;
+    height: auto !important;
+    display: block;
+}
+
+.login-page .login-brand span {
+    color: #f4fbff;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: .01em;
+}
+
+.login-page .connected-flow {
+    position: absolute !important;
+    inset: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.login-page .connected-flow svg {
+    width: min(1540px, 98vw) !important;
+    max-width: 1540px !important;
+    height: auto !important;
+    max-height: 96vh !important;
+    overflow: visible;
+}
+
+/* grid */
+.login-page .connected-flow-grid path {
+    fill: none !important;
+    stroke: rgba(67, 154, 204, 0.08) !important;
+    stroke-width: 1 !important;
+}
+
+/* retângulo central */
+.login-page .login-panel-frame rect {
+    fill: rgba(7, 35, 56, 0.56) !important;
+    stroke: rgba(73, 217, 255, 0.45) !important;
+    stroke-width: 1.4 !important;
+    filter: drop-shadow(0 0 18px rgba(28, 194, 255, 0.10));
+}
+
+/* linhas */
+.login-page .connected-flow-lines use {
+    fill: none !important;
+    stroke: url(#flow-line) !important;
+    stroke-width: 4.2 !important;
+    stroke-linecap: round !important;
+    filter: url(#flow-glow);
+}
+
+/* partículas */
+.login-page .connected-flow-particles circle {
+    fill: #82efff !important;
+}
+
+/* nós do quadrado central */
+.login-page .login-corner-nodes circle {
+    fill: #82efff !important;
+    filter: url(#flow-glow);
+}
+
+/* cards laterais */
+.login-page .flow-node > rect {
+    fill: rgba(7, 37, 58, 0.72) !important;
+    stroke: #17c7f3 !important;
+    stroke-width: 2.1 !important;
+}
+
+.login-page .flow-node > circle {
+    fill: rgba(14, 105, 155, 0.18) !important;
+    stroke: #22d5ff !important;
+    stroke-width: 2.2 !important;
+}
+
+.login-page .flow-node > path {
+    fill: none !important;
+    stroke: #1fd4ff !important;
+    stroke-width: 3.1 !important;
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
+}
+
+.login-page .flow-node text {
+    fill: #eef9ff !important;
+    font-family: "Sora", sans-serif !important;
+    font-size: 22px !important;
+    font-weight: 600 !important;
+}
+
+.login-page .flow-mini-icon path {
+    fill: none !important;
+    stroke: rgba(0, 147, 242, 0.72) !important;
+    stroke-width: 3.2 !important;
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
+}
+
+/* login por cima do retângulo SVG */
+.login-page .login-access {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 340px !important;
+    z-index: 20 !important;
+}
+
+/* sem caixa duplicada */
+.login-page .login-form {
+    width: 100%;
+    padding: 22px 22px 18px 22px;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
+/* labels */
+.login-page .login-label {
+    display: block;
+    color: #e4f3fb !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    margin-bottom: 8px !important;
+}
+
+/* inputs */
+.login-page .login-input {
+    min-height: 50px !important;
+    background: #eef4fb !important;
+    color: #102536 !important;
+    border: 1px solid #5bcdf2 !important;
+    border-radius: 12px !important;
+    box-shadow: none !important;
+}
+
+.login-page .login-input:focus {
+    border-color: #2ad8ff !important;
+    box-shadow: 0 0 0 4px rgba(39, 219, 255, 0.12) !important;
+}
+
+/* checkbox */
+.login-page .login-form label.flex {
+    color: #d9edf8 !important;
+}
+
+/* botão */
+.login-page .login-submit {
+    min-height: 50px !important;
+    background: linear-gradient(135deg, #23c8f5, #1b84ff) !important;
+    border: 1px solid #58e2ff !important;
+    border-radius: 12px !important;
+    color: #fff !important;
+    font-weight: 700 !important;
+    box-shadow: 0 12px 28px rgba(22, 144, 255, .25) !important;
+}
+
+.login-page .login-submit:hover {
+    filter: brightness(1.04);
+}
+
+/* responsivo */
+@media (max-width: 900px) {
+    .login-page .connected-flow svg {
+        width: 1280px !important;
+        max-width: none !important;
+        opacity: .55;
+    }
+
+    .login-page .login-access {
+        width: min(340px, calc(100vw - 32px)) !important;
+    }
+
+    .login-page .login-brand-symbol {
+        width: 92px !important;
+    }
+
+    .login-page .login-brand span {
+        font-size: 15px;
+    }
+}
+/* =========================================================
+   CRM X - RESTORE DARK THEME APP INTERNA
+   Mantém login separado e restaura o tema escuro do sistema
+   ========================================================= */
+
+body:not(.login-page) {
+    background: #031b34 !important;
+    color: #e6f1ff !important;
+}
+
+/* fundo geral da área logada */
+body:not(.login-page) main,
+body:not(.login-page) .min-h-screen,
+body:not(.login-page) .page-shell,
+body:not(.login-page) .app-shell,
+body:not(.login-page) .content-area {
+    background: #031b34 !important;
+    color: #e6f1ff !important;
+}
+
+/* sidebar */
+body:not(.login-page) aside,
+body:not(.login-page) .sidebar,
+body:not(.login-page) .crm-sidebar,
+body:not(.login-page) nav {
+    background: #041a2f !important;
+    color: #d7ebff !important;
+    border-color: rgba(80, 170, 220, 0.16) !important;
+}
+
+/* topo */
+body:not(.login-page) header,
+body:not(.login-page) .topbar,
+body:not(.login-page) .app-header {
+    background: linear-gradient(90deg, #041b34 0%, #062240 100%) !important;
+    color: #e6f1ff !important;
+    border-color: rgba(80, 170, 220, 0.16) !important;
+}
+
+/* cards, painéis e blocos */
+body:not(.login-page) .card,
+body:not(.login-page) .panel,
+body:not(.login-page) .widget,
+body:not(.login-page) .rounded-xl,
+body:not(.login-page) .rounded-2xl {
+    background: #0a2c4d !important;
+    color: #e9f4ff !important;
+    border-color: rgba(77, 171, 225, 0.22) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.02), 0 10px 24px rgba(0,0,0,0.12) !important;
+}
+
+/* títulos */
+body:not(.login-page) h1,
+body:not(.login-page) h2,
+body:not(.login-page) h3,
+body:not(.login-page) h4,
+body:not(.login-page) .text-slate-950,
+body:not(.login-page) .text-slate-900,
+body:not(.login-page) .text-slate-800 {
+    color: #f3f9ff !important;
+}
+
+/* subtítulos e textos secundários */
+body:not(.login-page) p,
+body:not(.login-page) span,
+body:not(.login-page) small,
+body:not(.login-page) .text-slate-700,
+body:not(.login-page) .text-slate-600,
+body:not(.login-page) .text-slate-500 {
+    color: #b8d3ea !important;
+}
+
+/* labels e textos destacados azul */
+body:not(.login-page) .text-crm-blue,
+body:not(.login-page) .text-sky-600,
+body:not(.login-page) .text-sky-700,
+body:not(.login-page) .text-blue-600,
+body:not(.login-page) .text-blue-700 {
+    color: #67c6ff !important;
+}
+
+/* links */
+body:not(.login-page) a {
+    color: #6ecbff !important;
+}
+body:not(.login-page) a:hover {
+    color: #9de0ff !important;
+}
+
+/* tabelas */
+body:not(.login-page) table,
+body:not(.login-page) thead,
+body:not(.login-page) tbody,
+body:not(.login-page) tr,
+body:not(.login-page) th,
+body:not(.login-page) td {
+    border-color: rgba(77, 171, 225, 0.16) !important;
+}
+
+body:not(.login-page) thead th {
+    background: rgba(255,255,255,0.03) !important;
+    color: #9fdcff !important;
+}
+
+body:not(.login-page) tbody tr {
+    background: transparent !important;
+}
+
+body:not(.login-page) tbody tr:hover {
+    background: rgba(103, 198, 255, 0.05) !important;
+}
+
+body:not(.login-page) td,
+body:not(.login-page) th {
+    color: #dcecff !important;
+}
+
+/* inputs e selects */
+body:not(.login-page) input:not(.login-input),
+body:not(.login-page) select,
+body:not(.login-page) textarea {
+    background: #0d3257 !important;
+    color: #e8f4ff !important;
+    border-color: rgba(95, 186, 236, 0.24) !important;
+}
+
+body:not(.login-page) input::placeholder,
+body:not(.login-page) textarea::placeholder {
+    color: #9ab8d3 !important;
+}
+
+/* botões */
+body:not(.login-page) button,
+body:not(.login-page) .btn,
+body:not(.login-page) .btn-primary {
+    border-color: rgba(95, 186, 236, 0.24) !important;
+}
+
+/* estados ativos da sidebar/menu */
+body:not(.login-page) .bg-crm-sky,
+body:not(.login-page) .bg-sky-600,
+body:not(.login-page) .bg-blue-600,
+body:not(.login-page) .menu-item-active,
+body:not(.login-page) .active {
+    background: linear-gradient(135deg, #2f86c8, #3b97d9) !important;
+    color: #ffffff !important;
+}
+
+/* chips */
+body:not(.login-page) .badge,
+body:not(.login-page) .rounded-full {
+    border-color: rgba(95, 186, 236, 0.28) !important;
+}
+
+/* prioridade alta / alerta */
+body:not(.login-page) .border-amber-200,
+body:not(.login-page) .text-amber-700 {
+    border-color: rgba(255, 193, 77, 0.55) !important;
+    color: #ffc85a !important;
+}
+
+/* bloco pipeline parado */
+body:not(.login-page) [class*="amber"],
+body:not(.login-page) .pipeline-stagnant {
+    background: rgba(33, 44, 58, 0.88) !important;
+}
+
+/* scrollbar */
+body:not(.login-page) ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+body:not(.login-page) ::-webkit-scrollbar-track {
+    background: #08233d;
+}
+
+body:not(.login-page) ::-webkit-scrollbar-thumb {
+    background: #2f6f9f;
+    border-radius: 999px;
+    border: 2px solid #08233d;
+}
+
+body:not(.login-page) ::-webkit-scrollbar-thumb:hover {
+    background: #4d93c8;
+}
+
+/* Firefox */
+body:not(.login-page),
+body:not(.login-page) * {
+    scrollbar-width: thin;
+    scrollbar-color: #2f6f9f #08233d;
+}
+/* =========================================================
+   CRM X - TEMA INTERNO FINAL
+   Azul escuro + branco/azul claro
+   Não afeta a tela de login
+   ========================================================= */
+
+:root {
+    --crm-dark-main: #061b2c;
+    --crm-dark-sidebar: #041725;
+    --crm-dark-topbar: #061a2a;
+
+    --crm-dark-card: #0b2d49;
+    --crm-dark-card-hover: #103a5c;
+    --crm-dark-input: #0a2942;
+
+    --crm-dark-border: #1b5273;
+    --crm-dark-border-soft: #163f5d;
+
+    --crm-text-main: #f4f8fc;
+    --crm-text-secondary: #c6dbea;
+    --crm-text-muted: #9abbd2;
+
+    --crm-accent: #65d9ff;
+}
+
+
+/* =========================================================
+   ESTRUTURA
+   ========================================================= */
+
+body:not(.login-page) {
+    background: var(--crm-dark-main) !important;
+    color: var(--crm-text-main) !important;
+}
+
+body:not(.login-page) .crm-main {
+    background: var(--crm-dark-main) !important;
+    color: var(--crm-text-main) !important;
+}
+
+body:not(.login-page) .crm-content {
+    background: var(--crm-dark-main) !important;
+}
+
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+body:not(.login-page) .crm-sidebar {
+    background: var(--crm-dark-sidebar) !important;
+    color: var(--crm-text-secondary) !important;
+    border-right-color: var(--crm-dark-border-soft) !important;
+}
+
+body:not(.login-page) .nav-section-title {
+    color: var(--crm-accent) !important;
+}
+
+body:not(.login-page) .nav-link {
+    color: var(--crm-text-secondary) !important;
+    background: transparent !important;
+}
+
+body:not(.login-page) .nav-link:hover {
+    color: #ffffff !important;
+    background: #0d314d !important;
+}
+
+body:not(.login-page) .nav-link-active {
+    color: #ffffff !important;
+    background: #237cad !important;
+}
+
+body:not(.login-page) .nav-link-active span {
+    color: #ffffff !important;
+}
+
+body:not(.login-page) .nav-mark {
+    background: #0c2d46 !important;
+    color: var(--crm-text-secondary) !important;
+    border-color: var(--crm-dark-border) !important;
+}
+
+body:not(.login-page) .nav-link-active .nav-mark {
+    background: rgba(255,255,255,.16) !important;
+    color: #ffffff !important;
+}
+
+
+/* =========================================================
+   TOPBAR
+   ========================================================= */
+
+body:not(.login-page) .crm-topbar {
+    background: var(--crm-dark-topbar) !important;
+    color: var(--crm-text-main) !important;
+    border-bottom-color: var(--crm-dark-border-soft) !important;
+}
+
+body:not(.login-page) .crm-topbar .page-title,
+body:not(.login-page) .crm-topbar .text-slate-950,
+body:not(.login-page) .crm-topbar .text-slate-900 {
+    color: var(--crm-text-main) !important;
+}
+
+body:not(.login-page) .crm-topbar .page-subtitle,
+body:not(.login-page) .crm-topbar .text-slate-500,
+body:not(.login-page) .crm-topbar .text-slate-600 {
+    color: var(--crm-text-secondary) !important;
+}
+
+
+/* =========================================================
+   TÍTULOS
+   ========================================================= */
+
+body:not(.login-page) .page-title,
+body:not(.login-page) .card-title,
+body:not(.login-page) .section-title {
+    color: var(--crm-text-main) !important;
+}
+
+body:not(.login-page) .page-subtitle,
+body:not(.login-page) .card-subtitle,
+body:not(.login-page) .section-description {
+    color: var(--crm-text-secondary) !important;
+}
+
+
+/* =========================================================
+   CARDS / SEÇÕES
+   ========================================================= */
+
+body:not(.login-page) .card,
+body:not(.login-page) .metric-card,
+body:not(.login-page) .form-section,
+body:not(.login-page) .page-toolbar,
+body:not(.login-page) .filter-bar,
+body:not(.login-page) .listing-filters,
+body:not(.login-page) .table-wrap,
+body:not(.login-page) .timeline-list {
+    background: var(--crm-dark-card) !important;
+    color: var(--crm-text-main) !important;
+    border-color: var(--crm-dark-border) !important;
+}
+
+body:not(.login-page) .card-header,
+body:not(.login-page) .card-footer,
+body:not(.login-page) .form-section-header,
+body:not(.login-page) .form-section-footer {
+    border-color: var(--crm-dark-border-soft) !important;
+}
+
+body:not(.login-page) .metric-label {
+    color: var(--crm-accent) !important;
+}
+
+body:not(.login-page) .metric-value {
+    color: #ffffff !important;
+}
+
+body:not(.login-page) .metric-help {
+    color: var(--crm-text-secondary) !important;
+}
+
+
+/* =========================================================
+   FILTROS / CAMPOS
+   ========================================================= */
+
+body:not(.login-page) .label,
+body:not(.login-page) .detail-label {
+    color: var(--crm-text-secondary) !important;
+}
+
+body:not(.login-page) .detail-value {
+    color: var(--crm-text-main) !important;
+}
+
+body:not(.login-page) .input,
+body:not(.login-page) select.input,
+body:not(.login-page) textarea.input {
+    background: var(--crm-dark-input) !important;
+    color: var(--crm-text-main) !important;
+    border-color: #285878 !important;
+}
+
+body:not(.login-page) .input::placeholder,
+body:not(.login-page) textarea.input::placeholder {
+    color: var(--crm-text-muted) !important;
+    opacity: 1 !important;
+}
+
+body:not(.login-page) .advanced-filters > summary {
+    color: var(--crm-accent) !important;
+}
+
+
+/* =========================================================
+   TABELAS
+   ========================================================= */
+
+body:not(.login-page) .table-wrap {
+    width: 100% !important;
+    max-width: none !important;
+}
+
+body:not(.login-page) .table {
+    width: 100% !important;
+    min-width: 100% !important;
+    color: var(--crm-text-main) !important;
+}
+
+body:not(.login-page) .table th {
+    background: #08243a !important;
+    color: #8edfff !important;
+    border-color: var(--crm-dark-border-soft) !important;
+}
+
+body:not(.login-page) .table td {
+    background: transparent !important;
+    color: #e7f2f9 !important;
+    border-color: var(--crm-dark-border-soft) !important;
+}
+
+body:not(.login-page) .table tbody tr {
+    background: transparent !important;
+}
+
+body:not(.login-page) .table tbody tr:hover {
+    background: rgba(101,217,255,.05) !important;
+}
+
+body:not(.login-page) .table-primary-link,
+body:not(.login-page) .table-action-link {
+    color: var(--crm-accent) !important;
+}
+
+body:not(.login-page) .table-primary-link:hover,
+body:not(.login-page) .table-action-link:hover {
+    color: #ffffff !important;
+}
+
+body:not(.login-page) .table-secondary-line {
+    color: var(--crm-text-muted) !important;
+}
+
+body:not(.login-page) .listing-summary {
+    color: var(--crm-text-muted) !important;
+}
+
+
+/* =========================================================
+   BOTÕES
+   ========================================================= */
+
+body:not(.login-page) .btn-primary {
+    background: #2f7fb5 !important;
+    border-color: #3e94c8 !important;
+    color: #ffffff !important;
+}
+
+body:not(.login-page) .btn-primary:hover {
+    background: #378fc6 !important;
+}
+
+body:not(.login-page) .btn-secondary {
+    background: var(--crm-dark-input) !important;
+    border-color: #356987 !important;
+    color: var(--crm-text-main) !important;
+}
+
+
+/* =========================================================
+   PIPELINE
+   ÚNICA ÁREA COM CORES FUNCIONAIS
+   ========================================================= */
+
+/* estágio inicial */
+.pipeline-stage-new,
+.pipeline-stage-prospecting {
+    background: #2563eb !important;
+    color: #ffffff !important;
+}
+
+/* contato / qualificação */
+.pipeline-stage-contact,
+.pipeline-stage-qualified {
+    background: #0891b2 !important;
+    color: #ffffff !important;
+}
+
+/* proposta */
+.pipeline-stage-proposal {
+    background: #7c3aed !important;
+    color: #ffffff !important;
+}
+
+/* negociação */
+.pipeline-stage-negotiation {
+    background: #d97706 !important;
+    color: #ffffff !important;
+}
+
+/* ganho */
+.pipeline-stage-won {
+    background: #15803d !important;
+    color: #ffffff !important;
+}
+
+/* perdido */
+.pipeline-stage-lost {
+    background: #b91c1c !important;
+    color: #ffffff !important;
+}
+
+/* parado / estagnado */
+.pipeline-stalled,
+.pipeline-stalled-card {
+    background: #1c3445 !important;
+    border-color: #b68a24 !important;
+}
+
+.pipeline-stalled .metric-label,
+.pipeline-stalled-card .metric-label {
+    color: #f2bd50 !important;
+}
+
+.pipeline-stalled .metric-value,
+.pipeline-stalled-card .metric-value {
+    color: #ffffff !important;
+}
+
+.pipeline-stalled .metric-help,
+.pipeline-stalled-card .metric-help {
+    color: var(--crm-text-secondary) !important;
+}
+
+
+/* =========================================================
+   SCROLLBAR
+   ========================================================= */
+
+body:not(.login-page) ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+body:not(.login-page) ::-webkit-scrollbar-track {
+    background: var(--crm-dark-sidebar);
+}
+
+body:not(.login-page) ::-webkit-scrollbar-thumb {
+    background: #245c80;
+    border-radius: 999px;
+    border: 2px solid var(--crm-dark-sidebar);
+}
+
+body:not(.login-page) ::-webkit-scrollbar-thumb:hover {
+    background: #357ba6;
+}
+/* Logo da sidebar sem fundo branco */
+.crm-sidebar .bg-white,
+.crm-sidebar .sidebar-brand,
+.crm-sidebar .brand-wrap {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.crm-sidebar img {
+    background: transparent !important;
+}
+/* Logo da sidebar */
+.crm-sidebar .sidebar-brand,
+.crm-sidebar .sidebar-brand-full {
+    background: transparent !important;
+}
+
+.crm-sidebar-logo {
+    display: block;
+    width: 138px;
+    height: auto;
+    object-fit: contain;
+    background: transparent !important;
+}
+/* =========================================================
+   AJUSTE GLOBAL - BADGES / CHIPS / PILLS
+   Corrige elementos claros demais no tema escuro
+   ========================================================= */
+
+body:not(.login-page) .table .rounded-full,
+body:not(.login-page) .card .rounded-full,
+body:not(.login-page) .metric-card .rounded-full,
+body:not(.login-page) .listing-filters .rounded-full,
+body:not(.login-page) .filter-bar .rounded-full,
+body:not(.login-page) .page-toolbar .rounded-full,
+body:not(.login-page) .form-section .rounded-full,
+body:not(.login-page) .inline-flex.rounded-full {
+    background: #163954 !important;
+    color: #dff4ff !important;
+    border: 1px solid #2f6e97 !important;
+    font-weight: 700 !important;
+    box-shadow: none !important;
+}
+
+/* MÉDIA / INFO / SKY */
+body:not(.login-page) .rounded-full[class*="sky"],
+body:not(.login-page) .rounded-full[class*="cyan"],
+body:not(.login-page) .rounded-full[class*="info"] {
+    background: #123851 !important;
+    color: #9fdfff !important;
+    border-color: #4690bf !important;
+}
+
+/* ALTA / ALERTA / AMBER */
+body:not(.login-page) .rounded-full[class*="amber"],
+body:not(.login-page) .rounded-full[class*="yellow"],
+body:not(.login-page) .rounded-full[class*="warning"] {
+    background: #4a3a12 !important;
+    color: #ffd76f !important;
+    border-color: #c79c31 !important;
+}
+
+/* NOVO / AZUL */
+body:not(.login-page) .rounded-full[class*="blue"],
+body:not(.login-page) .rounded-full[class*="indigo"] {
+    background: #123d60 !important;
+    color: #c5ebff !important;
+    border-color: #3e8fc3 !important;
+}
+
+/* FRIO / NEUTRO / SLATE */
+body:not(.login-page) .rounded-full[class*="slate"],
+body:not(.login-page) .rounded-full[class*="gray"],
+body:not(.login-page) .rounded-full[class*="zinc"] {
+    background: #2a4052 !important;
+    color: #e1eef8 !important;
+    border-color: #6a88a1 !important;
+}
+
+/* SUCESSO / GANHO / VERDE */
+body:not(.login-page) .rounded-full[class*="green"],
+body:not(.login-page) .rounded-full[class*="emerald"],
+body:not(.login-page) .rounded-full[class*="success"] {
+    background: #153f2c !important;
+    color: #9ff0c0 !important;
+    border-color: #2da86b !important;
+}
+
+/* PERDA / ERRO / VERMELHO */
+body:not(.login-page) .rounded-full[class*="red"],
+body:not(.login-page) .rounded-full[class*="rose"],
+body:not(.login-page) .rounded-full[class*="danger"] {
+    background: #4a1f24 !important;
+    color: #ffb8c2 !important;
+    border-color: #d25a6a !important;
+}
+
+/* ROXO / ETAPAS ESPECIAIS */
+body:not(.login-page) .rounded-full[class*="purple"],
+body:not(.login-page) .rounded-full[class*="violet"] {
+    background: #352458 !important;
+    color: #d9c2ff !important;
+    border-color: #8b63d9 !important;
+}
+
+/* Garante legibilidade de spans internos */
+body:not(.login-page) .rounded-full span,
+body:not(.login-page) .rounded-full small,
+body:not(.login-page) .rounded-full strong {
+    color: inherit !important;
+}
+
+/* Caso algum badge ainda venha com fundo branco */
+body:not(.login-page) .rounded-full.bg-white,
+body:not(.login-page) .rounded-full[class*="bg-white"],
+body:not(.login-page) .rounded-full[class*="bg-slate-50"],
+body:not(.login-page) .rounded-full[class*="bg-gray-50"],
+body:not(.login-page) .rounded-full[class*="bg-zinc-50"] {
+    background: #163954 !important;
+    color: #dff4ff !important;
+    border-color: #2f6e97 !important;
+}
+/* =========================================================
+   AJUSTE FINAL - TEXTO ESCURO NOS BADGES CLAROS
+   ========================================================= */
+
+/* regra base para pills/badges */
+body:not(.login-page) .rounded-full,
+body:not(.login-page) .inline-flex.rounded-full {
+    font-weight: 700 !important;
+}
+
+/* prioridade média */
+body:not(.login-page) .rounded-full[class*="sky"],
+body:not(.login-page) .rounded-full[class*="cyan"],
+body:not(.login-page) .rounded-full[class*="info"] {
+    background: #d9eefb !important;
+    color: #1c4f73 !important;
+    border: 1px solid #8fc4e4 !important;
+}
+
+/* prioridade alta */
+body:not(.login-page) .rounded-full[class*="amber"],
+body:not(.login-page) .rounded-full[class*="yellow"],
+body:not(.login-page) .rounded-full[class*="warning"] {
+    background: #f6e7b2 !important;
+    color: #6f4d00 !important;
+    border: 1px solid #d8b24c !important;
+}
+
+/* novo */
+body:not(.login-page) .rounded-full[class*="blue"],
+body:not(.login-page) .rounded-full[class*="indigo"] {
+    background: #d7ebfb !important;
+    color: #17476b !important;
+    border: 1px solid #85b7de !important;
+}
+
+/* frio / neutro */
+body:not(.login-page) .rounded-full[class*="slate"],
+body:not(.login-page) .rounded-full[class*="gray"],
+body:not(.login-page) .rounded-full[class*="zinc"] {
+    background: #e2eaf2 !important;
+    color: #42576b !important;
+    border: 1px solid #a9bbc9 !important;
+}
+
+/* sucesso */
+body:not(.login-page) .rounded-full[class*="green"],
+body:not(.login-page) .rounded-full[class*="emerald"],
+body:not(.login-page) .rounded-full[class*="success"] {
+    background: #d8f1df !important;
+    color: #1f5a34 !important;
+    border: 1px solid #86c39a !important;
+}
+
+/* erro */
+body:not(.login-page) .rounded-full[class*="red"],
+body:not(.login-page) .rounded-full[class*="rose"],
+body:not(.login-page) .rounded-full[class*="danger"] {
+    background: #f8d9dd !important;
+    color: #7a2633 !important;
+    border: 1px solid #d7909b !important;
+}
+
+/* garante texto interno escuro */
+body:not(.login-page) .rounded-full,
+body:not(.login-page) .rounded-full span,
+body:not(.login-page) .rounded-full small,
+body:not(.login-page) .rounded-full strong {
+    color: inherit !important;
+}
+/* =========================================================
+   STATUS BADGES - CONTRASTE FINAL
+   ========================================================= */
+
+body:not(.login-page) .status-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: fit-content !important;
+
+    padding: 3px 9px !important;
+    border-radius: 999px !important;
+
+    font-size: 12px !important;
+    line-height: 1.2 !important;
+    font-weight: 700 !important;
+
+    white-space: nowrap !important;
+}
+
+/* Neutro / Frio */
+body:not(.login-page) .status-badge-neutral {
+    background: #dce8f2 !important;
+    color: #263f53 !important;
+    border: 1px solid #93aec2 !important;
+}
+
+/* Info / Média / Novo */
+body:not(.login-page) .status-badge-info {
+    background: #cce9f8 !important;
+    color: #164968 !important;
+    border: 1px solid #73b7da !important;
+}
+
+/* Sucesso */
+body:not(.login-page) .status-badge-success {
+    background: #d6efdf !important;
+    color: #205b38 !important;
+    border: 1px solid #80bd94 !important;
+}
+
+/* Alta / Warning */
+body:not(.login-page) .status-badge-warning {
+    background: #f5e3a7 !important;
+    color: #684900 !important;
+    border: 1px solid #d4aa37 !important;
+}
+
+/* Crítica / Danger */
+body:not(.login-page) .status-badge-danger {
+    background: #f4d5d9 !important;
+    color: #742b35 !important;
+    border: 1px solid #cd8791 !important;
+}
+
+/* impede regras antigas de clarearem o texto */
+body:not(.login-page) .status-badge,
+body:not(.login-page) .status-badge span,
+body:not(.login-page) .status-badge strong {
+    color: inherit !important;
+}
+/* =========================================================
+   STATUS BADGES - TEXTO ESCURO FORÇADO
+   ========================================================= */
+
+body:not(.login-page) .status-badge-info,
+body:not(.login-page) .status-badge-info *,
+body:not(.login-page) .status-badge-neutral,
+body:not(.login-page) .status-badge-neutral * {
+    color: #123b5a !important;
+}
+
+/* Média / Novo */
+body:not(.login-page) .status-badge-info {
+    background: #cfeafa !important;
+    border-color: #78bde0 !important;
+}
+
+/* Frio / neutro */
+body:not(.login-page) .status-badge-neutral {
+    background: #dce8f2 !important;
+    border-color: #93aec2 !important;
+}
+
+/* Alta */
+body:not(.login-page) .status-badge-warning,
+body:not(.login-page) .status-badge-warning * {
+    background: #f5e3a7 !important;
+    color: #5b4100 !important;
+    border-color: #d4aa37 !important;
+}
+
+/* Sucesso */
+body:not(.login-page) .status-badge-success,
+body:not(.login-page) .status-badge-success * {
+    color: #17492d !important;
+}
+
+/* Crítico / erro */
+body:not(.login-page) .status-badge-danger,
+body:not(.login-page) .status-badge-danger * {
+    color: #67212b !important;
+}

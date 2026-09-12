@@ -1,201 +1,221 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="h-full bg-white">
+<html lang="pt-BR" class="h-full bg-[#071b35]">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <title>Entrar — CRM X</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
+<body class="login-page min-h-full antialiased">
+    <main class="login-shell">
+        <header class="login-header">
+            <div class="login-brand" aria-label="Techsallus">
+                <img src="{{ asset('images/techsallus-symbol-transparent.png') }}" alt="" class="login-brand-symbol">
+                <span>techsallus</span>
+            </div>
+        </header>
 
-<body class="min-h-full bg-white antialiased">
-    <main class="min-h-screen bg-white">
-        <div class="mx-auto grid min-h-screen w-full max-w-[1500px] items-center gap-12 px-6 py-8 lg:grid-cols-[1fr_520px] lg:px-12 xl:gap-20 xl:px-16">
+        <div class="connected-flow" aria-label="Rede de conexões comerciais">
+            <svg viewBox="0 0 1280 720" role="img" aria-labelledby="flow-title flow-description">
+                <title id="flow-title">Fluxo conectado</title>
+                <desc id="flow-description">Rede de conexões comerciais conectada ao painel de login.</desc>
 
-            {{-- Área institucional --}}
-            <section class="hidden lg:block">
-                <div class="inline-flex h-16 items-center rounded-2xl bg-crm-navy px-6 text-xl font-black tracking-tight text-white shadow-sm">CRM <span class="ml-1 text-crm-sky">X</span></div>
+                <defs>
+                    <linearGradient id="flow-line" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="#31c8f2" stop-opacity=".48"></stop>
+                        <stop offset="50%" stop-color="#82eeff" stop-opacity="1"></stop>
+                        <stop offset="100%" stop-color="#31c8f2" stop-opacity=".48"></stop>
+                    </linearGradient>
 
-                <p class="mt-8 text-sm font-black uppercase tracking-[0.20em] text-crm-blue">
-                    CRM X
-                </p>
 
-                <h1 class="mt-5 max-w-3xl text-5xl font-black leading-[1.08] tracking-tight text-crm-navy xl:text-6xl">
-                    Prospecção inteligente.
-                    <span class="block text-crm-blue">
-                        Relacionamentos que geram valor.
-                    </span>
-                </h1>
+                    <filter id="flow-glow" x="-50%" y="-50%" width="200%" height="200%">
+                        <feGaussianBlur stdDeviation="5" result="blur"></feGaussianBlur>
+                        <feMerge>
+                            <feMergeNode in="blur"></feMergeNode>
+                            <feMergeNode in="SourceGraphic"></feMergeNode>
+                        </feMerge>
+                    </filter>
 
-                <p class="mt-7 max-w-2xl text-lg leading-8 text-slate-600">
-                    Organize leads, acompanhe oportunidades e fortaleça o relacionamento
-                    com seus clientes em uma plataforma comercial centralizada.
-                </p>
+                    <!-- linhas -->
+                    <path id="flow-leads" d="M390 245 C430 245, 445 250, 470 270"></path>
+                    <path id="flow-opportunities" d="M890 245 C850 245, 835 250, 810 270"></path>
+                    <path id="flow-campaigns" d="M390 495 C430 495, 445 490, 470 468"></path>
+                    <path id="flow-indicators" d="M890 495 C850 495, 835 490, 810 468"></path>
+                </defs>
 
-                <div class="mt-10 flex flex-wrap gap-x-8 gap-y-4 text-sm font-semibold text-crm-navy">
-                    <span class="inline-flex items-center gap-2">
-                        <span class="h-2 w-2 rounded-full bg-crm-blue"></span>
-                        Gestão de Leads
-                    </span>
+                <!-- grid -->
+                <g class="connected-flow-grid" aria-hidden="true">
+                    <path d="M0 115 H1280"></path>
+                    <path d="M0 280 H1280"></path>
+                    <path d="M0 445 H1280"></path>
+                    <path d="M0 610 H1280"></path>
 
-                    <span class="inline-flex items-center gap-2">
-                        <span class="h-2 w-2 rounded-full bg-crm-sky"></span>
-                        Pipeline Comercial
-                    </span>
+                    <path d="M150 0 V720"></path>
+                    <path d="M340 0 V720"></path>
+                    <path d="M640 0 V720"></path>
+                    <path d="M940 0 V720"></path>
+                    <path d="M1130 0 V720"></path>
+                </g>
 
-                    <span class="inline-flex items-center gap-2">
-                        <span class="h-2 w-2 rounded-full bg-crm-blue"></span>
-                        Campanhas
-                    </span>
+                <!-- box central de referência -->
+                <g class="login-panel-frame" aria-hidden="true">
+                    <rect x="470" y="210" width="340" height="260" rx="22"></rect>
+                </g>
 
-                    <span class="inline-flex items-center gap-2">
-                        <span class="h-2 w-2 rounded-full bg-crm-sky"></span>
-                        Indicadores e Relatórios
-                    </span>
-                </div>
+                <!-- linhas -->
+                <g class="connected-flow-lines" aria-hidden="true">
+                    <use href="#flow-leads"></use>
+                    <use href="#flow-opportunities"></use>
+                    <use href="#flow-campaigns"></use>
+                    <use href="#flow-indicators"></use>
+                </g>
 
-                <div class="mt-14 h-px max-w-2xl bg-crm-light"></div>
+                <!-- partículas -->
+                <g class="connected-flow-particles" aria-hidden="true" filter="url(#flow-glow)">
+                    <circle r="6">
+                        <animateMotion dur="7s" repeatCount="indefinite">
+                            <mpath href="#flow-leads"></mpath>
+                        </animateMotion>
+                    </circle>
+                    <circle r="6">
+                        <animateMotion dur="7s" begin="1.5s" repeatCount="indefinite">
+                            <mpath href="#flow-opportunities"></mpath>
+                        </animateMotion>
+                    </circle>
+                    <circle r="6">
+                        <animateMotion dur="7s" begin="3s" repeatCount="indefinite">
+                            <mpath href="#flow-campaigns"></mpath>
+                        </animateMotion>
+                    </circle>
+                    <circle r="6">
+                        <animateMotion dur="7s" begin="4.5s" repeatCount="indefinite">
+                            <mpath href="#flow-indicators"></mpath>
+                        </animateMotion>
+                    </circle>
+                </g>
 
-                <div class="mt-6 flex flex-wrap gap-x-10 gap-y-3 text-xs text-slate-500">
-                    <span>✓ Gestão comercial centralizada</span>
-                    <span>✓ Dados protegidos</span>
-                    <span>✓ Acesso corporativo</span>
-                </div>
-            </section>
+                <!-- pontos do box central -->
+                <g class="login-corner-nodes" aria-hidden="true">
+                    <circle cx="470" cy="270" r="8"></circle>
+                    <circle cx="810" cy="270" r="8"></circle>
+                    <circle cx="470" cy="468" r="8"></circle>
+                    <circle cx="810" cy="468" r="8"></circle>
+                </g>
 
-            {{-- Login --}}
-            <section class="flex w-full items-center justify-center">
-                <div class="w-full max-w-lg rounded-[2rem] border border-slate-200 bg-white p-7 shadow-[0_24px_70px_rgba(18,57,93,0.10)] sm:p-10">
+                <!-- Leads -->
+                <g class="flow-node" transform="translate(70 185)">
+                    <rect width="320" height="120" rx="24"></rect>
+                    <circle cx="58" cy="60" r="24"></circle>
+                    <path d="M58 46 V74 M44 60 H72"></path>
+                    <text x="115" y="68">Leads</text>
 
-                    <div class="lg:hidden">
-                        <div class="inline-flex h-12 items-center rounded-xl bg-crm-navy px-4 text-base font-black tracking-tight text-white shadow-sm">CRM <span class="ml-1 text-crm-sky">X</span></div>
-                    </div>
+                   <g class="flow-mini-icon" transform="translate(247 35)">
+                      <rect x="0" y="20" width="8" height="24" rx="2"></rect>
+                      <rect x="14" y="10" width="8" height="34" rx="2"></rect>
+                      <rect x="28" y="0" width="8" height="44" rx="2"></rect>
+                   </g>
+                </g>
 
-                    <p class="mt-4 text-xs font-black uppercase tracking-[0.18em] text-crm-blue lg:mt-0">
-                        CRM X
-                    </p>
 
-                    <h2 class="mt-4 text-4xl font-black tracking-tight text-crm-navy">
-                        Acesse sua conta
-                    </h2>
+                <!-- Oportunidades -->
+<g class="flow-node" transform="translate(890 185)">
+    <rect width="320" height="120" rx="24"></rect>
+    <circle cx="58" cy="60" r="24"></circle>
+    <path d="M58 46 V74 M44 60 H72"></path>
+    <text x="98" y="68">Oportunidades</text>
 
-                    <p class="mt-3 text-sm leading-6 text-slate-600">
-                        Entre com suas credenciais corporativas.
-                    </p>
 
-                    <div class="mt-6">
-                        <x-errors />
-                    </div>
+    <g class="flow-mini-icon" transform="translate(268 40)">
+        <path d="M0 10 L9 2 H17 L23 8"></path>
+        <path d="M39 10 L30 2 H22 L16 8"></path>
+        <path d="M9 12 L17 20"></path>
+        <path d="M17 20 L21 16"></path>
+        <path d="M21 16 L25 20"></path>
+        <path d="M25 20 L33 12"></path>
+        <path d="M14 7 L21 14"></path>
+        <path d="M21 7 L28 14"></path>
+    </g>
+</g>
+                </g>
 
-                    <form
-                        method="POST"
-                        action="{{ route('login.store') }}"
-                        class="mt-6 space-y-5"
-                    >
-                        @csrf
+                <!-- Campanhas -->
+                <g class="flow-node" transform="translate(70 435)">
+                    <rect width="320" height="120" rx="24"></rect>
+                    <circle cx="58" cy="60" r="24"></circle>
+                    <path d="M58 46 V74 M44 60 H72"></path>
+                    <text x="108" y="68">Campanhas</text>
 
-                        <div>
-                            <label class="label text-crm-navy" for="email">
-                                E-mail
-                            </label>
+                    <g class="flow-mini-icon" transform="translate(248 32)">
+                        <path d="M2 18 H11"></path>
+                        <path d="M11 15 L31 7 V35 L11 27 Z"></path>
+                        <path d="M11 27 L15 42 H22 L19 29"></path>
+                        <path d="M34 14 L42 10"></path>
+                        <path d="M34 21 H44"></path>
+                        <path d="M34 28 L42 32"></path>
+                    </g>
+                </g>
 
-                            <div class="relative">
-                                <svg
-                                    class="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-crm-blue"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    stroke-width="1.8"
-                                >
-                                    <path d="M4 6h16v12H4z"/>
-                                    <path d="m4 7 8 6 8-6"/>
-                                </svg>
+                <!-- Indicadores -->
+                <g class="flow-node" transform="translate(890 435)">
+                    <rect width="320" height="120" rx="24"></rect>
+                    <circle cx="58" cy="60" r="24"></circle>
+                    <path d="M58 46 V74 M44 60 H72"></path>
+                    <text x="116" y="68">Indicadores</text>
 
-                                <input
-                                    class="input bg-white pl-11"
-                                    id="email"
-                                    name="email"
-                                    type="email"
-                                    value="{{ old('email') }}"
-                                    placeholder="seu@email.com"
-                                    required
-                                    autofocus
-                                    autocomplete="username"
-                                >
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="label text-crm-navy" for="password">
-                                Senha
-                            </label>
-
-                            <div class="relative">
-                                <svg
-                                    class="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-crm-blue"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    stroke-width="1.8"
-                                >
-                                    <rect x="5" y="10" width="14" height="10" rx="2"/>
-                                    <path d="M8 10V7a4 4 0 0 1 8 0v3"/>
-                                </svg>
-
-                                <input
-                                    class="input bg-white pl-11"
-                                    id="password"
-                                    name="password"
-                                    type="password"
-                                    required
-                                    autocomplete="current-password"
-                                >
-                            </div>
-                        </div>
-
-                        <label class="flex cursor-pointer items-center gap-2.5 text-sm text-slate-700">
-                            <input
-                                class="h-4 w-4 rounded border-slate-300 text-crm-blue focus:ring-crm-blue"
-                                name="remember"
-                                type="checkbox"
-                                value="1"
-                                @checked(old('remember'))
-                            >
-                            Lembrar de mim
-                        </label>
-
-                        <button class="btn-primary w-full" type="submit">
-                            Entrar
-                        </button>
-                    </form>
-@if (config('features.public_registration'))
-                    <div class="my-7 flex items-center gap-4">
-                        <div class="h-px flex-1 bg-slate-200"></div>
-                        <span class="text-xs text-slate-400">ou</span>
-                        <div class="h-px flex-1 bg-slate-200"></div>
-                    </div>
-
-                    <div class="text-center">
-                        <p class="text-sm text-slate-600">
-                            Ainda não tem uma conta?
-                        </p>
-
-                        <a
-                            class="mt-2 inline-flex items-center gap-1 text-sm font-bold text-crm-blue transition hover:text-crm-blue-dark"
-                            href="{{ route('register') }}"
-                        >
-                            Criar uma conta para testar
-                            <span aria-hidden="true">→</span>
-                        </a>
-                    </div>
-@endif
-                    <p class="mt-8 text-center text-[11px] text-slate-400">
-                        CRM X · Gestão comercial, prospecção e relacionamento
-                    </p>
-                </div>
-            </section>
+                    <g class="flow-mini-icon" transform="translate(247 35)">
+                        <rect x="0" y="20" width="8" height="24" rx="2"></rect>
+                        <rect x="14" y="10" width="8" height="34" rx="2"></rect>
+                        <rect x="28" y="0" width="8" height="44" rx="2"></rect>
+                    </g>
+                </g>
+            </svg>
         </div>
+
+        <section class="login-access" aria-label="Acesso à conta">
+            <div class="login-form">
+                <div class="mb-6">
+                    <x-errors />
+                </div>
+
+                <form method="POST" action="{{ route('login.store') }}" class="space-y-5">
+                    @csrf
+
+                    <div>
+                        <label class="label login-label" for="email">E-mail</label>
+                        <div class="relative">
+                            <svg class="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-cyan-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                                <path d="M4 6h16v12H4z"></path>
+                                <path d="m4 7 8 6 8-6"></path>
+                            </svg>
+                            <input class="input login-input pl-11" id="email" name="email" type="email" value="{{ old('email') }}" placeholder="seu@email.com" required autofocus autocomplete="username">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="label login-label" for="password">Senha</label>
+                        <div class="relative">
+                            <svg class="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-cyan-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                                <rect x="5" y="10" width="14" height="10" rx="2"></rect>
+                                <path d="M8 10V8a4 4 0 1 1 8 0v2"></path>
+                            </svg>
+                            <input class="input login-input pl-11" id="password" name="password" type="password" required autocomplete="current-password">
+                        </div>
+                    </div>
+
+                    <label class="flex cursor-pointer items-center gap-2.5 text-sm text-slate-200">
+                        <input class="h-4 w-4 rounded border-cyan-100/50 bg-white/10 text-cyan-300 focus:ring-cyan-300" name="remember" type="checkbox" value="1" @checked(old('remember'))>
+                        Lembrar de mim
+                    </label>
+
+                    <button class="btn-primary w-full login-submit" type="submit">Entrar</button>
+                </form>
+            </div>
+        </section>
     </main>
 </body>
 </html>

@@ -3,7 +3,7 @@
     $unreadNotificationsCount = auth()->user()->unreadNotifications()->count();
 @endphp
 <!DOCTYPE html>
-<html lang="pt-BR" class="h-full bg-crm-canvas">
+<html lang="pt-BR" class="h-full bg-[#061a30]">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,7 +12,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body @class([
-    'min-h-full bg-crm-canvas text-slate-800 antialiased',
+    'crm-app-body min-h-full antialiased',
     'pipeline-view' => request()->routeIs('roadmap.pipeline'),
 ])>
     <div class="crm-sidebar-backdrop" data-sidebar-backdrop></div>
@@ -20,7 +20,15 @@
     <aside id="crm-sidebar" class="crm-sidebar" data-sidebar-panel aria-label="Navegação principal">
         <div class="sidebar-brand flex h-20 items-center justify-between border-b border-white/10 px-5">
             <a href="{{ route('dashboard') }}" class="group flex min-w-0 items-center gap-3">
-                <span class="sidebar-brand-full flex h-11 w-36 shrink-0 items-center justify-center rounded-xl bg-white px-3 text-sm font-black tracking-tight text-crm-navy shadow-sm">CRM <span class="ml-1 text-crm-blue">X</span></span>
+
+                <span class="sidebar-brand-full flex h-11 shrink-0 items-center">
+    <img
+        src="{{ asset('images/techsallus-logo-transparent.png') }}"
+        alt="Techsallus"
+        class="crm-sidebar-logo"
+    >
+</span>
+
                 <span class="sidebar-brand-mark hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-crm-blue text-xs font-black tracking-wide text-white shadow-sm">X</span>
                 <span class="sidebar-brand-copy min-w-0"><span class="block truncate text-sm font-bold tracking-tight text-crm-blue">CRM X</span><span class="block text-[11px] text-slate-500">Prospecção e relacionamento</span></span>
             </a>
@@ -69,12 +77,16 @@
 
     <div class="crm-main min-h-screen">
         <header class="crm-topbar">
-            <div class="flex min-w-0 items-center gap-3"><button type="button" class="rounded-lg border border-slate-200 bg-white p-2.5 text-slate-700 shadow-sm hover:bg-slate-50 lg:hidden" data-sidebar-toggle aria-label="Abrir menu">☰</button><div class="min-w-0"><p class="truncate text-sm font-semibold text-slate-950">{{ $title ?? 'CRM X' }}</p><p class="hidden text-xs text-slate-500 sm:block">Gestão comercial, prospecção e relacionamento</p></div></div>
+            <div class="flex min-w-0 items-center gap-3"><button type="button" class="crm-topbar-mobile-toggle lg:hidden" data-sidebar-toggle aria-label="Abrir menu">☰</button><div class="min-w-0"><p class="truncate text-sm font-semibold text-slate-950">{{ $title ?? 'CRM X' }}</p><p class="hidden text-xs text-slate-500 sm:block">Gestão comercial, prospecção e relacionamento</p></div></div>
             <div class="flex items-center gap-3">
-                <a href="{{ route('notifications.index') }}" class="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-sm transition hover:border-crm-sky hover:text-crm-blue" aria-label="Notificações{{ $unreadNotificationsCount > 0 ? ': '.$unreadNotificationsCount.' não lidas' : '' }}" title="Notificações"><span aria-hidden="true">N</span>@if($unreadNotificationsCount > 0)<span class="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-extrabold text-white">{{ $unreadNotificationsCount > 9 ? '9+' : $unreadNotificationsCount }}</span>@endif</a>
+                <a href="{{ route('notifications.index') }}" class="crm-topbar-notification" aria-label="Notificações{{ $unreadNotificationsCount > 0 ? ': '.$unreadNotificationsCount.' não lidas' : '' }}" title="Notificações"><span aria-hidden="true" class="flex items-center justify-center">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17H18a2 2 0 0 0 2-2v-1.586a1 1 0 0 0-.293-.707l-1.414-1.414A2 2 0 0 1 17.707 10V8a5.707 5.707 0 1 0-11.414 0v2a2 2 0 0 1-.586 1.293L4.293 12.707A1 1 0 0 0 4 13.414V15a2 2 0 0 0 2 2h3.143m5.714 0a3 3 0 1 1-5.714 0m5.714 0H9.143"/>
+    </svg>
+</span>@if($unreadNotificationsCount > 0)<span class="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-extrabold text-white">{{ $unreadNotificationsCount > 9 ? '9+' : $unreadNotificationsCount }}</span>@endif</a>
                 <div class="hidden text-right sm:block"><p class="text-sm font-semibold text-slate-900">{{ auth()->user()->name }}</p><p class="text-xs text-slate-500">{{ auth()->user()->primaryRole()?->name ?? 'Sem role' }}</p></div>
                 <div class="flex h-10 w-10 items-center justify-center rounded-full bg-crm-blue text-sm font-bold text-white shadow-sm">{{ mb_strtoupper(mb_substr(auth()->user()->name, 0, 1)) }}</div>
-                <form method="POST" action="{{ route('logout') }}">@csrf<button class="btn-secondary hidden sm:inline-flex" type="submit">Sair</button><button class="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 sm:hidden" type="submit" aria-label="Sair">↪</button></form>
+                <form method="POST" action="{{ route('logout') }}">@csrf<button class="btn-secondary hidden sm:inline-flex" type="submit">Sair</button><button class="crm-topbar-exit sm:hidden" type="submit" aria-label="Sair">↪</button></form>
             </div>
         </header>
 
