@@ -16,7 +16,7 @@ class AuthenticationTest extends TestCase
 
     public function test_login_screen_is_rendered(): void
     {
-        $this->get('/login')->assertOk()->assertSee('Acesse sua conta');
+        $this->get('/login')->assertOk()->assertSee('Entrar');
     }
 
     public function test_user_can_login_with_valid_credentials_and_last_login_is_updated(): void

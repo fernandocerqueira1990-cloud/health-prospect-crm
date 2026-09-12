@@ -78,7 +78,7 @@ A documentação técnica detalhada está disponível em [docs/architecture](doc
 | Camada | Tecnologias |
 |---|---|
 | Sistema operacional | Debian Linux |
-| Web server | Apache 2 + PHP-FPM |
+| Web server | Nginx + PHP-FPM 8.4 |
 | Backend | PHP 8.4+ / Laravel 13 |
 | Frontend | Blade, Tailwind CSS, Alpine.js / Livewire quando necessário |
 | Banco de dados | PostgreSQL |

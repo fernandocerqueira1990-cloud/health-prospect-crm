@@ -8,3 +8,4 @@ Histórico narrativo da construção do CRM X, organizado por etapas.
 4. Automações e integrações
 5. Evolução do CRM
 6. Acesso externo seguro em ambiente de testes
+- [07 — UI Dark Theme & Production Refinement](07-ui-dark-theme-production-refinement.md)
