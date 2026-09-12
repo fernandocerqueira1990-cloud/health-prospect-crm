@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+### Sprint 12 — UI/UX, Dark Theme & Production Refinement
+
+- Interface interna consolidada em tema escuro com azul-marinho como base, textos em branco/azul-claro e contraste revisado.
+- Tela de login redesenhada com identidade TechSallus, formulário centralizado, SVG animado e conexões visuais para Leads, Oportunidades, Campanhas e Indicadores.
+- Assets transparentes da TechSallus adicionados e sidebar ajustada para eliminar fundos brancos incompatíveis com o tema.
+- Listagens de Empresas, Leads, Atividades, Dashboard e Notificações refinadas com melhor legibilidade e consistência visual.
+- Componente `status-badge` revisado com variantes `neutral`, `info`, `success`, `warning` e `danger`, garantindo contraste adequado entre fundo e texto.
+- Badges como Média, Alta, Novo e Frio passaram a utilizar texto escuro quando exibidos sobre fundos claros.
+- Dashboard refinado em cards, pendências comerciais, métricas e estados de pipeline.
+- Teste de autenticação atualizado para refletir o novo conteúdo da tela de login.
+- Ambiente validado com 551 testes e 2.384 assertions, Laravel Pint aprovado em 350 arquivos, PHPStan/Larastan sem erros em 219/219 análises e build Vite concluído com sucesso.
+- Ambiente atual documentado com Nginx + PHP-FPM 8.4.
+
 ### Sprint 11 — Commercial Automation & Follow-ups
 
 - Central Comercial adicionada ao Dashboard, com tarefas atrasadas, ações para hoje, próximas ações, Leads sem interação e Opportunities estagnadas, sempre no escopo do usuário autenticado.
