@@ -58,7 +58,7 @@ class ApplyConservativeImportDedupPolicyAction
 
                         $hasArchivedExactCandidate = collect($candidates)->contains(
                             fn (array $candidate): bool => ($candidate['strength'] ?? null) === 'exact'
-                                && ($candidate['source'] ?? null) === 'crm'
+                                && $candidate['source'] === 'crm'
                                 && ($candidate['archived'] ?? false)
                         );
 
@@ -106,28 +106,11 @@ class ApplyConservativeImportDedupPolicyAction
         });
     }
 
-    /** @param array<string, array<string, mixed>> $groups */
-    private function mustIgnoreRow(array $groups): bool
-    {
-        foreach ($groups as $groupData) {
-            if (($groupData['match'] ?? null) === 'possible') {
-                return true;
-            }
-            foreach (($groupData['candidates'] ?? []) as $candidate) {
-                if (($candidate['strength'] ?? null) === 'exact' && ($candidate['source'] ?? null) === 'crm' && ($candidate['archived'] ?? false)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
     /** @param list<array<string, mixed>> $candidates @return array<string, mixed>|null */
     private function exactCandidate(array $candidates): ?array
     {
         foreach ($candidates as $candidate) {
-            if (($candidate['strength'] ?? null) === 'exact' && in_array($candidate['source'] ?? null, ['crm', 'import'], true) && ! (($candidate['source'] ?? null) === 'crm' && ($candidate['archived'] ?? false))) {
+            if (($candidate['strength'] ?? null) === 'exact' && in_array($candidate['source'] ?? null, ['crm', 'import'], true) && ! ($candidate['source'] === 'crm' && ($candidate['archived'] ?? false))) {
                 return $candidate;
             }
         }
