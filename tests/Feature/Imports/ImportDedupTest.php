@@ -129,6 +129,21 @@ class ImportDedupTest extends TestCase
         $this->assertDatabaseHas('audit_logs', ['action' => 'import_dedup_analyzed', 'auditable_id' => $import->id]);
     }
 
+    public function test_contact_group_is_skipped_when_contact_name_is_not_mapped(): void
+    {
+        $import = $this->mappedImport([[
+            'contact' => ['notes' => 'Área e decisor ainda não identificados'],
+            'lead' => ['name' => 'Hospital Incar'],
+        ]]);
+
+        $this->analyze($import);
+
+        $dedup = $import->rows()->sole()->dedup_data;
+        $this->assertSame('clear', $dedup['status']);
+        $this->assertArrayNotHasKey('contact', $dedup['groups']);
+        $this->assertArrayHasKey('lead', $dedup['groups']);
+    }
+
     public function test_valid_decisions_reject_injected_candidates_and_impossible_fiscal_create_new(): void
     {
         $company = Company::factory()->create(['legal_name' => 'Fiscal', 'tax_id_country' => 'BR', 'tax_id' => '11222333000181']);

@@ -22,6 +22,7 @@ class ImportMappingController extends Controller
         abort_unless(is_array($headers) && array_filter($headers, 'is_string') === $headers, 409, 'Cabeçalho inválido para mapeamento.');
         $headers = array_values($headers);
         $savedMapping = $dataImport->metadata['mapping']['columns'] ?? [];
+        $ignoredColumns = $dataImport->metadata['mapping']['ignored_columns'] ?? [];
 
         return view('imports.mapping', [
             'dataImport' => $dataImport,
@@ -29,7 +30,11 @@ class ImportMappingController extends Controller
             'groups' => $catalog->groups(),
             'samples' => $viewData->samples($dataImport, $headers),
             'savedMapping' => $savedMapping,
-            'selections' => collect($headers)->mapWithKeys(fn (string $header): array => [$header => $savedMapping[$header] ?? $catalog->suggest($header)])->all(),
+            'selections' => collect($headers)->mapWithKeys(fn (string $header): array => [
+                $header => in_array($header, $ignoredColumns, true)
+                    ? ''
+                    : ($savedMapping[$header] ?? $catalog->suggest($header)),
+            ])->all(),
         ]);
     }
 

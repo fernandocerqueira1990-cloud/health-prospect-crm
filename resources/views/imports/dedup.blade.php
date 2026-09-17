@@ -11,7 +11,14 @@
             <div><dt class="font-medium text-slate-500">Analisado em</dt><dd class="mt-1">{{ $analyzed_at ? Illuminate\Support\Carbon::parse($analyzed_at)->format('d/m/Y H:i') : 'Ainda não analisado' }}</dd></div>
         </dl>
         @can('update', $dataImport)
-            <form class="mt-5" method="POST" action="{{ route('imports.dedup.analyze', $dataImport) }}">@csrf<button class="btn-primary" type="submit">{{ $analyzed_at ? 'Reanalisar duplicidades' : 'Analisar duplicidades' }}</button></form>
+           <form class="mt-5" method="POST" action="{{ route('imports.dedup.analyze', $dataImport) }}">@csrf<button class="btn-primary" type="submit">{{ $analyzed_at ? 'Reanalisar duplicidades' : 'Analisar duplicidades' }}</button></form>
+                @if($analyzed_at)
+                    <form class="mt-3" method="POST" action="{{ route('imports.dedup.apply-conservative-policy', $dataImport) }}" onsubmit="return confirm('Aplicar a regra automática? Duplicidades fortes serão reaproveitadas, possíveis duplicidades serão ignoradas e os demais registros serão preparados para criação.');">
+                        @csrf
+                        <button class="btn-secondary" type="submit">Aplicar regra automática</button>
+                    </form>
+                    <p class="mt-3 text-sm text-slate-500">Regra: duplicidade forte reutiliza o registro existente; possível duplicidade ignora a linha; sem duplicidade cria novo registro.</p>
+                @endif
         @endcan
     </div>
 

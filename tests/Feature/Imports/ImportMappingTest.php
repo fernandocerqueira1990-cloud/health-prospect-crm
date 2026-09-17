@@ -90,6 +90,24 @@ class ImportMappingTest extends TestCase
         $this->assertSame(['empresa_nome_fantasia' => 'lead.company_name'], $dataImport->refresh()->metadata['mapping']['columns']);
     }
 
+    public function test_saved_ignored_column_overrides_official_template_suggestion(): void
+    {
+        $dataImport = $this->import(['empresa_nome_fantasia', 'contato_nome'], []);
+        $user = $this->userWithPermission('imports.update');
+
+        $this->actingAs($user)->put(route('imports.mapping.update', $dataImport), ['columns' => [
+            ['source' => 'empresa_nome_fantasia', 'target' => 'company.trade_name'],
+            ['source' => 'contato_nome', 'target' => ''],
+        ]])->assertSessionHasNoErrors();
+
+        $response = $this->actingAs($user)->get(route('imports.mapping.edit', $dataImport));
+
+        $response->assertOk()
+            ->assertSee('<option value="company.trade_name" selected>', false)
+            ->assertDontSee('<option value="contact.name" selected>', false);
+        $this->assertSame(['contato_nome'], $dataImport->refresh()->metadata['mapping']['ignored_columns']);
+    }
+
     public function test_valid_mapping_normalizes_rows_preserves_original_metadata_and_creates_no_entities(): void
     {
         $original = ['Nome da Empresa' => '  Clínica   ABC ', 'Email' => ' COMERCIAL@EMPRESA.COM ', 'Ignorada' => 'segredo'];
