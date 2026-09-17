@@ -158,8 +158,8 @@ class ImportExecutionTest extends TestCase
         $dedup['status'] = 'blocked';
         $blocked->dedup_data = $dedup;
         $blocked->save();
-        $beforeOriginal = $import->rows()->pluck('original_data', 'id')->all();
-        $beforeNormalized = $import->rows()->pluck('normalized_data', 'id')->all();
+        $beforeOriginal = $import->rows()->orderBy('id')->pluck('original_data', 'id')->all();
+        $beforeNormalized = $import->rows()->orderBy('id')->pluck('normalized_data', 'id')->all();
 
         $this->execute($import);
         $this->execute($import);
@@ -167,8 +167,8 @@ class ImportExecutionTest extends TestCase
         $this->assertDatabaseCount('companies', 1);
         $this->assertDatabaseCount('leads', 0);
         $this->assertDatabaseCount('opportunities', 0);
-        $this->assertSame($beforeOriginal, $import->rows()->pluck('original_data', 'id')->all());
-        $this->assertSame($beforeNormalized, $import->rows()->pluck('normalized_data', 'id')->all());
+        $this->assertSame($beforeOriginal, $import->rows()->orderBy('id')->pluck('original_data', 'id')->all());
+        $this->assertSame($beforeNormalized, $import->rows()->orderBy('id')->pluck('normalized_data', 'id')->all());
         $this->assertSame(1, $import->refresh()->imported_rows);
         $this->assertSame(1, $import->failed_rows);
         $this->assertNull($blocked->refresh()->related_entity_id);
