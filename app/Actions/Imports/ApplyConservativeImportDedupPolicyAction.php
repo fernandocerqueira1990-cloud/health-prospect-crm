@@ -90,7 +90,8 @@ class ApplyConservativeImportDedupPolicyAction
                         $result['rows_ignored']++;
                     } else {
                         $result['rows_new']++;
-                    }                }
+                    }
+                }
             });
 
             $this->refreshSummary($lockedImport);

@@ -43,6 +43,7 @@ class ImportDedupController extends Controller
 
         return redirect()->route('imports.dedup.index', $dataImport)->with('status', 'Decisão de deduplicação atualizada.');
     }
+
     public function applyConservativePolicy(ApplyImportDedupPolicyRequest $request, DataImport $dataImport, ApplyConservativeImportDedupPolicyAction $action): RedirectResponse
     {
         $result = $action->execute($dataImport, $request->user());

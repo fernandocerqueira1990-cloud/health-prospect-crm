@@ -114,4 +114,4 @@ Route::middleware(['auth', EnsureUserIsActive::class])->group(function (): void 
         Route::get('audit', [AuditLogController::class, 'index'])->name('audit.index');
     });
 });
-    Route::post('/imports/{dataImport}/dedup/apply-conservative-policy', [ImportDedupController::class, 'applyConservativePolicy'])->name('imports.dedup.apply-conservative-policy');
+Route::post('/imports/{dataImport}/dedup/apply-conservative-policy', [ImportDedupController::class, 'applyConservativePolicy'])->name('imports.dedup.apply-conservative-policy');
