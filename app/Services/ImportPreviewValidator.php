@@ -45,7 +45,7 @@ class ImportPreviewValidator
             $issues[] = $this->issue(self::STATUS_WARNING, 'normalized_data', 'no_mapped_data', 'A linha não possui valores normalizados para revisão.');
         }
 
-        $this->validateRequiredValues($data, $issues);
+        $this->validateRequiredValues($data, $mapped, $issues);
 
         foreach (self::STRING_LIMITS as $target => $limit) {
             if (! isset($mapped[$target]) || ! $this->hasValue($data, $target)) {
@@ -88,14 +88,16 @@ class ImportPreviewValidator
         return ['status' => $status, 'issues' => $issues];
     }
 
-    /** @param array<string, mixed> $data @param list<array{severity: string, field: string, code: string, message: string}> $issues */
-    private function validateRequiredValues(array $data, array &$issues): void
+    /** @param array<string, mixed> $data @param array<string, true> $mapped @param list<array{severity: string, field: string, code: string, message: string}> $issues */
+    private function validateRequiredValues(array $data, array $mapped, array &$issues): void
     {
         if ($this->groupHasData($data, 'company') && ! $this->hasValue($data, 'company.legal_name')) {
             $issues[] = $this->issue(self::STATUS_ERROR, 'company.legal_name', 'missing_required_value', 'A razão social é obrigatória para uma empresa.');
         }
-        if ($this->groupHasData($data, 'contact') && ! $this->hasValue($data, 'contact.name')) {
+        if ($this->groupHasData($data, 'contact') && isset($mapped['contact.name']) && ! $this->hasValue($data, 'contact.name')) {
             $issues[] = $this->issue(self::STATUS_ERROR, 'contact.name', 'missing_required_value', 'O nome é obrigatório para um contato.');
+        } elseif ($this->groupHasData($data, 'contact') && ! isset($mapped['contact.name'])) {
+            $issues[] = $this->issue(self::STATUS_WARNING, 'contact.name', 'contact_skipped_without_name_mapping', 'Os dados de contato serão ignorados porque o nome do contato não foi mapeado.');
         }
         if ($this->groupHasData($data, 'lead')) {
             $identifiers = ['lead.name', 'lead.company_name', 'lead.email', 'lead.phone', 'lead.whatsapp'];

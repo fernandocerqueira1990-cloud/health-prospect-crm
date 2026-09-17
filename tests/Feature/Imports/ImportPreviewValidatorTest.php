@@ -48,7 +48,7 @@ class ImportPreviewValidatorTest extends TestCase
             'value too long' => [['company' => ['legal_name' => str_repeat('a', 256)]], ['company.legal_name'], 'value_too_long'],
             'boolean is not textual' => [['company' => ['legal_name' => true]], ['company.legal_name'], 'invalid_type'],
             'missing company identity' => [['company' => ['city' => 'Recife']], ['company.city'], 'missing_required_value'],
-            'missing contact identity' => [['contact' => ['email' => 'ana@example.test']], ['contact.email'], 'missing_required_value'],
+            'missing contact identity' => [['contact' => ['email' => 'ana@example.test']], ['contact.name', 'contact.email'], 'missing_required_value'],
             'missing lead identity' => [['lead' => ['status' => 'new']], ['lead.status'], 'missing_required_value'],
         ];
     }
@@ -61,6 +61,17 @@ class ImportPreviewValidatorTest extends TestCase
 
         $this->assertSame('warning', $result['status']);
         $this->assertEqualsCanonicalizing(['tax_country_missing', 'invalid_phone'], array_column($result['issues'], 'code'));
+    }
+
+    public function test_contact_data_without_name_mapping_is_a_non_blocking_warning(): void
+    {
+        $result = $this->validator()->validate([
+            'lead' => ['name' => 'Hospital Incar'],
+            'contact' => ['notes' => 'Área e decisor ainda não identificados'],
+        ], ['lead.name', 'contact.notes']);
+
+        $this->assertSame('warning', $result['status']);
+        $this->assertSame(['contact_skipped_without_name_mapping'], array_column($result['issues'], 'code'));
     }
 
     public function test_empty_normalized_data_is_a_warning(): void

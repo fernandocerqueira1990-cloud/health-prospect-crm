@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Imports\AnalyzeImportDedupAction;
+use App\Actions\Imports\ApplyConservativeImportDedupPolicyAction;
 use App\Actions\Imports\UpdateImportDedupDecisionAction;
 use App\Http\Requests\Imports\AnalyzeImportDedupRequest;
+use App\Http\Requests\Imports\ApplyImportDedupPolicyRequest;
 use App\Http\Requests\Imports\UpdateImportDedupDecisionRequest;
 use App\Models\DataImport;
 use App\Models\ImportRow;
@@ -40,5 +42,13 @@ class ImportDedupController extends Controller
         $action->execute($dataImport, $importRow, $validated['group'], $validated['action'], $validated['candidate_ref'] ?? null, $request->user());
 
         return redirect()->route('imports.dedup.index', $dataImport)->with('status', 'Decisão de deduplicação atualizada.');
+    }
+    public function applyConservativePolicy(ApplyImportDedupPolicyRequest $request, DataImport $dataImport, ApplyConservativeImportDedupPolicyAction $action): RedirectResponse
+    {
+        $result = $action->execute($dataImport, $request->user());
+
+        return redirect()
+            ->route('imports.dedup.index', $dataImport)
+            ->with('status', "Regra automática aplicada: {$result['rows_reused']} linha(s) reaproveitada(s), {$result['rows_ignored']} ignorada(s) e {$result['rows_new']} nova(s) para importar.");
     }
 }

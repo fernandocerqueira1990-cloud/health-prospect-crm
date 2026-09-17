@@ -25,6 +25,7 @@ class ImportDedupMatcher
      */
     public function match(Collection $rows, ImportDedupKeyRegistry $registry, array $mappedTargets, ImportPreviewValidator $validator): array
     {
+        $mapped = array_fill_keys($mappedTargets, true);
         $companies = $this->companyCandidates($rows);
         $contacts = $this->contactCandidates($rows);
         $leads = $this->leadCandidates($rows);
@@ -36,6 +37,9 @@ class ImportDedupMatcher
             $groups = [];
 
             foreach (['company', 'contact', 'lead'] as $group) {
+                if ($group === 'contact' && ! isset($mapped['contact.name'])) {
+                    continue;
+                }
                 $values = $data[$group] ?? null;
                 if (! is_array($values) || $values === []) {
                     continue;
